@@ -26,7 +26,7 @@
 <pre><code>go run ./cmd/echoevm -bin ./build/Add.bin -function &#39;add(uint256,uint256)&#39; -args &quot;3,5&quot;
 </code></pre>
 <p>这个命令的含义是，会执行 <code>./build/Add.bin</code> 文件内的 bytecode，并且调用 <a href="https://github.com/smallyunet/echoevm/blob/v0.0.2/test/contracts/Add.sol#L7">add 函数</a>，传入参数 3 和 5，最终程序运行结束后，会返回出计算结果 8。</p>
-<h3 id="v0-0-3（2025-06-24）"><a href="#v0-0-3（2025-06-24）" class="headerlink" title="v0.0.3（2025.06.24）"></a>v0.0.3（2025.06.24）</h3><p>好消息，现在 echoevm 已经可以执行以太坊主网前 10000 块的合约交易！因为前 10000 个块根本没有合约交易 :P</p>
+<h3 id="v0-0-3（2025-06-24）"><a href="#v0-0-3（2025-06-24）" class="headerlink" title="v0.0.3（2025.06.24）"></a>v0.0.3（2025.06.24）</h3><p>好消息，现在 echoevm 已经可以执行以太坊主网前 10000 个区块的合约交易！因为前 10000 个区块根本没有合约交易 :P</p>
 <p>这个版本新增了执行以太坊区块的模式，可以执行单个区块执行，也可以执行区块范围执行。当然，还需要一个获取区块数据的 url，注意对于以太坊早期的区块数据，得找 archive 模式的节点。整个命令行看起来是这样：</p>
 <pre><code>echoevm -start-block 0 -end-block 10000 -rpc &lt;url&gt;
 </code></pre>
