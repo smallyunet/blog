@@ -524,15 +524,6 @@
   </url>
   
   <url>
-    <loc>https://smallyu.net/2019/01/25/%E5%AE%9E%E4%B9%A00.5%E4%B8%AA%E6%9C%88%E5%A4%8D%E7%9B%98/</loc>
-    
-    <lastmod>2024-08-03</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://smallyu.net/2023/10/10/%E5%A6%82%E4%BD%95%E5%81%A5%E5%BA%B7%E5%9C%B0%E8%BF%9C%E7%A8%8B%E5%B7%A5%E4%BD%9C/</loc>
     
     <lastmod>2024-08-03</lastmod>
@@ -1186,13 +1177,6 @@
   
   <url>
     <loc>https://smallyu.net/tags/%E8%81%94%E7%9B%9F%E9%93%BE/</loc>
-    <lastmod>2025-06-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://smallyu.net/tags/%E5%AE%9E%E4%B9%A0/</loc>
     <lastmod>2025-06-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
