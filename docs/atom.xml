@@ -6,7 +6,7 @@
   <link href="https://smallyu.net/atom.xml" rel="self"/>
   <link href="https://pubsubhubbub.appspot.com/" rel="hub"/>
   <link href="https://smallyu.net/"/>
-  <updated>2025-06-29T09:41:18.103Z</updated>
+  <updated>2025-06-29T18:19:14.846Z</updated>
   <id>https://smallyu.net/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Rust 语言容易让新手困惑的一个“过度优化”</title>
+    <link href="https://smallyu.net/2025/06/30/Rust%E8%AF%AD%E8%A8%80%E5%AE%B9%E6%98%93%E8%AE%A9%E6%96%B0%E6%89%8B%E5%9B%B0%E6%83%91%E7%9A%84%E4%B8%80%E7%A7%8D%E8%BF%87%E5%BA%A6%E4%BC%98%E5%8C%96/"/>
+    <id>https://smallyu.net/2025/06/30/Rust%E8%AF%AD%E8%A8%80%E5%AE%B9%E6%98%93%E8%AE%A9%E6%96%B0%E6%89%8B%E5%9B%B0%E6%83%91%E7%9A%84%E4%B8%80%E7%A7%8D%E8%BF%87%E5%BA%A6%E4%BC%98%E5%8C%96/</id>
+    <published>2025-06-29T18:05:25.000Z</published>
+    <updated>2025-06-29T18:19:14.846Z</updated>
+    
+    <content type="html"><![CDATA[<p>假如我们现在要写一些代码，随便用 <code>cargo new</code> 一个项目就行，然后写一个函数 <code>append</code>，函数的功能很好理解，就是把两个传入的字符串给拼接起来，第一个参数是字符串（的引用类型），第二个参数也是字符串，假如我们的参数是 <code>Hello</code> 和 <code>, world</code>，函数调用后会返回 <code>Hello, world</code> 给我们。函数具体这样写：</p><pre><code class="rust">fn append(s1: &amp;String, s2: &amp;String) -&gt; String &#123;    return s1.clone() + s2.clone().as_str();&#125;</code></pre><p>不需要关心 <code>return</code> 后面的语句写法，这不是我们关注的重点。在入口函数 <code>main</code> 里调用这个 <code>append</code>，运行一下，输出的内容会和我们预期一样，打印出拼接后的字符串 <code>Hello, world</code>：</p><pre><code class="rust">fn main() &#123;    let s1: String = String::from(&quot;Hello&quot;);    let s2: String = String::from(&quot;, world&quot;);    println!(&quot;&#123;&#125;&quot;, append(&amp;s1, &amp;s2));&#125;</code></pre><p>那么现在，保持 <code>append</code> 函数完全不变，在 <code>main</code> 函数里修改两个字符串的定义，整个 <code>main</code> 函数变成这样，猜一下输出结果会是什么？注意 Rust 是静态类型的语言，编译器对于变量类型往往具有严格的定义和判断：</p><pre><code class="rust">fn main() &#123;    let s1: Box&lt;String&gt; = Box::new(String::from(&quot;Hello&quot;));    let s2: Box&lt;String&gt; = Box::new(String::from(&quot;, world&quot;));    println!(&quot;&#123;&#125;&quot;, append(&amp;s1, &amp;s2));&#125;</code></pre><p>我们首先的直觉是应该编译报错，因为 <code>s1</code> 的类型是 <code>Box&lt;String&gt;</code>，调用 <code>append</code> 函数的时候，传入的参数为 <code>&amp;s1</code>，对应的类型为 <code>&amp;Box&lt;String&gt;</code>，而显然 <code>append</code> 函数的定义是没有修改的，接收的参数类型仍然是 <code>&amp;String</code>。那么这种情况下，为什么编译器没有报错，而且代码还能正常运行，输出了 <code>Hello, world</code> 的结果？(先别管这里的 <code>Box</code> 是什么，反正是一种类型)</p><p>我们接着再修改一下 <code>main</code> 函数的内容，把字符串的定义改为这样：</p><pre><code class="rust">fn main() &#123;    use std::rc::Rc;    let s1: Rc&lt;String&gt; = Rc::new(String::from(&quot;Hello&quot;));    let s2: Rc&lt;String&gt; = Rc::new(String::from(&quot;, world&quot;));    println!(&quot;&#123;&#125;&quot;, append(&amp;s1, &amp;s2));&#125;</code></pre><p>代码能通过编译吗？能正常运行吗？<code>append</code> 函数的定义仍然没有变，这里 <code>main</code> 函数中 <code>s1</code> 的类型变成了 <code>Rc&lt;String&gt;</code>，相应的传入 <code>append</code> 函数做参数的时候，类型变为了 <code>&amp;Rc&lt;String&gt;</code>。但是为什么，编译器没有报错，而且还能正常运行出结果，输出 <code>Hello, world</code>？（同样别管 <code>Rc</code> 是什么，也是一种类型）</p><p>根据刚才的代码片段，我们观察到一个现象：当函数的参数类型是 <code>&amp;String</code> 的时候，既可以接受 <code>&amp;String</code> 类型的参数，也可以接收 <code>&amp;Box&lt;String&gt;</code> 类型的参数，还可以接收 <code>&amp;Rc&lt;String&gt;</code> 类型的参数。</p><p>再疯狂一点，如果把 <code>main</code> 函数改成这样呢？</p><pre><code class="rust">fn main() &#123;    let s1: Box&lt;Box&lt;Box&lt;Box&lt;String&gt;&gt;&gt;&gt; = Box::new(Box::new(Box::new(Box::new(String::from(&quot;Hello&quot;)))));    let s2: Box&lt;Box&lt;Box&lt;Box&lt;String&gt;&gt;&gt;&gt; = Box::new(Box::new(Box::new(Box::new(String::from(&quot;, world&quot;)))));    println!(&quot;&#123;&#125;&quot;, append(&amp;s1, &amp;s2));&#125;</code></pre><p>如果把 <code>main</code> 函数改成这样呢？</p><pre><code class="rust">fn main() &#123;    use std::rc::Rc;        let s1: Rc&lt;Rc&lt;Rc&lt;Rc&lt;String&gt;&gt;&gt;&gt; = Rc::new(Rc::new(Rc::new(Rc::new(String::from(&quot;hello&quot;)))));    let s2: Rc&lt;Rc&lt;Rc&lt;Rc&lt;String&gt;&gt;&gt;&gt; = Rc::new(Rc::new(Rc::new(Rc::new(String::from(&quot;, world&quot;)))));    println!(&quot;&#123;&#125;&quot;, append(&amp;s1, &amp;s2));&#125;</code></pre><p>结果是 <code>main</code> 函数都可以正常运行，输出 <code>Hello, world</code> 的结果。</p><p>为了进一步观察关于类型的问题，现在新写两个 append 函数，<code>append2</code> 函数接收的类型是 <code>&amp;Box&lt;String&gt;</code>，而 <code>append3</code> 函数接收的类型是 <code>&amp;Rc&lt;String&gt;</code>：</p><pre><code class="rust">fn append2(s1: &amp;Box&lt;String&gt;, s2: &amp;Box&lt;String&gt;) -&gt; Box&lt;String&gt; &#123;    let mut result = (**s1).clone();    result.push_str(s2);    Box::new(result)&#125;use std::rc::Rc;fn append3(s1: &amp;Rc&lt;String&gt;, s2: &amp;Rc&lt;String&gt;) -&gt; Rc&lt;String&gt; &#123;    let mut result = (**s1).clone();    result.push_str(s2);    Rc::new(result)&#125;</code></pre><p>接下来分析一下，对于下面的 <code>main</code> 函数代码，编译器会在哪一行报错？</p><pre><code class="rust">fn main() &#123;    let s1: Box&lt;Box&lt;Rc&lt;Rc&lt;String&gt;&gt;&gt;&gt; = Box::new(Box::new(Rc::new(Rc::new(String::from(&quot;hello&quot;)))));    let s2: Box&lt;Box&lt;Rc&lt;Rc&lt;String&gt;&gt;&gt;&gt; = Box::new(Box::new(Rc::new(Rc::new(String::from(&quot;, world&quot;)))));    println!(&quot;&#123;&#125;&quot;, append(&amp;s1, &amp;s2));    println!(&quot;&#123;&#125;&quot;, append2(&amp;s1, &amp;s2));    println!(&quot;&#123;&#125;&quot;, append3(&amp;s1, &amp;s2));&#125;</code></pre><p>这样呢，字符串的类型再扩展一下，编译器还会报错吗，在哪一行？</p><pre><code class="rust">fn main() &#123;    let s1: Box&lt;Box&lt;Rc&lt;Rc&lt;Box&lt;Box&lt;String&gt;&gt;&gt;&gt;&gt;&gt; = Box::new(Box::new(Rc::new(Rc::new(Box::new(Box::new(String::from(&quot;hello&quot;)))))));    let s2: Box&lt;Box&lt;Rc&lt;Rc&lt;Box&lt;Box&lt;String&gt;&gt;&gt;&gt;&gt;&gt; = Box::new(Box::new(Rc::new(Rc::new(Box::new(Box::new(String::from(&quot;, world&quot;)))))));    println!(&quot;&#123;&#125;&quot;, append(&amp;s1, &amp;s2));    println!(&quot;&#123;&#125;&quot;, append2(&amp;s1, &amp;s2));    println!(&quot;&#123;&#125;&quot;, append3(&amp;s1, &amp;s2));&#125;</code></pre><p>Rust 把这种语言特性叫做人体工学设计，为了减轻开发人员的负担。但是 Rust 在设计动不动会把变量给 move 掉、不得不使用 <code>&#39;</code> 单引号写法的时候，却放弃了人体工学，把内存安全放在了更重要的地位……倒是也没什么错，毕竟 Rust 只有内存安全是绝不能放松的。</p>]]></content>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;假如我们现在要写一些代码，随便用 &lt;code&gt;cargo new&lt;/code&gt; 一个项目就行，然后写一个函数</summary>
+        
+      
+    
+    
+    
+    
+    <category term="编程语言" scheme="https://smallyu.net/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/"/>
+    
+    <category term="Rust" scheme="https://smallyu.net/tags/Rust/"/>
+    
+  </entry>
   
   <entry>
     <title>最近一个月在区块链行业找工作的面试记录</title>
@@ -158,11 +185,11 @@
   </entry>
   
   <entry>
-    <title>想开发一个最小 EVM 虚拟机</title>
+    <title>尝试开发一个最小 EVM 虚拟机</title>
     <link href="https://smallyu.net/2025/05/11/%E6%83%B3%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA%E6%9C%80%E5%B0%8FEVM%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
     <id>https://smallyu.net/2025/05/11/%E6%83%B3%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA%E6%9C%80%E5%B0%8FEVM%E8%99%9A%E6%8B%9F%E6%9C%BA/</id>
     <published>2025-05-10T17:15:07.000Z</published>
-    <updated>2025-06-24T03:58:31.657Z</updated>
+    <updated>2025-06-29T18:19:49.375Z</updated>
     
     <content type="html"><![CDATA[<p>我给这个项目命名为 echoevm.com，主要目标是从最简单的堆栈操作开始，逐步实现一个完整的以太坊字节码执行环境。</p><p>为什么选择这个方向？解析下以太坊客户端的技术模块：</p><ol><li>RPC：GRPC 套壳？重点在于协议设计而不是技术实现</li><li>P2P：有现成的 libp2p 可用，无非是节点发现、路由表之类，比如深入下 Kademlia DHT？</li><li>账户体系：ECDSA？密码学？</li><li>交易池：交易分析、密封交易、MEV保护方向</li><li>共识机制：共识机制的设计属于研究级别，至少得是个博士发论文、实验室里做研究、出各种测试数据，然后证明在哪方面做出了业界前沿的优化、最后融资雇人做工程化的实现</li><li>储存：搞数据库底层的专家应该干什么都一样，哪里都有用武之地，跟区块链没关系</li><li>数据结构：去研究 Merkle Patricia Tree 的实现吗？</li><li>状态同步：轻节点方向，比如用 Celestia 的核心技术把执行和储存分开，或者 Archive 节点数据的 offload？</li></ol><p>综合来看，我倾向于做一件侧重工程而不是学术、同时又有技术含量的事情，无论是从个人技术能力的提升，还是后续有可能带来的成果上，都要有意义。假如这个最小EVM开发出来了，是可以带来一系列成果的，后续也可以基于此延伸出很多更有价值的产品。</p><p>从 Solidity 语言到 bytecode 的转换过程，那是编译器专家干的事情，我要做的，是针对 bytecode 做执行，先从最简单的加法运算和 jump 开始，然后是 Gas 的计算、上下文环境的切换，直到能够执行全部以太坊历史交易。</p><h3 id="v0-0-1（2025-05-27）"><a href="#v0-0-1（2025-05-27）" class="headerlink" title="v0.0.1（2025.05.27）"></a>v0.0.1（2025.05.27）</h3><p>实现了一个非常简单的版本，现在可以用 solc 编译一个 <a href="https://github.com/smallyunet/echoevm/blob/v0.0.1/test/contracts/Add.sol">Add.sol</a> 合约，然后让 echoevm 读取生成的 <code>Add.bin</code> 部署代码，就会输出合约部署之后的运行时代码。</p><p>在实现这个版本的过程中，学习到的东西是部署代码和运行时代码的区别。我们一般会先部署一个合约到链上，然后再对这个合约产生调用，这实际上是两个不同的操作，但又都在使用相同的 EVM 执行，EVM 并不关心输入的 bytecode 是部署还是调用，只是对不同的操作码处理方式不同。一般部署代码会同时包含 <code>CODECOPY</code> 和 <code>RETURN</code> 两个操作码，可以利用这一点来区分输入的类型。</p><h3 id="v0-0-2（2025-06-09）"><a href="#v0-0-2（2025-06-09）" class="headerlink" title="v0.0.2（2025.06.09）"></a>v0.0.2（2025.06.09）</h3><p>这个版本增加了运行 runtime bytecode 的能力，也就是先部署合约，然后再针对部署之后的合约内容，进行调用，调用的时候可以带上一些参数，比如：</p><pre><code>go run ./cmd/echoevm -bin ./build/Add.bin -function &#39;add(uint256,uint256)&#39; -args &quot;3,5&quot;</code></pre><p>这个命令的含义是，会执行 <code>./build/Add.bin</code> 文件内的 bytecode，并且调用 <a href="https://github.com/smallyunet/echoevm/blob/v0.0.2/test/contracts/Add.sol#L7">add 函数</a>，传入参数 3 和 5，最终程序运行结束后，会返回出计算结果 8。</p><h3 id="v0-0-3（2025-06-24）"><a href="#v0-0-3（2025-06-24）" class="headerlink" title="v0.0.3（2025.06.24）"></a>v0.0.3（2025.06.24）</h3><p>好消息，现在 echoevm 已经可以执行以太坊主网前 10000 个区块的合约交易！因为前 10000 个区块根本没有合约交易 :P</p><p>这个版本新增了执行以太坊区块的模式，可以执行单个区块执行，也可以执行区块范围执行。当然，还需要一个获取区块数据的 url，注意对于以太坊早期的区块数据，得找 archive 模式的节点。整个命令行看起来是这样：</p><pre><code>echoevm -start-block 0 -end-block 10000 -rpc &lt;url&gt;</code></pre><p>现在 echoevm 支持的字节码有限，如果执行最新的一些区块交易，会发现报错说不支持某些字节码，这个是正常现象。</p>]]></content>
     
