@@ -1,5 +1,5 @@
 ---
-title: 一个 web3 打赏系统的设计
+title: 一个 Web3 打赏系统的设计
 tags: 
 - web3
 - 计划
