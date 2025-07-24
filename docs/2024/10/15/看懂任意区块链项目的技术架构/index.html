@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-cn"><head><title>看懂任意区块链项目的技术架构</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=0.5"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><link rel="stylesheet" href="/css/highlight/xcode.min.css"><link rel="stylesheet" href="/css/bootstrap/bootstrap-tooltips.css"><link rel="stylesheet" href="/css/post.css"><script src="/js/jquery.min.js"></script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="nobody in web3" type="application/atom+xml">
+<!DOCTYPE html><html lang="zh-cn"><head><title>如何看懂任意区块链项目的技术架构</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=0.5"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><link rel="stylesheet" href="/css/highlight/xcode.min.css"><link rel="stylesheet" href="/css/bootstrap/bootstrap-tooltips.css"><link rel="stylesheet" href="/css/post.css"><script src="/js/jquery.min.js"></script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="nobody in web3" type="application/atom+xml">
 </head><body><script>if (/mobile/i.test(navigator.userAgent) || /android/i.test(navigator.userAgent)) {
   document.body.classList.add('mobile')
   var navbar = document.querySelector('nav.navbar');
@@ -6,7 +6,7 @@
     navbar.classList.remove('navbar-fixed-top');
   }
 }
-</script><div><div class="inner"><h1>看懂任意区块链项目的技术架构</h1><div class="time">2024-10-15</div><div class="title-margin"></div><h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>最基本的区块链，就是一条区块链本身，包含有通过共识出块的能力，可能有很多节点，也可能只有一个节点，每个节点都提供接收交易的 RPC 接口：</p>
+</script><div><div class="inner"><h1>如何看懂任意区块链项目的技术架构</h1><div class="time">2024-10-15</div><div class="title-margin"></div><h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>最基本的区块链，就是一条区块链本身，包含有通过共识出块的能力，可能有很多节点，也可能只有一个节点，每个节点都提供接收交易的 RPC 接口：</p>
 <img src="1.png" width="60%">
 
 <p>因为以太坊的诞生，区块链的交易不仅仅是交易，还具有了智能合约的能力：</p>
