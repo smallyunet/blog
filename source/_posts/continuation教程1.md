@@ -7,23 +7,15 @@ tags:
 - CPS
 ---
 
-> 最近两个月不知道怎么回事，我写东西的频率和效率有点高，短短一周左右的时间，就已经学习并写出了 6 篇 continuation 系列的教程。
->
-> 因为最近博客的更新频率太高了（尽管已经删掉了很多），而且 continuation 这个概念偏理论，和区块链也无关，所以不打算全放到这个精简版博客上来。理解 CPS 概念属于最开始的一篇，后面的内容主要是在 JavaScript 语言里，利用 CPS 的特点来实现 yield 关键字之类的东西，进一步了解协程的原理，其实放上来也不太有人感兴趣。
->
-> 但我还是想要放点东西上来，所以选了第一篇。
 
-原文全文：
-
----
-
-> 这是一个 continuation 系列教程：
+> 这是一个 continuation 系列教程，一共 6 篇文章。因为太占用篇幅，不打算全放到这个精简版本的博客上来。这是标题列表，或者说是一个学习的大纲，假如你自己想要学习 continuation，可以按照这个节奏来：
+> 
 > 1. [continuation 教程：理解 CPS](/2025/08/01/continuation教程1/)
 > 2. [continuation 教程：用 yield 实现协程调度](/2025/08/02/continuation教程2/)
 > 3. [continuation 教程：用 call/cc 实现协程调度](/2025/08/03/continuation教程3/)
 > 4. [continuation 教程：用 shift/reset 实现协程调度](/2025/08/04/continuation教程4/)
 > 5. [continuation 教程：体验 Racket 语言](/2025/08/05/continuation教程5/)
-> 6. [continuation 教程：实现抢占式协程](/2025/08/06/continuation教程6/)
+> 6. [continuation 教程：实现抢占式协程调度](/2025/08/06/continuation教程6/)
 
 我们来由浅入深地系统学习下 continuation 的原理以及应用场景。这个系列教程的内容和王垠的 continuation 专项班无关，是我自己学习和研究的成果，所以不会有版权问题。不过当然正是因为我学习了基础班，打下了坚实的基础，才知道该如何去自学和理解 continuation 这个概念。这篇文章会少量透露出基础班学到的技能，毕竟 continuation 属于基础班的进阶内容，无法跳过基础技能去理解。
 
