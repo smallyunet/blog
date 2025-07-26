@@ -8,7 +8,7 @@ tags:
 ---
 
 
-> 这是一个 continuation 系列教程，一共 6 篇文章。因为太占用篇幅，不打算全放到这个精简版本的博客上来。这是标题列表，或者说是一个学习的大纲，假如你自己想要学习 continuation，可以按照这个节奏来：
+> 这是一个 continuation 系列教程，一共 6 篇文章。因为太占用篇幅，不打算全放到这个精简版本的博客上。这是一个学习大纲，如果你想自学 continuation，可以按照这个节奏来：
 > 
 > 1. [continuation 教程：理解 CPS](/2025/08/01/continuation教程1/)
 > 2. [continuation 教程：用 yield 实现协程调度](/2025/08/02/continuation教程2/)
