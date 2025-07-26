@@ -3,12 +3,12 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: nobody in web3
-subtitle: nobody in web3
+title: smallyu的博客
+subtitle: smallyu的博客
 title_tooltip: 
 description: 
-keywords: smallyu,blog,nobody
-author: nobody
+keywords: smallyu,blog
+author: smallyu
 # language: en
 language: zh-cn
 timezone:

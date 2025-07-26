@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>nobody in web3</title>
+  <title>smallyu的博客</title>
   <icon>https://smallyu.net/favicon.png</icon>
-  <subtitle>nobody in web3</subtitle>
+  <subtitle>smallyu的博客</subtitle>
   <link href="https://smallyu.net/atom.xml" rel="self"/>
   <link href="https://pubsubhubbub.appspot.com/" rel="hub"/>
   <link href="https://smallyu.net/"/>
@@ -10,7 +10,7 @@
   <id>https://smallyu.net/</id>
   
   <author>
-    <name>nobody</name>
+    <name>smallyu</name>
     
   </author>
   
