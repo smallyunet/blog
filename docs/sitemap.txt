@@ -1,3 +1,4 @@
+https://smallyu.net/2025/08/02/%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E5%9D%9A%E6%8C%81%E7%94%A8%E7%8B%AC%E7%AB%8B%E5%8D%9A%E5%AE%A2/
 https://smallyu.net/2025/07/20/%E5%A4%B1%E4%B8%9A%E7%AC%AC%E4%BA%8C%E4%B8%AA%E6%9C%88%E5%B9%B2%E4%BA%86%E4%BB%80%E4%B9%88/
 https://smallyu.net/2025/07/26/%E5%9B%9E%E5%BF%86%E5%90%8C%E4%BA%8B%E8%A2%AB%E5%8F%A6%E4%B8%80%E4%B8%AA%E5%90%8C%E4%BA%8B%E8%B5%B6%E8%B5%B0%E7%9A%84%E4%BA%8B%E6%83%85/
 https://smallyu.net/2025/07/31/2025%E5%B9%B47%E6%9C%88%E7%9A%84%E9%9D%A2%E8%AF%95%E8%AE%B0%E5%BD%95/
@@ -8,7 +9,6 @@ https://smallyu.net/2025/05/11/%E6%83%B3%E5%BC%80%E5%8F%91%E4%B8%80%E4%B8%AA%E6%
 https://smallyu.net/2020/05/03/%E5%85%B3%E4%BA%8E%E4%BA%BA%E7%9A%84%E8%83%BD%E5%8A%9B%EF%BC%8C%E7%BB%8F%E9%AA%8C%EF%BC%8C%E5%92%8C%E2%80%A6%E2%80%A6/
 https://smallyu.net/2021/06/24/%E2%80%9C%E6%88%91%E2%80%9D%E6%98%AF%E2%80%A6%E2%80%A6%EF%BC%88%E7%B3%BB%E5%88%97%EF%BC%89/
 https://smallyu.net/2025/01/28/%E5%81%87%E5%A6%82%E5%90%AF%E5%8A%A8%E4%B8%80%E4%B8%AA%E5%8F%AB-Oiia-Network-%E7%9A%84%E4%BB%A5%E5%A4%AA%E5%9D%8A-PoS-%E7%BD%91%E7%BB%9C/
-https://smallyu.net/2025/07/24/%E6%88%91%E4%BB%8E%E7%8E%8B%E5%9E%A0%E7%9A%84%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E8%AF%BE%E5%AD%A6%E5%88%B0%E4%BA%86%E4%BB%80%E4%B9%88/
 https://smallyu.net/2024/10/15/%E7%9C%8B%E6%87%82%E4%BB%BB%E6%84%8F%E5%8C%BA%E5%9D%97%E9%93%BE%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84/
 https://smallyu.net/about/index.html
 https://smallyu.net/2019/07/06/Kotlin%EF%BC%9A%E7%AE%80%E5%8C%96%E7%89%88%E7%9A%84Scala/
@@ -156,7 +156,6 @@ https://smallyu.net/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6/
 https://smallyu.net/tags/%E6%89%BE%E5%B7%A5%E4%BD%9C/
 https://smallyu.net/tags/Rust/
 https://smallyu.net/tags/%E5%A4%B1%E4%B8%9A/
-https://smallyu.net/tags/%E7%8E%8B%E5%9E%A0/
 https://smallyu.net/tags/BTC/
 https://smallyu.net/tags/Psyche-Network/
 https://smallyu.net/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E6%9E%90/
