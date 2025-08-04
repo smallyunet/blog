@@ -1,10 +1,8 @@
 # Navigation bar without starting with a slash
 menu:
   博客: ''
-  # 微博: micro-blog
   # 标签云: tags
-  联系: about
-  # English: https://en.smallyu.net
+  # 联系: about
 
 # Recommended to enable when the page count is more than 1
 paginator: false
