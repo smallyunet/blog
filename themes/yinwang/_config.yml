@@ -2,7 +2,8 @@
 menu:
   博客: ''
   # 标签云: tags
-  # 联系: about
+  联系: about
+  English: https://en.smallyu.net
 
 # Recommended to enable when the page count is more than 1
 paginator: false
