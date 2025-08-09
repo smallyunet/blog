@@ -6,7 +6,7 @@
   <link href="https://smallyu.net/atom.xml" rel="self"/>
   <link href="https://pubsubhubbub.appspot.com/" rel="hub"/>
   <link href="https://smallyu.net/"/>
-  <updated>2025-08-07T15:10:29.562Z</updated>
+  <updated>2025-08-09T09:03:47.177Z</updated>
   <id>https://smallyu.net/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>对 0G 项目的分析（AI）</title>
+    <title>对 0G 项目的分析</title>
     <link href="https://smallyu.net/2025/08/06/%E5%AF%B90G%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/"/>
     <id>https://smallyu.net/2025/08/06/%E5%AF%B90G%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/</id>
     <published>2025-08-06T05:08:00.000Z</published>
-    <updated>2025-08-07T15:10:29.562Z</updated>
+    <updated>2025-08-09T09:03:47.177Z</updated>
     
     <content type="html"><![CDATA[<p>首先我不是很看好 0G 的技术含量，因为 0G 是中国团队开发的项目。0G 是一个 AI 赛道的项目，3 月份在 TinTinLand 上发布过招聘信息，大概 9 月份要发币的样子，猜测在 AI 方面的噱头大于技术积累。我因为最近加了一个 TinTinLand 的学习群，和 0G 合作推出社区课程那种，所以稍微有点兴趣来分析下这个项目。</p><p>0G 的官网地址是 <a href="https://0g.ai/">0g.ai</a>，在官网上就极尽所能的把各种名词摆上了，”the next generation”、“decentralized AI”、”DeAIOS”、”RWA”，用词口径越大通常不是一个好兆头。</p><h3 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h3><p>0G 在 2024年8月 发布了 <a href="https://4134984757-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FsEYMfeKUqxaOUwhkw6AT%2Fuploads%2Fgit-blob-6f0538c70e09bf3180519342bfc516355c7a12c0%2F0g-whitepaper.pdf?alt=media">白皮书</a>，单从白皮书目录和篇幅来看不是很乐观，目录结构比较简单，一共只有 20 页的内容。篇幅长度是肤浅的判断方式，比特币的白皮书也才 9 页。主要是目录结构，作为一个 AI 技术导向的项目，如此简洁的章节会给人草台的感觉。</p><img src="1.png" width="50%"><p>首先来看看摘要里怎么说，0G 在解决的是 AI 模型训练过程中透明度的问题：</p><img src="2.png" width="70%"><p>话说，看到 modular 这个词我有点不好的预感，尤其是看到 DA 这个词后，心想该不会用的 Celestia 吧，结合官网首页上宣称的 2500&#x2F;s 的 TPS，有哪条链能做到呢？Cosmos 有点像。不过到这里还不理解首页上说的 8K 个 validator 是什么含义，Cosmos 可做不到这个。</p><img src="3.png" width="80%"><p>好在不是 Celestia，白皮书里没详细说技术选型的事，但明显和 Celestia 是并列关系，自己搞了个叫 0G DA 的链。</p><p>白皮书里详细解释了 PoRA（Proof of Random Access）的挖矿机制，这个是有技术含量的部分，与 Filecoin 冷储存的模式不同，0G Storage 强调链上可以即时访问数据，所以设定了 8TB 的挖矿窗口，要求矿工可以快速在范围内验证数据完整性。</p><p>PoRA 的局限性在于，通过随机抽样验证的方式，可以验证矿工是否拥有完整数据，但是不能证明矿工拥有的数据是唯一的，也就是缺少 Filecoin 的 PoRep 提供的能力。这与网络面对的场景以及经济模型设计有关，0G Storage 只希望保证数据的可用，从矿工的奖励方式上限定了作恶是不能得到更多奖励的，所以整体机制上奏效。而 Filecoin 是根据算力高低给奖励，要面对的问题不一样。</p><p>从官网的第一篇 <a href="https://0g.ai/blog/introduction">博客文章</a> 中能更直观看到一些信息，0G 包含两个关键组成部分：0G Storage 和 0G DA，本质上在解决的就是 DA 的问题，主要是试图把这种 DA 能力用到 AI 场景中，所以分类到 AI 赛道了。项目背景上是一个分布式存储类的区块链项目。</p><p>0G 去年得到了 3 千万美元的种子轮融资，还是挺有资本的。</p><p>具体到工程实现上，可以看到 0G Storage 的 <a href="https://github.com/0glabs/0g-storage-node/blob/main/Cargo.toml#L31">代码</a> 基于 Conflux 的节点代码，在其之上做了一些功能开发：</p><img src="6.png" width="70%"><p>PoRA 的工程实现部分就不深究了。</p><h3 id="项目架构"><a href="#项目架构" class="headerlink" title="项目架构"></a>项目架构</h3><p>刚才从项目背景的角度，只提到了 0G Storage 和 0G DA 两部分，除此之外，0G 这个项目还有两个角色，0G Chain 和 0G Compute Network。估计一开始的项目规划里没有，所以白皮书里没提。</p><p>0G Chain 是一个用 Cosmos SDK 开发的链节点（终于看到 Cosmos 的身影了），而且是直接用了 evmos 来兼容以太坊智能合约的做法：</p><img src="4.png" width="80%"><p>0G Chain 的仓库最后一次提交代码是在 5 个月前，也许已经放弃了用 Cosmos SDK 的路线。因为有一个近期比较活跃的仓库 <a href="https://github.com/0glabs/0g-geth">0g-geth</a>，看起来是在做 Geth 的二次开发，通过集成预编译合约的方式，加入对 0G DA 的支持。</p><img src="5.png" width="40%"><p>0G Compute Network 是真正和 AI 模型训练相关的部分，现在已经支持一些 <a href="https://docs.0g.ai/developer-hub/building-on-0g/compute-network/sdk#discover-available-services">预训练模型</a> 的使用。用户层面的使用比较简单，类似于 OpenAI 的 SDK 一样，发起请求，得到响应，就是一个 Client 层的 SDK。</p><p>给 0G Compute Network 的模型提供算力的节点叫 Provider，代码仓库是 <a href="https://github.com/0glabs/0g-serving-broker">0g-serving-broker</a>，代码仓库里有体现模型训练的代码，比如 <a href="https://github.com/0glabs/0g-serving-broker/blob/main/api/fine-tuning/execution/transformer/transformer/finetune.py">finetune.py</a> 这个脚本是基于 Transformer 做文本模型的微调，Docker 容器是直接基于 <a href="https://github.com/0glabs/0g-serving-broker/blob/main/api/fine-tuning/execution/transformer/Dockerfile#L2">pytorch 2.5.1-cuda12.4-cudnn9-devel</a> 的容器打包。</p><p>所以从 LLM 模型训练的角度看，0G 有一些工程方面的技术内容。只不过 0G 在干的事情是微调（Fine-tuning），也就是基于预训练（Pre-training）好的模型，进一步用较小的算力训练，达到执行某种特定任务的效果。而我们平时看到的 OpenAI 和 Grok 等大公司，动辄 1 TB tokens 的训练量，干的事情才是预训练。</p><p>比如 OpenAI 训练并开源出一个 GPT-3 模型（实际上没开源），那么 0G Compute Network 就是基于这个 GPT-3 模型，结合自己的语料进行一些微调，训练出一个自己版本的 GPT-3 模型。大概就是这个意思。</p><p>更准确一点说，0G Compute Network 是提供了一个训练的场地，结合了区块链相关的经济模型、奖励机制等交互，让用户可以给微调这件事情提供算力并获得收益，另一些用户可以使用微调之后的模型。</p><p>至于 Provider 与链上合约交互的部分，应该就好理解了。0G 是用 Solidity 写的合约 <a href="https://github.com/0glabs/0g-serving-contract">0g-serving-contract</a> ，对合约的调用自然也是以太坊生态的那一套组件。而 0G 需要做的，就是把模型微调（训练）的结果，以及关于训练任务的分发、奖励记录、惩罚机制等，用合约来实现，然后在链下的算力节点上集成对合约的交互。</p><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>综合来看，我需要改正一开始的态度，0G 是有一些技术含量在的，只不过更加侧重于工程方面的技术，无论是区块链方面的 DA，还是 AI 方面的模型微调，其实做的都不错，业务逻辑上已经能形成闭环。</p><p>但是说实话，写 0G 项目的分析，比之前写其他项目的分析，思路稍微不清晰一点，因为白皮书和文档都不是很完善，项目的技术路线又不是特别统一，所以没有非常好的资料自上而下的贯彻整个项目结构。不过经过以上内容的分析，我想应该已经刨析清楚了 0G 这个项目的技术情况。</p>]]></content>
     
@@ -42,11 +42,11 @@
   </entry>
   
   <entry>
-    <title>对 Arcium Network 项目的分析（隐私计算）</title>
+    <title>对 Arcium Network 项目的分析</title>
     <link href="https://smallyu.net/2025/08/05/%E5%AF%B9Arcium-Network%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/"/>
     <id>https://smallyu.net/2025/08/05/%E5%AF%B9Arcium-Network%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/</id>
     <published>2025-08-05T09:29:59.000Z</published>
-    <updated>2025-08-05T11:12:48.783Z</updated>
+    <updated>2025-08-09T09:03:47.177Z</updated>
     
     <content type="html"><![CDATA[<h3 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h3><p><a href="https://www.arcium.com/">Arcium Network</a> 是 Solana 生态首个专注于隐私计算的项目，今年 5 月份获得了 GreenField 领投的 5 千万美元的 <a href="https://x.com/ArciumHQ/status/1788557786537689447">融资</a>。</p><p>Arcium 的 <a href="https://www.arcium.com/articles/arcium-purplepaper">Purplepaper</a> 中提到，Arcium 是一种去中心化的隐私计算协议，主要包含了 MPC 和经济模型两个关键的组成部分：</p><img src="1.png" width="80%"><p>Arcium 整体的项目结构不算难理解，尤其是和区块链结合的部分，就是直接用了 Solana 的智能合约：</p><img src="2.png" width="80%"><p>但是 Arcium 在有很多硬核的技术基础。比如在这篇 <a href="https://www.arcium.com/articles/eli5-mpc">博客文章</a> 中，Arcium 用简化的例子说明了 MPC 的技术原理。</p><p>MPC（Secure Multi-Party Computation，安全多方计算）这种技术不是新概念，存在很多年了，我们最为熟知的就是 MPC 钱包，币安钱包和 OKX 钱包都默认使用这种模式。从学习的角度，可以辨析一下 MPC、多签、MPC 钱包、TSS 聚合签名、BLS 聚合签名这几个有点关联但容易混淆的概念。</p><p>回到 Arcium 的文章，简化后的 MPC 大概是这个意思：假如有 3 个参与方 a,b,c 进行计算，计算的内容分别对应 +1,+2,+3，并且参与方会对自己的计算结果加盐分别是 +10,+20,+30，那么经过全部参与方计算后，最终得到的结果是 66，减去参与方的盐值总和 60，得到最终结果 6。</p><p>去盐的过程按理也是轮流来的，比如初始值是 66，从 a 到 c 依次渐去各自的盐值，得到最终结果，而不是一下子就减去了 60。对于每一个计算参与方来说，它只知道初始值，以及自己计算的结果值，并不知道执行的顺利，是先 a 执行，还是先 c 执行？协议约定这个信息不是公开的。</p><p>真实的 MPC 是一个复杂的交互协议，需要很复杂的工程化实现。总之 Arcium 就是在对 MPC 技术大做文章，试图把这种密码学技术，引入到更多实际的应用场景中，这是一个不错的方向。</p><p>Arcium 在研究的技术方向和尝试 <a href="https://www.arcium.com/articles">很多</a>，比如这篇 <a href="https://www.arcium.com/articles/confidential-spl-token">文章</a> 中提到的 Confidential SPL Token，是结合了 Solana 的 SPL 标准代币、<a href="https://github.com/solana-program/token-2022">Token-2022</a> 标准、和 Arcium 的 MPC 聚合架构，提出的一种带隐私能力的代币标准。此外还搞了链上 Dark Pools 的 Dapp，挺有加密风范的技术感。</p><h3 id="项目架构"><a href="#项目架构" class="headerlink" title="项目架构"></a>项目架构</h3><p>Arcium 的 <a href="https://docs.arcium.com/getting-started/architecture-overview">项目架构</a> 看似很复杂，乍一看 MXEs、arxOS、Arcis 什么的，各种名词。这种是典型的发明概念，就是给自己项目里用的某个组件，起了个高大上的名字，根本不是某种技术名词。几乎每个项目都会有一套自己的术语定义，让外人觉得很厉害。</p><p>从这个 Developer 版本的 <a href="https://docs.arcium.com/developers/computation-lifecycle">文档</a> 能更好的理解 Arcium 的架构。作为使用 Arcium 的开发者，实际上是在开发 Solana 智能合约，我们自己开发一个合约（MXE program）来描述计算任务，比如加法运算，a+b，期望得到 c，把这个逻辑写在合约上，然后调用官方部署的合约（Arcium Program）的合约，把计算任务提交到 Arcium 的任务池里：</p><img src="3.png" width="80%"><p>这样，Arcium Program 就知道了有这么一个任务，而真正执行隐私计算任务的 MPC Cluster（arxOS），根据链上的交易记录，得到事件也就是任务信息，开始进行计算，并且将计算结果提交到链上的 Arcium Program（合约）。回到我们的 MXE program 这边，自然是有一个 callback 函数来接收隐私计算的结果，然后触发一个事件通知我们的客户端：</p><img src="4.png" width="80%"><p>在合约代码层面，能够实现哪些计算，如加法、减法、除法之类，要依赖于 Arcium 提供的框架，支持哪些计算方式。</p><p>那么抛开凌乱的技术名词，Arcium 整体上，是通过链上合约提交计算任务，链下节点计算任务结果后，再提交回链上的模式，这是和区块链交互的部分。此外就是链下计算的过程，Arcium 把 MPC 折腾的很明白，提供了便于使用的客户端（合约）框架出来。</p><h3 id="经济模型"><a href="#经济模型" class="headerlink" title="经济模型"></a>经济模型</h3><p>具体执行多方计算的节点，Arcium 把它们叫做 <a href="https://docs.arcium.com/getting-started/network-stakeholders">StakHodlers</a>，有点复杂，总之就是要么提供硬件设备、经过一系列配置之后参与到计算节点中，得到收益，要么把自己的 ARX 代币委托给某些计算节点，赚一点利息。</p><p>在经济模型方面，Purplepaper 里有提到 ARX 的代币总供应量，会随着网络算力的使用量自动调整，达到自动平衡的效果：</p><img src="5.png" width="80%"><p>这种自动平衡期望的效果是，ARX 的质押率平衡在 50%，如果低于 50%，会自动增发，如果高于 50%，会自动销毁。这个经济模型的设计是利好计算节点的，是希望持有 ARX 的用户能积极参与到质押和计算生态中。但是这种经济模型不是很利于非质押者，因为增发与他们无关，销毁与他们有关，相当于放大了以太坊 PoS 模式的弊端。</p><p>不过 Arcium 的销毁模式和以太坊的销毁模式还不太一样，Arcium 会把协议费收上来的 SOL，通过荷兰拍卖换成 ARX，再销毁。这种模式给整体供给带来的影响更复杂一点，得进一步关注和分析了。</p><p>综合来看，无论是技术架构上，还是经济模型上，Arcium 都有非常深厚的积累，已经能形成闭环，有很大的进一步观察的空间。Arcium Network 目前是测试网阶段，路线图里还在规划主网的上线时间。</p>]]></content>
     
@@ -67,36 +67,11 @@
   </entry>
   
   <entry>
-    <title>对 Camp Network 项目的分析（链上产权）</title>
-    <link href="https://smallyu.net/2025/08/04/%E5%AF%B9Camp-Network%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/"/>
-    <id>https://smallyu.net/2025/08/04/%E5%AF%B9Camp-Network%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/</id>
-    <published>2025-08-04T04:15:42.000Z</published>
-    <updated>2025-08-07T13:18:32.160Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="https://www.campnetwork.xyz/">Camp Network</a> 的愿景是在 AI Agent 场景中保护作者的知识产权，并且有可能获得来自 AI 分享的创作者收益。Camp Network 今年 4 月底宣布，一共获得了 3 千万美元的 <a href="https://mirror.xyz/0xa01A821E654b923Be011acE131A22Ba58cFee3ad/wvdmjQaM2hw8uxLaLEamNPQMVT4H_bLWgzrsNWoOZpU">A轮融资</a>，来自不同的投资机构。</p><p>只看官网首页的简介的话，也许会有点疑惑，这个项目的立意肯定没错，保护知识产权嘛，但是具体怎么做呢，<a href="https://mirror.xyz/0xa01A821E654b923Be011acE131A22Ba58cFee3ad/wvdmjQaM2hw8uxLaLEamNPQMVT4H_bLWgzrsNWoOZpU">官方宣发文章</a> 里提到的 Proof of Ownership and Pirority，岂不是几年前的概念吗？而这些 Proof of… 又是什么意思？</p><p>Camp Network 没有公开出 Github 代码仓库，导致没办法从代码层面解读。我一开始还奇怪，为什么不公开 Github 账户？后来我明白了。</p><p>Camp Network 的 <a href="https://docs.campnetwork.xyz/introduction/l1-architecture/abc-stack">文档</a> 里说明，Camp Network 是一条使用了 Celestia 区块链做 DA 层的链，基于 <a href="https://www.abundance.xyz/">ABC Stack</a> 搭建。ABC Stack 又是什么呢，是 Celestia 生态中的一个项目，在架构上明确区别于以太坊的 “L2 Rollups”，而是自己发明了一种架构叫 “Rollup L1s”。</p><p>ABC Stack 框架是 Abundance 团队开发的，号称每秒 GB 级别数据的 EVM 完备的 Rollups。也就是说，Camp Network 直接使用了 ABC Stack 的底层技术，搭了一条链出来，在链上做一些应用，所谓知识产权保护、DID、AI 什么的。</p><p>那么 ABC Stack 的框架怎么用呢，代码仓库在哪里，怎么操作，需要开发哪些代码？完全不需要，有一家 Celestia 生态的公司 Gelato，提供了 BaaS 平台的服务，比如一键部署 Op Stack 的链、一键部署 Arbitrum 的链，等等，其中就包括 ABC Stack 的选项。而这个 BaaS 平台是收费的，部署到主网需要一个月 3000 美元，部署到测试网只需要一个月 100 美元。Camp Network 目前是测试网阶段。</p><p>这就是 Camp Network 连代码仓库都不需要的原因，直接用 BaaS 服务就好了，而且也没有其他选择，ABC Stack 本身就没提供代码。</p><p>Camp Network 的 <a href="https://docs.campnetwork.xyz/introduction/l1-architecture">架构文档</a> 里还提到一个东西，BaseCAMP 是刚才提到的用 ABC Stack 搭出来的链，SideCAMP 则是应用专属的链，从文档描述来看，Camp Network 是计划给每一个应用场景，比如 AI、音乐、艺术等 Dapp，都单独部署一条链，同样也是用 ABC Stack 的技术。</p><p>有那么多条链的话，BaseCAMP 和 SideCAMP 之间怎么通讯和交互呢？ABC Stack 对 Hyperlane 的跨链技术做了 <a href="https://docs.abundance.xyz/modular-bridging/gelato-hyperlane-cluster">封装</a>，依此来实现 ABC Stack 链之间的跨链通信。</p><p>至于 Camp Network 到底是怎么实现保护知识产权的？Camp Network 提供了一个 <a href="https://docs.campnetwork.xyz/origin-v1/origin-framework">SDK</a>，大意是作者需要通过链上交易来声明自己的身份，比如绑定自己的链上地址和 X 的用户名信息，Camp Network 的这个 Origin 框架，就会到 X 上查询我发布的内容，自动生成 IP NFT，然后其他玩家可以来购买这个 IP NFT，相当于购买了版权。</p><p>话说，其实是挺老套的玩法。可能以后凡是看到提 DID 这种老套概念的项目，都得多加小心，因为没什么技术，只玩生态，而且玩的是不存在的生态。</p><p>Camp Network 整体的技术情况就是这样，连代码仓库都没有，直接用了 ABC Stack 提供的服务，搭建了几条链，然后在链上面做应用。Camp Network 的 <a href="https://testnet.campnetwork.xyz/">测试网</a> 上现在已经有不少 Dapp 了，可以操作和交互。Camp Network 虽然没有硬核的底层技术，但是生态实力很强大，测试网上参与活动的项目非常多。</p>]]></content>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://www.campnetwork.xyz/&quot;&gt;Camp Network&lt;/a&gt; 的愿景是在 AI Agent 场景中保护作者的知识产权，并且有可能获得来自 AI 分享的创作者收益。Camp Network 今年 4 月底宣布，一共获得了 3</summary>
-        
-      
-    
-    
-    
-    
-    <category term="项目分析" scheme="https://smallyu.net/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>对 Psyche Network 项目的分析（AI）</title>
+    <title>对 Psyche Network 项目的分析</title>
     <link href="https://smallyu.net/2025/08/01/%E5%AF%B9Psyche-Network%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/"/>
     <id>https://smallyu.net/2025/08/01/%E5%AF%B9Psyche-Network%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/</id>
     <published>2025-08-01T06:33:21.000Z</published>
-    <updated>2025-08-07T13:18:36.586Z</updated>
+    <updated>2025-08-09T09:03:47.178Z</updated>
     
     <content type="html"><![CDATA[<h3 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h3><p><a href="https://psyche.network/runs">Psyche Network</a> 是 AI + Web3 赛道的一个项目，由 <a href="https://nousresearch.com/">Nous Research</a> 团队研发，两个月前获得了 Paradigm 机构 5 千万美元的 <a href="https://cointelegraph.com/news/nous-research-raises-50m-paradigm-decentralized-ai-solana">A 轮融资</a>。</p><p>Psyche Network 的项目背景在 <a href="https://nousresearch.com/nous-psyche/">官方说明文章</a> 里有详细介绍。Nous Research 团队研发出了一种去中心化的算法 DeMo，这种算法能够把大语言模型（LLM）的训练，放到分布式网络里进行，不需要集群服务那种高耦合。就类似比特币挖矿的矿池一样，会把大的计算任务，拆解为小的计算任务，分发给不同的 Client 节点进行计算，计算之后再把结果汇总起来。</p><p>当然 LLM 的训练和矿池的挖矿，从算法原理上完全是两码事，这里只是想类比说明便于理解。具体 DeMo 是怎么从算法角度把任务拆解和合并的，可以看 <a href="https://blog.lambdaclass.com/introducing-demo-decoupled-momentum-optimization-for-efficient-distributed-llm-training/">官方的解释</a>，反正我没看懂，就是一堆向量、权重、loss function 什么的术语。关于怎么防止节点提交虚假数据之类，我认为也都在算法的设计范畴，后续就不多讨论算法本身的有效性了。</p><p>DeMo 的 <a href="https://arxiv.org/pdf/2411.19870">论文</a> 里用了 100 billion 的 tokens 做训练测试，得到了比较好的结果。100 B tokens 是什么概念呢，比如 <a href="https://github.com/deepseek-ai/DeepSeek-V3?tab=readme-ov-file#4-evaluation-results">DeekSeek-V3</a> 的 tokens 数量是 15 TB，可见 DeMo 在实验阶段的 tokens 数量级，距离商用产品还差很多。可以对比一些其他模型的 tokens 数量：</p><table><thead><tr><th>模型</th><th>参数量</th><th>预训练 tokens 数量</th><th>公开来源或泄露信息</th></tr></thead><tbody><tr><td>GPT-3</td><td>175 B</td><td>≈ 499 B</td><td>论文及后续综述</td></tr><tr><td>GPT-3.5</td><td>175 B</td><td>推测 ~1 T 左右</td><td>—</td></tr><tr><td>GPT-4</td><td>1.7 T</td><td>≈ 13 T tokens</td><td>SemiAnalysis &#x2F; The Decoder 报告</td></tr><tr><td>Llama 3</td><td>70 B</td><td>&gt; 15 T tokens</td><td>Meta 官方模型卡</td></tr><tr><td>DeMo OLMo</td><td>1 B</td><td>0.1 T tokens（100 B）</td><td>DeMo 论文</td></tr></tbody></table><p>Psyche Network 基于 DeMo 的算法原理，结合区块链来构建分布式网络，第一阶段的目标是训练出 40 B parameters, 20 T tokens 的模型。关于 <code>parameters</code> 和 <code>tokens</code> 这两个指标，我的理解是，<code>parameters</code> 是训练一开始就定义好的固定指标，<code>tokens</code> 则是需要不断进行计算和训练的，而 DeMo 解决的是 <code>tokens</code> 的分布式计算。Psyche Network 官网上有实时显示当前的训练进度，目前已经达到了 1 TB 的 tokens 数量：</p><img src="1.png" width="80%"><p>这个模型训练完，也许可以接近 GPT-3 的水平。对比来看虽然 tokens 数量比 GPT-3 多，但是 parameters 比 GPT-3 少，所以最终效果应该不如 GPT-3。</p><h3 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h3><p>Psyche Network 的 <a href="https://docs.psyche.network/explain/index.html">文档</a> 里有介绍整体的项目结构，比较好理解，有一个中心化的 Coordinator 负责创建训练任务，其余的 Client 负责接收任务、提交任务结果。在没有区块链的场景下，Coordinator 与 Client 之间的通信是通过直接的 TCP 连接完成的。而有了区块链之后，Coordinator 和 Client 之间就是通过区块链来传递消息了。</p><img src="2.png" width="40%"><p>Psyche Network 的 <a href="https://github.com/PsycheFoundation/psyche/tree/main/architectures">代码仓库</a> 里同时保留了 <code>centralized</code> 和 <code>decentralized</code> 两个版本的代码架构，这其实不太是好事，因为说明这个项目原本可以中心化运行，只是现在在做一些去中心化改造。这样的项目去中心化程度肯定是有限的。</p><p>而所谓去中心化版本的部分，Psyche Network 选择了 Solana 来作为运行智能合约的区块链平台，这也许和 Psyche Network 原本的项目就是用 Rust 语言有关。</p><p>代码仓库的 decentralized 目录下，有一些 Solana 的合约代码，这些 Solana 合约承担起了创建训练任务、计算每个 Client 节点的奖励、分发奖励的功能。</p><p>Psyche Network 目前只是测试网阶段，链上交易也都是在 Solana 的 Devnet 上进行，可以直接看合约文件里的 <code>declare_id!()</code> 语句，里面写的就是合约地址，比如 coordinator 的合约地址是 <code>HR8RN2TP9E9zsi2kjhvPbirJWA1R6L6ruf4xNNGpjU5Y</code>，能在 <a href="https://solscan.io/account/HR8RN2TP9E9zsi2kjhvPbirJWA1R6L6ruf4xNNGpjU5Y?cluster=devnet">区块链浏览器</a> 上看到频繁的交易记录。</p><p>至于奖励的计算，因为有 Coordinator 这个中心化角色的存在，所以事情比较简单，Coordinator 在收到 Client 地任务结果后进行验证，如果没问题，则发起一笔链上交易，给 Client 记分。具体代码是 <a href="https://github.com/PsycheFoundation/psyche/blob/main/architectures/decentralized/solana-coordinator/programs/solana-coordinator/src/instance_state.rs#L146-L149">这两行</a>：</p><img src="3.png" width="80%"><p>每个 Client 的分数都记录在合约里，Client 想领取奖励，就自己到 treasurer 合约上 claim，treasurer 会根据分数和汇率计算并转账代币。</p><p>那么 treasurer 分发的奖励是哪个代币呢？具体代币是 Coordinator 在创建任务的时候 <a href="https://github.com/PsycheFoundation/psyche/blob/main/architectures/decentralized/solana-treasurer/programs/solana-treasurer/src/logic/run_create.rs#L34">指定的</a>，只要是标准的 SPL 代币都可以。</p><img src="4.png" width="70%"><p>所以整体来看，Psyche Network 是利用 Solana 区块链来记录任务 Meta 信息、计算任务奖励、分发奖励等。只要 Client 的加入是 permissonless 的，Psyche Network 就确实达到了和宣传一样的效果，让 LLM 模型训练的算力去中心化。</p><p>而代币的分发和奖励虽然是区块链项目的常规操作，但是至少附加了公开透明等特性，而且不出意外的话，Psyche Network 最终会走到发币的一步，到时候任务奖励可能全用 Psyche Network 自己的代币进行，或者演变为 LLM 训练的任务平台，任何第三方都可以创建任务和分发奖励之类，像 Eigne Layer 那样。</p>]]></content>
     
@@ -373,11 +348,11 @@
   </entry>
   
   <entry>
-    <title>基于 ZK 和智能合约的链上身份认证系统设计</title>
+    <title>基于 ZK 的链上身份系统设计</title>
     <link href="https://smallyu.net/2025/04/30/%E5%9F%BA%E4%BA%8Ezk-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E7%9A%84%E9%93%BE%E4%B8%8A%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/"/>
     <id>https://smallyu.net/2025/04/30/%E5%9F%BA%E4%BA%8Ezk-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E7%9A%84%E9%93%BE%E4%B8%8A%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/</id>
     <published>2025-04-30T14:18:54.000Z</published>
-    <updated>2025-07-06T12:29:15.850Z</updated>
+    <updated>2025-08-09T09:03:47.177Z</updated>
     
     <content type="html"><![CDATA[<p>我给这个系统取名 zkgate.fun，主要想发挥零知识证明的特性，结合区块链做个小工具。关键功能是实现，用户证明自己属于某一个群组，但是不需要暴露自己真实的链上身份。</p><p>目前的设想是这样，管理员首先有一个名单列表，可以是以太坊地址的数组，然后根据这个地址列表，计算出一个 Merkle Root Hash。接着把这个 root hash 提交到智能合约上。处于这个名单中的人，可以使用 Circom 电路的 proving key，来给自己生成一个 zk proof，随后将 zk proof 提交到智能合约上。</p><p>在智能合约上，会使用 Circom 电路生成的 verifier.sol，对收到的 zk proof 进行验证，判断用于生成 zk proof 的地址，是否在 Merkle Root Hash 中，最后将判断结果返回。</p><p>这样的话，管理员不需要公开自己的群组中有哪些地址，属于群组中的地址也不需要声明自己的身份，只需要提交零知识证明生成的 zk proof，就可以证明自己真的归属于这个群组。我接下来会具体在技术上实现这个设计。</p><br><h3 id="更新-v0-1-0-版本-2025-05-09"><a href="#更新-v0-1-0-版本-2025-05-09" class="headerlink" title="更新 v0.1.0 版本 (2025.05.09)"></a>更新 v0.1.0 版本 (2025.05.09)</h3><p>首先要纠正之前设计中的一个错误的地方，管理员必须要公开自己群组的地址列表，否则无法根据地址列表来生成 Merkle Tree，用户也无法根据树结构，来找到自己地址所在的节点位置、生成路径证明。</p><p>其次是很高兴地说，现在跑通了一个非常初级的 Demo（<a href="https://github.com/smallyunet/zkgate-demo">smallyunet&#x2F;zkgate-demo</a>），这个 Demo 功能并不完善，甚至没有办法在电路中验证地址的所有权，但至少是一个工具链路层面的跑通。</p><p>具体实现是这样：</p><ol><li>有一个 <a href="https://github.com/smallyunet/zkgate-demo/blob/v0.1.0/offchain/smt.js">链下程序</a> 来根据地址列表，以及自己的地址，生成 zk 电路的 <a href="https://github.com/smallyunet/zkgate-demo/blob/v0.1.0/offchain/inputs.json">inputs.json</a>，这个输入文件包含了 Merkle Root Hash 和验证节点位置所需要的路径</li><li>根据 <a href="https://github.com/smallyunet/zkgate-demo/blob/v0.1.0/circuits/merkleSmtProof.circom">电路代码</a> 来编译出一些 <a href="https://github.com/smallyunet/zkgate-demo/tree/main/circuits/build">二进制文件</a>，这些编译后的产物是用来生成 witness 文件的</li><li>基于公开的 <a href="https://github.com/smallyunet/zkgate-demo/blob/v0.1.0/circuits/run.sh#L17-L28">ptau 文件</a> 生成 .zkey 文件</li><li>从 .zkey 文件中导出 <a href="https://github.com/smallyunet/zkgate-demo/blob/v0.1.0/circuits/proof.json">proof.json</a>, <a href="https://github.com/smallyunet/zkgate-demo/blob/v0.1.0/circuits/public.json">public.json</a>, <a href="https://github.com/smallyunet/zkgate-demo/blob/v0.1.0/circuits/verification_key.json">verification_key.json</a>，这 3 个 json 文件可以做链下离线验证，证明 prove 的有效性</li><li>从 .zkey 文件中导出 <a href="https://github.com/smallyunet/zkgate-demo/blob/v0.1.0/circuits/contracts/Groth16Verifier.sol">.sol 文件</a>，也就是智能合约代码，部署到链上</li><li>拿着 prove.json 文件和 public.json 文件的内容，作为 <a href="https://github.com/smallyunet/zkgate-demo/blob/v0.1.0/hardhat/scripts/prove.js#L41">参数</a> 调用合约的 <a href="https://github.com/smallyunet/zkgate-demo/blob/v0.1.0/circuits/contracts/Groth16Verifier.sol">verifyProof</a>函数，如果 prove 有效则返回 true，否则返回 false</li></ol><p>假如一个地址不在群组列表中，有两种情况：</p><ol><li>试图用一个不在群组列表中的 <a href="https://github.com/smallyunet/zkgate-demo/blob/v0.1.0/offchain/smt_non_member.js#L24">地址</a> 生成 inputs.json，然后拿着 inputs.json 去根据电路生成 prove，会直接被电路拒绝报错</li><li>试图用一些假的 <a href="https://github.com/smallyunet/zkgate-demo/blob/v0.1.0/hardhat/scripts/fakeProofWithCorrectRoot.js#L26">prove 参数</a> 提交到链上做验证，最终无法通过链上验证</li></ol><p>那么目前这个最初级版本的 Demo，问题在于，构建 prove 使用的是明文地址，比如：</p><pre><code class="js">const members = [  &quot;0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266&quot;,  &quot;0x70997970C51812dc3A010C7d01b50e0d17dc79C8&quot;,  &quot;0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC&quot;,];const proofKey = toField(members[0]);const &#123; siblings &#125; = await tree.find(proofKey);</code></pre><p>这个语句的含义是在让 zk 电路判断，<code>members[0]</code> 是否属于 <code>members</code> 数组构建出来的树结构，这显然是属于的。如果想要用不属于群组的地址构建 prove，只需要替换一下 proofKey 指向的地址：</p><pre><code class="js">const nonMemberAddress = &quot;0x1234567890123456789012345678901234567890&quot;;const proofKey = toField(nonMemberAddress);const &#123; siblings &#125; = await tree.find(proofKey);</code></pre><p>也就是说，members 列表必须是公开的，而现在的程序只能判断一个地址在不在 <code>members</code> 里面，但即使 <code>members[0]</code> 不是我的地址，我也能用来构建一个合法的 prove。那还要 zk 干嘛？</p><p>所以下一步要解决的问题，是让用户用私钥对某个消息进行签名，然后在 zk 电路中根据签名 recover 出地址，接着判断 recover 出来的地址是否属于 members 数组。</p><p>这个过程是不是听起来简单？可实际上用 zk 电路来 recover 出一个 ECDSA 签名算法的地址，别说复杂度非常高，难度就像用乐高搭核电站一样。难怪人们都说，搞 zk 真的很掉头发。</p><br><h3 id="更新-v0-2-0-版本（2025-05-13）"><a href="#更新-v0-2-0-版本（2025-05-13）" class="headerlink" title="更新 v0.2.0 版本（2025.05.13）"></a>更新 v0.2.0 版本（2025.05.13）</h3><p>这个版本解决了验证地址所有权的问题，基本思路是让 zk 证明和地址所有权的证明分开，链下用 zk 证明地址的路径在 Merkle Root 上，链上需要用户提交用私钥对 root 的签名，并且将签名提交到链上。然后合约 recover 出签名的地址，跟 zk 电路的 prove 中包含的地址信息对比。</p><pre><code>1. zk prove 包含地址信息 -&gt; 链上验证 zk prove -&gt; 得知 zk prove 中的地址信息2. 用私钥对 root 签名 -&gt; 链上得到签名 -&gt; recover 出签名对应的地址信息3. 判断 zk prove 中的地址 == 签名 recover 出的地址</code></pre><p>演示代码具体改动的地方有：</p><ol><li>offchain 部分的代码不需要变动，生成 inputs.json 的脚本中 <a href="https://github.com/smallyunet/zkgate-demo/blob/v0.2.0/offchain/smt.js#L37">inputs</a> 里已经有 key 的信息了 </li><li>电路代码中，需要把 inputs 中的 key 变为 <a href="https://github.com/smallyunet/zkgate-demo/blob/v0.2.0/circuits/merkleSmtProof.circom#L27">public</a></li><li>合约代码需要接受用户的 <a href="https://github.com/smallyunet/zkgate-demo/blob/v0.2.0/hardhat/contracts/ZkGateRegistry.sol#L38">签名</a> 作为参数，并且得到 recover 出的<a href="https://github.com/smallyunet/zkgate-demo/blob/v0.2.0/hardhat/contracts/ZkGateRegistry.sol#L49">地址</a>，将这个地址与 proof key 进行对比</li><li>调用合约的脚本，需要用私钥对 root 进行<a href="https://github.com/smallyunet/zkgate-demo/blob/v0.2.0/hardhat/scripts/prove.js#L44-L45">签名</a>，并且把签名数据作为参数调用合约</li></ol><p>到此为止，zkgate.fun 实现的功能是，群组管理员不必在链上公开自己的群组成员信息，只需要提交 Merkle Root Hash 到链上。对于群组内的成员，需要完整的成员列表，以及自己地址对应私钥签名后的信息，就可以生成 zk prove 去链上，证明自己确实是群组内的成员。</p><p>在这个过程中，使用 zk 唯一隐藏掉的信息，是群组成员的完整信息不必上链公开，只需要一个 Merkle Root Hash。而用户的地址目前无法隐藏，必须提交到链上用于验证。</p><br><h3 id="更新（2025-05-14）"><a href="#更新（2025-05-14）" class="headerlink" title="更新（2025.05.14）"></a>更新（2025.05.14）</h3><p>有一个现有的、以太坊基金会支持的、工具链和生态都已经比较成熟的 zk 协议，同样是用来做身份验证的项目，叫 Semaphore，官网是这个，可以直接在上面体验一下包含前端界面的 Demo：</p><ul><li><a href="https://semaphore.pse.dev/">https://semaphore.pse.dev/</a></li></ul><p>在 zkgate.fun 前面两个版本的迭代中，没有选择 Semaphore 使用 EdDSA 账户体系的方案，主要是不想脱离以太坊的账户体系，也不想放弃 ECDSA，而实际上只有 EdDSA 是 zk 友好的，可以使用 Poseidon Hash 签名，zk 电路中也能对签名进行验证，不需要 “链下签名、链上 recover” 这种丑陋的实现方式。</p><p>不得不说，从个人学习的角度，虽然没几天的时间，但是我已经大概理解了 zk（工具链）的操作过程。从行业前沿的角度，我仅凭个人力量不可能做的比 Semaphore 更好。即使 zkgate.fun 进一步开发出前端界面、可视化地演示出具体的交互过程，也顶多就是 Semaphore 的这个 <a href="https://demo.semaphore.pse.dev/">Demo</a> 的样子，而且技术上没有 Semaphore 硬核。</p><p>所以 zkgate.fun 这个项目不再继续开发，域名一年后会自动到期，不再续费。</p>]]></content>
     
@@ -1734,33 +1709,6 @@ table {
   </entry>
   
   <entry>
-    <title>我为什么不学习编程语言</title>
-    <link href="https://smallyu.net/2022/02/16/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%AD%A6%E4%B9%A0%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/"/>
-    <id>https://smallyu.net/2022/02/16/%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%AD%A6%E4%B9%A0%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/</id>
-    <published>2022-02-16T06:20:30.000Z</published>
-    <updated>2024-08-03T19:07:10.106Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="2021-06-27-原文"><a href="#2021-06-27-原文" class="headerlink" title="2021.06.27 原文"></a>2021.06.27 原文</h3><p>这里的 “编程语言” 特指编程语言具体的实现形式，而不是编程语言的设计思想或者语言特性。</p><ul><li>因为我早已知晓顶级编程语言专家的样子。</li><li>因为学习某种编程语言的某个特性，对我而言已经是手到擒来的事情。</li></ul><p>至少在短时间内，我会保持和坚持目前的观点和做法。</p><h3 id="2021-08-08-更新"><a href="#2021-08-08-更新" class="headerlink" title="2021.08.08 更新"></a>2021.08.08 更新</h3><p>昨天剧本杀，遇到一个 00 后的女学生，拼场来的，但同时也是那家店的兼职 DM。稍有感慨，自己 20 岁的时候在干嘛？</p><p>旧博客的链接一直挂在博客最下面，一般也不去看。稍微认真回忆了一下，感慨的事情先不管，我忽然明白，为什么我在毕业的时候会看不起同学的编程水平，为什么我刚参加工作的时候可以以至少平等的水平面对同事，为什么最近在面试过程中即使代码能力受到质疑我也不为所动，为什么现在我已经不屑于学习编程语言在形式上的那些东西。</p><p>站在国家图书馆的书架前，我忍不住回想起自己大学时候在图书馆里度过的日子。</p><h3 id="2021-08-29-更新"><a href="#2021-08-29-更新" class="headerlink" title="2021.08.29 更新"></a>2021.08.29 更新</h3><p>我又来补充这个问题了。 &#x2F;捂脸</p><p>在 QQ 空间上看到一个大学同学发的动态，是一个 Geek 风格的同学。最近的一条是「重学 Unix 高级编程」，上一条是「B 站上某技术会议的视频」。我曾经也尝试去找一些技术会议、meetup，后来发现除了演讲者本人受益，听众都是在陪跑而已，你不会真的指望从中学到什么。会议是一种圈子里面的事情。</p><p>对于 Unix 编程或者编程语言这样的东西，我心底是喜欢的，我能想象到，亲手写出一些命令按照自已的意愿达到预期效果，是一件多么原始的能让程序员开心的事情。如果我想学习这些内容，现在的我有足够可靠的信息源、足够有效和明确的方式方法，只要假以时日就可以足够全面系统地掌握这些内容以及其中的细节。</p><p>可是我总觉得，我应该关注更加「高级」、更加「上层」的东西，我甚至不知道这里的「高级」和「上层」是什么含义，但是我总觉得，我有更加重要的需要了解和掌握的内容，我不可以专门花费时间在这些东西上。</p><h3 id="2022-02-16-更新"><a href="#2022-02-16-更新" class="headerlink" title="2022.02.16 更新"></a>2022.02.16 更新</h3><p>最近在工作上遇到一个可能搞不定的问题。大体是需要把 Golang 的智能合约用 Solidity 写一遍，在以太坊上运行。其中有一部分内容是基于 Bulletproofs （零知识证明的一种）来实现文件完整性的证明。且不说 Solidity 语言的表达能力好不好实现 Bulletproofs，零知识证明一直是我的黑洞，用什么语言都不会写，而且源文件中存在 magic number，有一个二进制文件和 seed 列表暂时不知道来源是什么。</p><p>当然工作问题还是交给工作来解决。我只是由此想到一些问题，感到困惑。例如，什么样的人可以写出 Bulletproofs 的实现？我为什么不可以？差距在哪儿，有多大？Bulletproofs 的学习成本有多大，门槛有多高？</p><p>于是几天前我在一个聊天室问了一下，这个是我的发言（<a href="https://t.me/c/1711254099/593">https://t.me/c/1711254099/593</a>）：</p><blockquote><p>大家好，想借聊天室这个机会，请教一下大家的看法。</p><p>最近在了解零知识证明的时候，发现原理比较难理解。想要用代码实现像 bulletproofs 这样的系统（<a href="https://cathieyun.medium.com/building-on-bulletproofs-2faa58af0ba8">https://cathieyun.medium.com/building-on-bulletproofs-2faa58af0ba8</a> ），仅仅了解编程语言、会编程是不够的，需要一些其他方面（加密学）的前提知识。</p><p>由此想到，程序员的工作，或者设计一种软件、协议，很重要的是把编程的技能应用到各种领域中，对编程语言的掌握可能是最基础的技能。</p><p>《解密计算机科学》的文章中，最后提到文章已经包含了计算的全部内容。bulletproofs 的本质也是计算，但是要复杂更多吧。</p><p>所以我不确定这种看法：计算机科学其实位于比较 “基础” 的一层，研究编程语言是专业性很强的事情，并不适用于大多数人？即使编程技能很好，也还是需要花费很多时间去了解其他领域的。</p></blockquote><p>这是一个专门讨论编程语言的聊天室，所以发言中强调了编程语言的概念。紧接着有人回复道（<a href="https://t.me/c/1711254099/595">https://t.me/c/1711254099/595</a>）：</p><blockquote><p>我觉得不同的编程语言类似于钢铁、木材这种基础材料，我如果想做个凳子，简单了解下材质的用法特性就可以用木材制作一个，如果要做把刀，就需要用钢铁来进行制作，也很简单。如果我要做一个汽车底盘，就需要了解更多的钢铁材质特性和力学知识来进行制作。如果建造摩天大楼就需要学习建筑相关知识，再结合材质特性进行制作。计算机 + 音频知识 &#x3D; 数字音乐、计算机 + 图形学 + 设计知识 &#x3D; ps 等…</p></blockquote><p>他形象地比喻了编程语言和领域知识的关系。几天之后，另外一个人同意了我的说法（<a href="https://t.me/c/1711254099/757">https://t.me/c/1711254099/757</a>）：</p><blockquote><p>计算的定义，我想引用 yin 的博客：计算就是“机械化的信息处理”</p><p>编程语言就是一种表达“计算”的工具&#x2F;手段。用 sicp 的话来讲是 “capture how to knowledge”.</p><p>所以会用编程语言就可以表达 domain knowledge 了。而研究编程语言就是为了创造更好的工具（让表达力更强）。</p><blockquote><p>即使编程技能很好，也还是需要花费很多时间去了解其他领域的。</p></blockquote><p>很赞同</p></blockquote><p>总而言之就是，光会写代码是不够的！只了解编程语言是不够的！</p><h3 id="2022-03-05-更新"><a href="#2022-03-05-更新" class="headerlink" title="2022.03.05 更新"></a>2022.03.05 更新</h3><p>编程语言应该学习到什么程度呢？我的观点是，学习到可用的程度。对于不同的人，“可用” 有不一样的含义，需要自己掂量。</p><p>前几天看到一个关于 Personal development 的视频，YouTube 搜应该第一个就是，里面提到几句话，大概意思是，“当你寻找一份工作的时候，不要关心你会得到什么，而是关心你会成为什么（What you become）”。</p><p>如果你想成为编程语言专家，就竭尽全力研究编程语言。如果你想成为专精的资深开发者，就专研在自己岗位的技术方向上。如果你没有目标，或者志在别处，就降低对编程技能的要求，“不学习编程语言”。</p><p>所以最重要的问题还是，你想成为什么样的人？</p>]]></content>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h3 id=&quot;2021-06-27-原文&quot;&gt;&lt;a href=&quot;#2021-06-27-原文&quot; class=&quot;headerlink&quot; title=&quot;2021.06.27 原文&quot;&gt;&lt;/a&gt;2021.06.27 原文&lt;/h3&gt;&lt;p&gt;这里的 “编程语言”</summary>
-        
-      
-    
-    
-    
-    
-    <category term="编程语言" scheme="https://smallyu.net/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/"/>
-    
-    <category term="学习" scheme="https://smallyu.net/tags/%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
     <title>知识的诅咒</title>
     <link href="https://smallyu.net/2021/11/24/%E7%9F%A5%E8%AF%86%E7%9A%84%E8%AF%85%E5%92%92/"/>
     <id>https://smallyu.net/2021/11/24/%E7%9F%A5%E8%AF%86%E7%9A%84%E8%AF%85%E5%92%92/</id>
@@ -1789,32 +1737,6 @@ table {
     
     
     <category term="观点" scheme="https://smallyu.net/tags/%E8%A7%82%E7%82%B9/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>随想</title>
-    <link href="https://smallyu.net/2021/11/23/%E9%9A%8F%E6%83%B3/"/>
-    <id>https://smallyu.net/2021/11/23/%E9%9A%8F%E6%83%B3/</id>
-    <published>2021-11-23T15:40:59.000Z</published>
-    <updated>2025-08-06T11:13:22.745Z</updated>
-    
-    <content type="html"><![CDATA[<p>现在是凌晨快 1 点，睡不着，稍微写写。今天白天（昨天），测试提醒我，REST 接口的输入参数应该以大写字母开头。</p><p>我一开始还紧张了一下，我 out 了？我没有按照该有的规范开发？REST 接口的参数大写开头？（接口的 <code>Content-Type</code> 是 <code>application/json</code>）</p><p>然后就去查了一下 GitHub 的 API 文档，又看了一眼 DIDs (Decentralized Identifiers) 的标准文档，以及结合长时间接触使用 json 的经验，没有啊，json 的 key，哪有大写字母开头的习惯？</p><p>后来想到了一个吐血的原因，就问了一句，“参数首字母大写，是公司的规范吗？”。测试回复的原话是：</p><blockquote><p>我之前问过，就是你们开发自己都这么写，好像是，公有变量还是私有变量，就要首字母大写</p></blockquote><p>果然是。（微笑）</p><h3 id="权限控制"><a href="#权限控制" class="headerlink" title="权限控制"></a>权限控制</h3><p>Java 里的权限修饰符是很基础的概念，用来控制类的访问权限，一共有 3 个关键词、4 种情况，比如 <code>public</code> 表示公开，<code>private</code> 表示私有：</p><pre><code class="Java">public class aaa &#123;    public int a;    private String b;&#125;</code></pre><p>具体内容可以参考 Java 的文档： <a href="https://docs.oracle.com/javase/tutorial/java/javaOO/accesscontrol.html">Controlling Access to Members of a Class</a></p><p>像 Python 那样的脚本语言本身没有访问权限控制的概念，所以约定俗成地认为以 <code>_</code> 开头命名的变量是私有的，不过没有代码层面的保护，只是命名上的区别。</p><pre><code>class aaa:    a = 1    _b = 2</code></pre><p>Pthon 里 <code>__</code> 开头的变量名可以达到代码层面私有变量的效果，但把 <code>__</code> 用做私有变量并不完全是 Python 的本意。参考 Pthon 的文档：<a href="https://docs.python.org/3/tutorial/classes.html#private-variables">9.6. Private Variables</a></p><p>众所周知，Golang 是一种奇葩的语言，不但要求你大括号必须写在函数名同一行，还会要求你必须做一些什么事情，比如，大写字母开头的变量意味着公开，小写字母开头的变量意味着私有。</p><p>Golang 对变量大小写的区分，可不仅仅是命名上的区别，而是代码层面的控制。下面的代码会输出什么？</p><pre><code class="Golang">func main() &#123;    a := struct &#123;        i int    &#125;&#123;        i: 1,    &#125;    s, _ := json.Marshal(a)    fmt.Println(string(s))&#125;</code></pre><p>当然是 <code>&#123;&#125;</code>，由于 <code>i</code> 是小写的，在 marshal 的时候自动忽略了。</p><p>这其实算是比较不正常的要求了。Golang 为了设计上的 “简洁”，很大程度上减少关键字、关键字复用，但是又不得不提供某些能力，就需要一些奇怪的方式做变通。 </p><p>我在上面的 Java 代码中，刻意用了小写的 <code>aaa</code> 做类名。Java 的类一般使用大写字母开头，但是不会在代码层面限制你把代码写成什么样子。</p><p>虽然我工作使用 Golang，但我不是它的教徒，当然，也不是其他语言的教徒。如果你仍然是某种语言的教徒，祝愿你可以尽早改变一下观念。</p><p>所以，由于 Golang 的一些 “特性”，为了在序列化的时候方便一点，项目的 REST 接口就习惯于使用大写字母开头的变量名作为 key 了。</p><p>睡觉了，明天再写。</p><h3 id="没有问题"><a href="#没有问题" class="headerlink" title="没有问题"></a>没有问题</h3><p>json 的 key 大写或者小写开头，其实都没有问题。输出参数为了省去写 <code>`json`</code> 的麻烦，就默认大写开头，所以输入参数也大写开头了。这是一种工程上的对称，并没有什么问题。</p><p>想起之前有一次，我把 REST 接口设计为，输入参数用驼峰命名 <code>myName</code>，输出参数用下划线分割 <code>my_name</code>。这样做的原因，是参数输入的时候，Java 的 Entity 能够把 POST Body 里驼峰命名的变量自动识别到对象上。返回参数时，程序直接把从数据库查出来的数据返回出去，是下划线形式的（不符合开发规范是真的）。这样做可以达到代码上的最简洁，但确实输入输出不对称不合适。</p><h3 id="一件事"><a href="#一件事" class="headerlink" title="一件事"></a>一件事</h3><p>如果只是这么点事，就不值得写什么了。昨天测试说我什么地方该怎么样做的时候，我想到另一件事，在之前的公司里发生的事。</p><p>URL 的输入参数有两种形式，一种是 <code>.com/?a=1&amp;b=2</code>，另一种是 <code>.com/:a/:b</code>。当时的项目里全是第二种形式，也就是路由形式的参数。</p><p>全部是第二种形式，有时候特别长，比如 <code>.com/:a/:b/:c/:d/:e</code>。参数很多时候是查询条件，如果中间的某个参数不需要作为条件，也就是不需要传参数，但是这种路由形式的参数又不能跳过中间的一段，就用了一种很奇葩的方式变通：<code>all</code>。用 <code>all</code> 来代替不需要传参的情况，<code>.com/:a/:b/all/:d/:e</code>。程序里面的判断也是各种离谱。</p><p>REST 接口本身是一种 Web 服务，但是如果缺少 Web 开发的基础，就容易做的有一些欠缺。</p><p>我当时怀疑开发那个项目的人技术水平有问题，也就是我当时名义上的小组长。好吧，也许是一段不怎么开心的往事。</p><p>顺便解释一下，我也不是有事没事就会对别人有意见。我当时所在的公司，有一种绩效的制度，每个季度开始前都需要写绩效计划，大概是接下来一段时间要做什么之类，一般是组长制定一个大方向上的目标，然后组员分配分别完成一些节点。我因为质疑他的水平，担心他制定的目标比较低，限制我的发挥，就借题发挥试探一下。对别人有意见对我自己没有任何好处，我也是出于一种恐惧，担心自己接下来会置于难以发挥的处境。</p><p>我当时并没有想离职，所以还是在极力想办法改善自己周围的环境和情况，给自己争取一个自己可以适应的状况。记得当时有其他同事离职的时候，（以前好像说过？好像说过，不记得了，再说一遍），我开玩笑说，工作中最开心的时候，可能就是提离职的时候和收到 offer 的时候了。同事说，最开心的时候是年底发奖金的时候……也是开玩笑。后来接着说，如果不是到没有办法的地步，不会有人愿意离职的。</p><p>我知道参数形式这种问题是小问题，但是我坚持认为，在当时的接口设计上，应该用参数形式的参数而不是路由形式的参数。参数形式的参数明明更好用，为什么不用？说说你的理由，我已经拿出了话题，还把话头递给了你，你说一说啊，你的理由，除了 “以前的人就是这么写的” 之外，你有没有其他的在技术方面的思考？能不能够在技术方面碾压我，以小见大，体现一下自己的技术能力？</p><p>我的基本观点是，他缺少 Web 开发的经验，不是认为路由形式的参数好用，而是完全不知道有参数形式的参数存在。我分析有两种可能，一种是他自己有实力，但是不轻易和我说，另一种就是自己没有实力。所以啊，我从一个很小的问题，制造了话题，给他说话的机会，甚至之后用比较强硬的态度在 leader 面前，表达了我对他能力的质疑。我心想，我都这么挑事了，要真有实力，总该表现出来了吧。</p><p>唉再之后就是一些收场环节了。</p><h3 id="设身处地"><a href="#设身处地" class="headerlink" title="设身处地"></a>设身处地</h3><p>我当时也想过，如果我是他，我会怎么办？</p><p>如果以后有小伙子那样对我，我能处理地比他更好吗？</p><p>如果有人质疑我的技术实力，或者揪着我的失误不放，借题发挥，我该怎么办？</p><p>我也知道，我好像破坏了一种和谐的宁静。</p><h3 id="然后呢"><a href="#然后呢" class="headerlink" title="然后呢"></a>然后呢</h3><p>现在的我，已经没有兴趣在类似那样的小问题上较真了，怎么样是对的，什么样是错的，有什么所谓呢。</p><p>不过过去的经历好像也是必要的。如果不是过去认真过，可能现在也还是会好奇：如果在一些问题上，我坚持自己的观点，或者非要争个对错，会是什么样的结果呢。</p><p>由于过去的经历，我已经知道是什么样的结果了。</p><p>其实结果不太好，也有点无聊。</p><p>我不太喜欢也并不期望是那样。</p><p>暂时没有然后了。</p>]]></content>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;现在是凌晨快 1 点，睡不着，稍微写写。今天白天（昨天），测试提醒我，REST 接口的输入参数应该以大写字母开头。&lt;/p&gt;
-&lt;p&gt;我一开始还紧张了一下，我 out 了？我没有按照该有的规范开发？REST 接口的参数大写开头？（接口的</summary>
-        
-      
-    
-    
-    
-    
-    <category term="工作" scheme="https://smallyu.net/tags/%E5%B7%A5%E4%BD%9C/"/>
     
   </entry>
   
@@ -2055,34 +1977,6 @@ table {
     
     
     <category term="剧本杀" scheme="https://smallyu.net/tags/%E5%89%A7%E6%9C%AC%E6%9D%80/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>“我是”系列短文集</title>
-    <link href="https://smallyu.net/2021/06/24/%E2%80%9C%E6%88%91%E2%80%9D%E6%98%AF%E2%80%A6%E2%80%A6%EF%BC%88%E7%B3%BB%E5%88%97%EF%BC%89/"/>
-    <id>https://smallyu.net/2021/06/24/%E2%80%9C%E6%88%91%E2%80%9D%E6%98%AF%E2%80%A6%E2%80%A6%EF%BC%88%E7%B3%BB%E5%88%97%EF%BC%89/</id>
-    <published>2021-06-24T14:23:19.000Z</published>
-    <updated>2025-07-26T07:10:36.198Z</updated>
-    
-    <content type="html"><![CDATA[<p>“我”是一个有洁癖的人。</p><p>住在别墅的富商们都有洁癖，他们的柜子上摆满金银珠宝，他们认真擦拭灰尘、小心翼翼摆放，把一切整理的井井有条错落有致一尘不染。</p><p>我看到琼楼玉宇里的达官显贵们都是那么做的。</p><p>虽然我面前只有一个垃圾桶，堆满了肮脏的废弃的物品，但是我看到它们不整齐，我要把它们变得干净整洁，因为我有洁癖。</p><p>当我看到有人往垃圾桶里随意丢弃垃圾，不屑一顾置之不理，我会大声抱怨甚至斥责他们，虽然他们毫无悔改之心。</p><p>为什么他们不懂得干净和整洁，为什么不能像我一样，不能像达官显贵们一样，做一个严于律己有洁癖爱干净整洁的人，</p><p>我有洁癖，我比那些不懂干净整洁的人高贵，我比他们都高级。（狗头）</p><div style="text-align: right;">（2021年03月11日）</div><br><hr><p>“我”是一个设计者。</p><p>我定义了一种新的加法运算，在这种运算规则下，1+1&#x3D;3，2+2&#x3D;5。</p><p>我出了一些题目，比如 3+3&#x3D;?、4+4&#x3D;?，如果有人能回答出题目，就说明他们已经掌握了我创造的“知识”。</p><p>有的人热衷于学习我创造的知识，奉我为神灵，乐此不疲，以此为荣，甚至看不起没有掌握这些知识的人。</p><p>有的人还会为了我争吵，面红耳赤，在讨论是我创造的知识好，还是另一个设计者创造的知识好。</p><p>有的人会觉得掌握了我创造的知识，就比掌握了另一个设计者创造的知识的人高级。</p><p>我喜欢这些有趣的人，虽然在我眼里，他们都是虫子。（狗头）</p><div style="text-align: right;">（2021年03月23日）</div><br><hr><p>“我” 是一个建筑师，能够进行普通建筑物设计图纸的绘制。</p><p>有一次工头喊我帮忙，工地缺人手，需要把砖头从一个地方搬到另一个地方。我去了。</p><p>搬砖的工人不明白，为什么搬同样的砖，从同样的一个地方搬到同样的另一个地方，给我的报酬比给他们的多。</p><div style="text-align: right;">（2021年04月22日）</div><br><hr><p>“我” 是奥特曼。</p><p>人类总是 “好心” 地劝告我，怪兽特别厉害，怪兽特别强大，怪兽摧毁了很多人类的房屋和土地，怪兽给很多人类战士带来了死亡和恐惧，要我小心怪兽的攻击，要我对怪兽有 “敬畏之心” ，不要小看了怪兽。</p><p>我懒得解释我的手一举起来就可以发射激光。</p><div style="text-align: right;">（2021年04月22日）</div><br><hr><p>“我” 是一个船长。</p><p>我命令我的船员去一个小岛上寻找宝藏。一定有的，宝藏就在那里。</p><p>如果你非要问我，我为什么肯定那个小岛上有宝藏，因为别的船都到那里去找，而且找的很热闹，大张旗鼓。</p><p>即使有去探索过小岛的船员说，那里没有什么。</p><p>即使有去过更大的岛的船员说，那里没有什么。</p><p>一定有的，宝藏就在那里。</p><p>如果你非要问我，我为什么肯定那个小岛上有宝藏，因为别的船都到那里去找，而且找的很热闹，大张旗鼓。</p><div style="text-align: right;">（2021年04月29日）</div><br><hr><p>“我” 是一个游戏的资深玩家。</p><p>我经常说这个游戏如何好玩，为什么好玩，为什么值得玩，多有前景。</p><p>我们经常讨论这个游戏的玩法，阵营，策略，升级，成就，装备，公会，任务，操作，等等。</p><p>一个新手玩家说，这个游戏不好玩。</p><p>一个新手玩家说，这个游戏虽然好玩，但没有另一个游戏好玩，没有另一个游戏有价值，没有另一个游戏有前景，没有另一个游戏有意义。</p><p>我怎么可能抛下在这个游戏上的积累，去玩另一个我没玩过的游戏。</p><p>我甚至不会承认，新手玩家说的是对的。</p><p>即使新手玩家真是对的。</p><div style="text-align: right;">（2021年05月07日）</div><br><hr><p>“我” 是一个地主。</p><p>秋天到了，家里需要雇佣工人去田地里收割麦子，长工短工都有。</p><p>经常看见工人们相互探讨收割麦子的手法、步法、心法，相互比较谁割麦子速度快、质量高，谁经验多、能够快速收割掉各式各样没长齐的麦子。</p><p>越是手艺好、会说话、忠心的工人，我自然越是喜欢。他们也会为此洋洋得意，因为得到了比其他工人更多的认可和报酬。</p><p>手艺好的工人是有优越感的，他们可以到任意一家地主家里去收割麦子，因为他们有精湛的收割麦子的技术，大多数地主没理由拒绝这样的工人。这可不是一般工人能享有的待遇，他们已经算是高级的工人了。</p><p>高级的工人有时还是给普通工人讲解割麦子的技巧，传授收麦子的心得。地主招收新的工人时，也会让高级工人代为把关，用一些刁钻的技术问题判断，想来的工人到底能不能达到地主家的要求。</p><div style="text-align: right;">（2021年05月26日）</div><br>]]></content>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;“我”是一个有洁癖的人。&lt;/p&gt;
-&lt;p&gt;住在别墅的富商们都有洁癖，他们的柜子上摆满金银珠宝，他们认真擦拭灰尘、小心翼翼摆放，把一切整理的井井有条错落有致一尘不染。&lt;/p&gt;
-&lt;p&gt;我看到琼楼玉宇里的达官显贵们都是那么做的。&lt;/p&gt;
-&lt;p&gt;虽然我面前只有一个垃圾桶，堆满了肮脏的</summary>
-        
-      
-    
-    
-    
-    
-    <category term="观点" scheme="https://smallyu.net/tags/%E8%A7%82%E7%82%B9/"/>
     
   </entry>
   
