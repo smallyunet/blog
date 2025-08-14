@@ -6,7 +6,7 @@
   <link href="https://smallyu.net/atom.xml" rel="self"/>
   <link href="https://pubsubhubbub.appspot.com/" rel="hub"/>
   <link href="https://smallyu.net/"/>
-  <updated>2025-08-14T07:53:53.950Z</updated>
+  <updated>2025-08-14T07:48:03.597Z</updated>
   <id>https://smallyu.net/</id>
   
   <author>
@@ -15,58 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>对 Humanity Protocol 项目的分析</title>
-    <link href="https://smallyu.net/2025/08/11/%E5%AF%B9Humanity-Protocol%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/"/>
-    <id>https://smallyu.net/2025/08/11/%E5%AF%B9Humanity-Protocol%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/</id>
-    <published>2025-08-11T12:06:25.000Z</published>
-    <updated>2025-08-14T07:53:53.950Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="https://www.humanity.org/">Humanity Protocol</a> 去年 5 月份获得了 3 千万美元的 <a href="https://www.humanity.org/blog/humanity-protocol-raises-30m-at-a-1-billion-valuation-to-build-zero-knowledge-worldcoin-competitor">融资</a>，今年 6 月份上线了主网，并进行了空投，目前空投仍在继续，代币是 $H。</p><p>我在看到 Humanity Protocol 的官网和导航栏的时候，对这个项目的技术预期比较低，因为没有白皮书，也没有 GitHub 链接，看文档还等登陆账号，这些信号都在表明，Humanity Protocol 是一个依靠运营、营销、市场、玩法、热点的项目，而不是专注于技术。</p><p>来看看主网的 Top Accounts 代币余额情况：</p><img src="1.png" width="80%"><p>某一个账户控制了整个网络 99.86% 的代币，这可是主网啊。这样的代币分配模式，和区块链技术就已经无关了吧。而且很明显 Humanity Prococol 用的是以太坊节点，地址格式、交易哈希、手续费都是以太坊的格式。不过还不清楚具体是用什么技术方式启动的网络，在浏览器上看到了 Batches 的字样，应该是 L2 吧，那么大概率是 Op Stack。没准是用了某个 BaaS 平台，一键启动，能理解 😒。至少能肯定的是，链不是自己开发的，毫无技术含量。</p><p>翻了一下 Humanity Protocol 早期的 <a href="https://www.humanity.org/blog/humanity-protocol-emerges-from-stealth-human-institute-in-collaboration-with-animoca-brands-and-polygon-labs-pioneers-the-human-layer-for-web3">博客</a>，原来这个项目早在 2023 年就有想法了，在合伙人中还看到了 Polygon Labs 的身影，这个项目用的应该是 zkEVM Layer-2。</p><p>什么是 <a href="https://www.humanity.org/blog/beyond-web3-does-proof-of-humanity-apply-in-the-real-world">Proof of Humanity</a>（PoH）？用手机 KYC，手机 App 上的 KYC 信息会对应一个链上身份，这就是 Humanity Protocol 说的 PoH。</p><p>首先在官网上面用邮箱或者钱包登陆，你的账户会自动绑定一个链上地址，然后账户状态是未验证。你需要下载一个手机 App 来验证你的身份，这个 App 需要你打开前置摄像头，露脸并且在摄像头上比划一些手势，比如握拳、竖中指等，经过几个动作的验证，你的账户会变为已验证的状态。不得不说手机 App 做的还可以，验证流程是流畅的。</p><img src="2.png" width="40%"><p>说了这么多，Humanity Protocol 这个项目到底是在干什么？给其他项目提供验证身份的服务！</p><p>基于刚才提到的一整套身份验证流程，可以给合作的项目方单独验证一次，账户面板上有罗列很多还未验证的项目：</p><img src="3.png" width="80%"><p>对于这些项目方而言，Humanity Protocol 最大的作用，就是能够证明你是一个真实的人类，这是一件非常有意义的事情！</p><img src="4.png" width="40%"><p>Humanity Protocol 会把你的账户信息分享给其他项目！</p><p>你一定会担心，Humanity Protocol 会泄漏我的身份数据吗？这是 Humanity Protocol 在重点解决的问题，<a href="https://www.humanity.org/blog/zkproofers-enhancing-the-web3-experience-for-all?utm_source=chatgpt.com">大意</a> 是用 ZK 生成对身份信息的证明，达到不暴露身份数据也能验证身份的目的。</p><p>那么即使分享给其他项目的是身份的证明而不是原始数据，Humanity Protocol 官方的服务器上会储存我们的身份信息吗？</p><p>不知道！</p><p>Humanity Protocol 在说辞上肯定是，用户数据只保留在本地，绝不会上传到服务器，服务器上的都是一写不可逆的 ZK prove 数据。因为没有开源出代码，我们无法验证这一点。</p><p>总之，Humanity Procotcol 的立意是好的，利用 ZK 技术能验证用户的真实性。项目最大的风险，或者凡是类似的项目，都必然会遭到隐私数据方面的质疑。相信 Humanity Procotol 把代码开源的那一天，这个问题会真正解决。</p>]]></content>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://www.humanity.org/&quot;&gt;Humanity Protocol&lt;/a&gt; 去年 5 月份获得了 3 千万美元的 &lt;a</summary>
-        
-      
-    
-    
-    
-    
-    <category term="项目分析" scheme="https://smallyu.net/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E6%9E%90/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>对 Midnight Network 项目的分析</title>
-    <link href="https://smallyu.net/2025/08/10/%E5%AF%B9Midnight-Network%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/"/>
-    <id>https://smallyu.net/2025/08/10/%E5%AF%B9Midnight-Network%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/</id>
-    <published>2025-08-09T19:16:34.000Z</published>
-    <updated>2025-08-14T07:53:59.679Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="https://midnight.network/">Midngiht Network</a> 早在 2022 年就 <a href="https://iohk.io/en/blog/posts/2022/11/18/iog-announces-new-blockchain-to-protect-data-and-safeguard-technology-freedoms/?utm_source=chatgpt.com">宣布成立</a> 并处于技术研发中了。今天 6 月份 <a href="https://midnight.network/blog/state-of-the-network-june-2025?utm_source=chatgpt.com">正式宣布</a> 了 NIGHT 代币的 TGE 计划，目前 NIGHT 代币的 <a href="https://www.midnight.gd/">空投</a> 仍然处于申领阶段，所以近期 Midnight Network 处于比较活跃的状态。</p><p><strong>项目简介</strong></p><p>先来概括下 Midnight Network 在干什么，<a href="https://midnight.network/whitepaper">白皮书</a> 中的介绍是，Midngiht Network 结合了 ZK 技术后，可以实现对链上的数据进行隐私保护的效果。其他公开区块链的 DApp 在和区块链进行交互的时候，必然是暴露所有用户数据和交互记录的，而 Midnight Network 试图解决这个问题，允许用户和区块链交互的时候，有一部分链上数据是保密（Shielded）的。</p><p>对于这样的项目描述，我们可能会好奇两个技术问题：</p><ol><li>Midnight Network 的项目架构是怎样的？</li><li>Midngiht Network 是如何利用 ZK 技术，实现链上数据保密的？</li></ol><p>此外白皮书里还提到了其他概念，像 DID、RWA、投票之类，这些都是噱头类型的应用场景，不用在意。</p><p><strong>项目背景</strong></p><p>Midnight Network 的资金实力非常强大，没有公开的融资信息，但是持续开发了多年，还用了 <a href="https://midnight.foundation/">Midnight Foundation</a> 这样的名字，一般的开发团队可不敢叫基金会。技术实力也比较强大，比如开发出了 <a href="https://docs.midnight.network/develop/reference/compact/writing">Compact</a> 这样的编程语言，作为智能合约的开发语言，这种语言是为了表达 ZK 电路而专门设计的。还有很多已经发布的 <a href="https://docs.midnight.network/relnotes/overview">软件</a>，包括能本地运行的 Proof server、浏览器钱包、VS Code 插件等，简直自己开发了一整套生态。由此可见 Midnight Network 拥有深厚的技术积累。</p><p>遗憾的是，Midnight Network 公开的 <a href="https://github.com/midnight-ntwrk">Github仓库</a> 里，没有开源任何核心代码，所以我们没办法从代码角度对项目的技术结构做分析，只能根据文档描述来推测技术实现。要注意，文档内容不一样靠谱，因为即使一行代码没写，文档也可以写的很全面。即使内部服务器用了单机的程序，也可以对外宣称是去中心化网络，不能因为有公开的测试网 RPC 而相信什么。</p><p><strong>共识与出块</strong></p><p>不过也不用过度担心，文档中已经公开了很多操作流程。首先借用了 Cardano 的 <a href="https://docs.midnight.network/validate/run-a-validator/">质押池</a>，Midnight 的节点会追踪 Cardano 网络的质押情况，用来确认哪些节点有出块权限，有点像是侧链的模式，但是 Midnight 又不完全依赖 Cardano 网络，Midnight 把这种模式叫做 partner chain。</p><p>Midnight 网络的 <a href="https://docs.midnight.network/develop/nodes-and-dapps/consensus">出块</a> 则是借鉴了 PolkDot 网络 Substrate 的思路，由一种叫 <a href="https://openethereum.github.io/Aura">AURA</a> 的 PoA 共识出块，<a href="https://wiki.polkadot.com/learn/learn-consensus/?utm_source=chatgpt.com#finality-gadget-grandpa">GRANDPA</a> 机制负责块的确认。PolkDot 用这种混合的共识机制，是为了迎合子网络与平行链的应用场景。而 Midnight 用这种模式，目前没有找到很好的说辞，猜测一方面是直接用了 Substrate 的代码，方面二次开发；另一方面是有兼容 ZK 服务的考虑，也许有把 proof server 放到 validator 节点的尝试。</p><p>无论是哪种情况，都能看出 Midnight Network 有硬核的开发实力，在区块链的出块、共识方面都进行了自定义改造。</p><p><strong>隐私保护</strong></p><p>Midnight Network 能实现链上隐私保护的理论基础，是 IOHK 的一篇论文 <a href="https://iohk.io/en/research/library/papers/kachina-foundations-of-private-smart-contracts/">Kachina</a>，论文很复杂，简单理解就是用 ZK 电路来描述智能合约的状态转移函数。以往的智能合约不都是公开代码来改变状态吗，Kachina 试图用 ZK 来隐藏代码细节。论文包含很多具体设计，比如 ZK 描述全部状态转移是一件困难的事情，就简化为只描述对状态预言机的访问记录。</p><p>所以对于 Midnight 的隐私保护能力，可以理解为对 Kachina 做了 <a href="https://docs.midnight.network/academy/module-4">工程化</a> 的实现，链下生成对合约操作的 ZK 证明，链上来验证这个证明，并且改变链上状态。当然这个部分很复杂，但是 Midnight 把这一套做出来了，虽然代码没开源。</p><p><strong>隐私应用</strong></p><p>由于 Midngiht 对于 ZK 成熟的应用能力，搞出了 <a href="https://docs.midnight.network/learn/understanding-midnights-technology/zswap">Zswap</a> 这种带有隐私保护的代币交换池，大意是链上只暴露了 ZK 的承诺信息，但是并不透露具体哪两种代币发生了交换，也不知道交换金额是多少。有点类似 Zcash 的效果，但是做的更好。</p><p><strong>代币模型</strong></p><p>Midnight 的代币模型搞的也很复杂，有 NIGHT 和 DUST 两种代币，因为 Midnight 网络本身的节点结构就复杂。NIGHT 是发行在 Cardano 上的，用 partner chain 的方式 1:1 锚定到 Midnight 上。DUST 则用来支付 Midnight 网络的手续费，持有 NIGHT 会不断产生 DUST，类似 Tron 网络的能量，持有 Trx 就会产生能量那种。</p><p><strong>小结</strong></p><p>Midnight Network 拥有很强的技术实力，无论是区块链方面的出块和共识机制，还是对于 ZK 在工程方面的落地能力，都有很大的技术难度，不是一般开发团队能胜任的。尽管叙事上不太接近当前的热点，应该不会很出圈，但是技术方面如果开源的话，肯定会留下浓墨重彩的一笔。</p>]]></content>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://midnight.network/&quot;&gt;Midngiht Network&lt;/a&gt; 早在 2022 年就 &lt;a</summary>
-        
-      
-    
-    
-    
-    
-    <category term="项目分析" scheme="https://smallyu.net/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E6%9E%90/"/>
-    
-    <category term="ZK" scheme="https://smallyu.net/tags/ZK/"/>
-    
-  </entry>
   
   <entry>
     <title>对 0G 项目的分析</title>
@@ -117,33 +65,6 @@
     <category term="项目分析" scheme="https://smallyu.net/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E6%9E%90/"/>
     
     <category term="MPC" scheme="https://smallyu.net/tags/MPC/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>对 Camp Network 项目的分析</title>
-    <link href="https://smallyu.net/2025/08/04/%E5%AF%B9Camp-Network%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/"/>
-    <id>https://smallyu.net/2025/08/04/%E5%AF%B9Camp-Network%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/</id>
-    <published>2025-08-04T04:15:42.000Z</published>
-    <updated>2025-08-14T07:53:53.936Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="https://www.campnetwork.xyz/">Camp Network</a> 的愿景是在 AI Agent 场景中保护作者的知识产权，并且有可能获得来自 AI 分享的创作者收益。Camp Network 今年 4 月底宣布，一共获得了 3 千万美元的 <a href="https://mirror.xyz/0xa01A821E654b923Be011acE131A22Ba58cFee3ad/wvdmjQaM2hw8uxLaLEamNPQMVT4H_bLWgzrsNWoOZpU">A轮融资</a>，来自不同的投资机构。</p><p>只看官网首页的简介的话，也许会有点疑惑，这个项目的立意肯定没错，保护知识产权嘛，但是具体怎么做呢，<a href="https://mirror.xyz/0xa01A821E654b923Be011acE131A22Ba58cFee3ad/wvdmjQaM2hw8uxLaLEamNPQMVT4H_bLWgzrsNWoOZpU">官方宣发文章</a> 里提到的 Proof of Ownership and Pirority，岂不是几年前的概念吗？而这些 Proof of… 又是什么意思？</p><p>Camp Network 没有公开出 Github 代码仓库，导致没办法从代码层面解读。我一开始还奇怪，为什么不公开 Github 账户？后来我明白了。</p><p>Camp Network 的 <a href="https://docs.campnetwork.xyz/introduction/l1-architecture/abc-stack">文档</a> 里说明，Camp Network 是一条使用了 Celestia 区块链做 DA 层的链，基于 <a href="https://www.abundance.xyz/">ABC Stack</a> 搭建。ABC Stack 又是什么呢，是 Celestia 生态中的一个项目，在架构上明确区别于以太坊的 “L2 Rollups”，而是自己发明了一种架构叫 “Rollup L1s”。</p><p>ABC Stack 框架是 Abundance 团队开发的，号称每秒 GB 级别数据的 EVM 完备的 Rollups。也就是说，Camp Network 直接使用了 ABC Stack 的底层技术，搭了一条链出来，在链上做一些应用，所谓知识产权保护、DID、AI 什么的。</p><p>那么 ABC Stack 的框架怎么用呢，代码仓库在哪里，怎么操作，需要开发哪些代码？完全不需要，有一家 Celestia 生态的公司 Gelato，提供了 BaaS 平台的服务，比如一键部署 Op Stack 的链、一键部署 Arbitrum 的链，等等，其中就包括 ABC Stack 的选项。而这个 BaaS 平台是收费的，部署到主网需要一个月 3000 美元，部署到测试网只需要一个月 100 美元。Camp Network 目前是测试网阶段。</p><p>这就是 Camp Network 连代码仓库都不需要的原因，直接用 BaaS 服务就好了，而且也没有其他选择，ABC Stack 本身就没提供代码。</p><p>Camp Network 的 <a href="https://docs.campnetwork.xyz/introduction/l1-architecture">架构文档</a> 里还提到一个东西，BaseCAMP 是刚才提到的用 ABC Stack 搭出来的链，SideCAMP 则是应用专属的链，从文档描述来看，Camp Network 是计划给每一个应用场景，比如 AI、音乐、艺术等 Dapp，都单独部署一条链，同样也是用 ABC Stack 的技术。</p><p>有那么多条链的话，BaseCAMP 和 SideCAMP 之间怎么通讯和交互呢？ABC Stack 对 Hyperlane 的跨链技术做了 <a href="https://docs.abundance.xyz/modular-bridging/gelato-hyperlane-cluster">封装</a>，依此来实现 ABC Stack 链之间的跨链通信。</p><p>至于 Camp Network 到底是怎么实现保护知识产权的？Camp Network 提供了一个 <a href="https://docs.campnetwork.xyz/origin-v1/origin-framework">SDK</a>，大意是作者需要通过链上交易来声明自己的身份，比如绑定自己的链上地址和 X 的用户名信息，Camp Network 的这个 Origin 框架，就会到 X 上查询我发布的内容，自动生成 IP NFT，然后其他玩家可以来购买这个 IP NFT，相当于购买了版权。</p><p>话说，其实是挺老套的玩法。可能以后凡是看到提 DID 这种老套概念的项目，都得多加小心，因为没什么技术，只玩生态，而且玩的是不存在的生态。</p><p>Camp Network 整体的技术情况就是这样，连代码仓库都没有，直接用了 ABC Stack 提供的服务，搭建了几条链，然后在链上面做应用。Camp Network 的 <a href="https://testnet.campnetwork.xyz/">测试网</a> 上现在已经有不少 Dapp 了，可以操作和交互。Camp Network 虽然没有硬核的底层技术，但是生态实力很强大，测试网上参与活动的项目非常多。</p>]]></content>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;&lt;a href=&quot;https://www.campnetwork.xyz/&quot;&gt;Camp Network&lt;/a&gt; 的愿景是在 AI Agent 场景中保护作者的知识产权，并且有可能获得来自 AI 分享的创作者收益。Camp Network 今年 4 月底宣布，一共获得了 3</summary>
-        
-      
-    
-    
-    
-    
-    <category term="项目分析" scheme="https://smallyu.net/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E6%9E%90/"/>
-    
-    <category term="DA" scheme="https://smallyu.net/tags/DA/"/>
     
   </entry>
   
