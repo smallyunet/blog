@@ -1,3 +1,6 @@
+https://smallyu.net/2025/08/10/%E5%AF%B9Midnight-Network%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/
+https://smallyu.net/2025/08/11/%E5%AF%B9Humanity-Protocol%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/
+https://smallyu.net/2025/08/04/%E5%AF%B9Camp-Network%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/
 https://smallyu.net/2025/08/06/%E5%AF%B90G%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/
 https://smallyu.net/2025/07/24/%E6%88%91%E4%BB%8E%E7%8E%8B%E5%9E%A0%E7%9A%84%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E8%AF%BE%E5%AD%A6%E5%88%B0%E4%BA%86%E4%BB%80%E4%B9%88/
 https://smallyu.net/about/index.html
@@ -146,3 +149,5 @@ https://smallyu.net/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E6%9E%90/
 https://smallyu.net/tags/%E7%8E%8B%E5%9E%A0/
 https://smallyu.net/tags/%E9%93%BE%E8%A1%A8/
 https://smallyu.net/tags/MPC/
+https://smallyu.net/tags/ZK/
+https://smallyu.net/tags/DA/
