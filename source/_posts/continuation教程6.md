@@ -6,12 +6,12 @@ tags:
 - 教程
 ---
 
-> 这是一个 continuation 系列教程：
+> 这是一个 continuation 系列教程，因为篇幅问题，这个博客上只放了第 1 篇和第 6 篇：
 > 1. [continuation 教程：理解 CPS](/2025/07/23/continuation教程1/)
-> 2. [continuation 教程：用 yield 实现协程调度](/2025/07/23/continuation教程2/)
-> 3. [continuation 教程：用 call/cc 实现协程调度](/2025/07/23/continuation教程3/)
-> 4. [continuation 教程：用 shift/reset 实现协程调度](/2025/07/23/continuation教程4/)
-> 5. [continuation 教程：体验 Racket 语言](/2025/07/23/continuation教程5/)
+> 2. continuation 教程：用 yield 实现协程调度
+> 3. continuation 教程：用 call/cc 实现协程调度
+> 4. continuation 教程：用 shift/reset 实现协程调度
+> 5. continuation 教程：体验 Racket 语言
 > 6. [continuation 教程：实现抢占式协程调度](/2025/07/23/continuation教程6/)
 
 你也许注意到了，我们前面用 yield 关键在来实现两个任务的交替打印，似乎和我们平时使用协程的感受不一样，比如 Go 语言的协程往往用来后台启动一个 Server 服务之类；跟我们平时使用 node.js 的感觉也不太一样。
