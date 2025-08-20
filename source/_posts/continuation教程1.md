@@ -1,5 +1,5 @@
 ---
-title: continuation 基础：理解 CPS
+title: "continuation 基础: 理解 CPS"
 date: 2025-07-23 12:12:12
 draft_date: 2025-07-19 01:10:18
 tags: 
@@ -7,23 +7,15 @@ tags:
 - 教程
 ---
 
+> 这是一个 continuation 系列教程，因为篇幅问题，这个博客上只放了第 1 篇和第 6 篇：
+> 1. [continuation 教程：理解 CPS](/2025/07/23/continuation教程1/)
+> 2. continuation 教程：用 yield 实现协程调度
+> 3. continuation 教程：用 call/cc 实现协程调度
+> 4. continuation 教程：用 shift/reset 实现协程调度
+> 5. continuation 教程：体验 Racket 语言
+> 6. [continuation 教程：实现抢占式协程调度](/2025/07/23/continuation教程6/)
+
 我们来由浅入深地系统学习下 continuation 的原理以及应用场景。这个系列教程的内容和王垠的 continuation 专项班无关，是我自己学习和研究的成果，所以不会有版权问题。不过当然正是因为我学习了基础班，打下了坚实的基础，才知道该如何去自学和理解 continuation 这个概念。这篇文章会少量透露出基础班学到的技能，毕竟 continuation 属于基础班的进阶内容，无法跳过基础技能去理解。
-
-### 背景
-
-我意识到一个问题，我已经写过非常多的 nodejs 异步调用的代码了，无论是读取文件，还是调用接口，nodejs 里大量出现这种写法，比如：
-
-```js
-fs.readFile("a.txt", (err, data) => {
-  // do something
-});
-```
-
-但是从来没有人告诉我这玩意儿叫 CPS！
-
-我最近关注到 CPS 这个东西，是因为王垠有一个 continuation 和并发计算专项班的课程，我没有报名学习课程，但是好奇课程内容是什么，好奇这个 continuation 是什么意思。
-
-continuation 是什么意思呢？CPS 的全称是 Continuation-Passing-Style，而我们已经熟知的 nodejs 里，已经无数次甚至默认都在使用 CPS 来实现异步调用！continuation 这个词变得不再神秘！
 
 ### 递归
 
