@@ -7,7 +7,7 @@ tags:
 - 教程
 ---
 
-> 这是一个 continuation 系列教程，因为篇幅问题，只放第 1 篇：
+> 这是一个 continuation 系列教程。因为篇幅问题，博客只放第 1 篇：
 > 1. [continuation 教程：理解 CPS](/2025/07/23/continuation教程1/)
 > 2. continuation 教程：用 yield 实现协程调度
 > 3. continuation 教程：用 call/cc 实现协程调度
