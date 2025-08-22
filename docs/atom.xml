@@ -6,7 +6,7 @@
   <link href="https://smallyu.net/atom.xml" rel="self"/>
   <link href="https://pubsubhubbub.appspot.com/" rel="hub"/>
   <link href="https://smallyu.net/"/>
-  <updated>2025-08-21T13:00:16.790Z</updated>
+  <updated>2025-08-21T13:53:33.207Z</updated>
   <id>https://smallyu.net/</id>
   
   <author>
@@ -15,90 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>DeFi 进阶: 闪电贷与套利</title>
-    <link href="https://smallyu.net/2025/08/21/DeFi%E8%BF%9B%E9%98%B61/"/>
-    <id>https://smallyu.net/2025/08/21/DeFi%E8%BF%9B%E9%98%B61/</id>
-    <published>2025-08-21T11:50:22.000Z</published>
-    <updated>2025-08-21T13:00:16.790Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote><p>这是一个 DeFi 系列教程，在动手实践的过程中，学习和理解 DeFi 相关的概念与原理：</p><ol><li><a href="/2025/08/20/DeFi%E5%9F%BA%E7%A1%801/">DeFi 基础: 理解 AMM 定价机制</a></li><li><a href="/2025/08/21/DeFi%E5%9F%BA%E7%A1%802/">DeFi 基础: 预言机与报价</a></li><li><a href="/2025/08/21/DeFi%E5%9F%BA%E7%A1%803/">DeFi 基础: 借贷与清算</a></li><li><a href="/2025/08/21/DeFi%E8%BF%9B%E9%98%B61/">DeFi 进阶: 闪电贷与套利</a></li></ol></blockquote><p>闪电贷套利是我们经常听到的一个词，在实际的场景中有很多种模式。基于我们之前的 AMM 合约，就足以让我们来模拟一个简单版本的闪电贷套利。</p><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>闪电贷的核心逻辑是，利用区块链智能合约的特性，在一笔交易内，借出大额资产（放大收益），拿着大额资产去执行别的操作，干什么都行，干完事情之后，再把借出的资金+少量手续费，原封不动还回来。</p><p>因为智能合约是可以 revert 的，如果套利合约在执行过程中，发现最后套利没成功，可以回滚整个交易，除了手续费，没有额外损失。</p><p>我们接下来要模拟的场景时，有两个 AMM 池子，第一个池子的价格是 2000 USDC&#x2F;WETH，第二个池子的价格是 4000 USDC&#x2F;WETH。</p><p>面对这样的场景，可以先想一下，不用闪电贷的情况下，应该如何套利。套利合约只不过是把我们的操作自动化了。</p><p>很简单，在第一个池子化 2000 USDC 买 1 个 WETH，到第二个池子上，直接就能卖出 4000 USDC，净赚 2000 USDC。</p><h3 id="合约说明"><a href="#合约说明" class="headerlink" title="合约说明"></a>合约说明</h3><p>我们会用到两个合约 <a href="https://github.com/smallyunet/defi-invariant-lab/blob/v0.0.4/contracts/flash/FlashLender.sol">FlashLender.sol</a> 和 <a href="https://github.com/smallyunet/defi-invariant-lab/blob/v0.0.4/contracts/flash/FlashArbBorrower.sol">FlashArbBorrower.sol</a>。</p><p>这两个合约代表两个角色，其中 borrower 就是套利合约，会从 lender 那里借出一些资金。</p><p>也就是说 lender 合约，是有 <a href="https://github.com/smallyunet/defi-invariant-lab/blob/v0.0.4/contracts/flash/FlashLender.sol#L31-L35">借出资产功能</a> 的：</p><pre><code class="solidity">// 借出资产require(t.transfer(receiver, amount), &quot;transfer out&quot;);// 调用 borrower 的回调函数bytes32 magic = IFlashBorrower(receiver).onFlashLoan(token, amount, fee, data);require(magic == keccak256(&quot;IFlashBorrower.onFlashLoan&quot;), &quot;bad callback&quot;);// 验证在回调函数后，borrower 是否归还了本金+手续费uint256 balAfter = t.balanceOf(address(this));require(balAfter &gt;= balBefore + fee, &quot;not repaid&quot;);</code></pre><p>关键就是这 3 行，先借出钱，然后回调，最后判断 borrower 是否还款。</p><p>在 borrower 的回调函数里，会写一些具体的 <a href="https://github.com/smallyunet/defi-invariant-lab/blob/v0.0.4/contracts/flash/FlashArbBorrower.sol#L64C1-L71C38">套利逻辑</a>，比如从第一个池子买入 WETH，然后再卖到第二个池子：</p><pre><code class="solidity">// 从便宜的池子中买 WETHuint256 wethOut = poolCheap.swap0For1(amount);// 到贵的池子中卖 WETHuint256 usdcBack = poolExpensive.swap1For0(wethOut);// 还款给 lenderuint256 repay = amount + fee;</code></pre><p>lender 和 borrower 是两个角色，那为什么不把这些逻辑写在一个合约里呢？如果写在一个合约里，意味着只有一个套利合约的角色，自己借钱出去、自己用钱套利，我自己都有钱了还借钱干嘛？</p><h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><p>合约代码源文件在仓库：<a href="https://github.com/smallyunet/defi-invariant-lab/tree/v0.0.4">smallyunet&#x2F;defi-invariant-lab@v0.0.4</a></p><p>克隆仓库：</p><pre><code class="bash">git clone https://github.com/smallyunet/defi-invariant-lab/git switch v0.0.4cd defi-invariant-lab</code></pre><h3 id="部署第二个-AMM-合约"><a href="#部署第二个-AMM-合约" class="headerlink" title="部署第二个 AMM 合约"></a>部署第二个 AMM 合约</h3><p>部署合约：</p><pre><code class="bash">forge create \  --rpc-url $RPC_URL \  --private-key $PK_HEX \  --broadcast \  contracts/amm/SimpleAMM.sol:SimpleAMM \  --constructor-args $USDC_ADDR $WETH_ADDR 30</code></pre><p>部署后的合约地址：<a href="https://sepolia.etherscan.io/address/0xd9c870Ac0a84C3244286d39d870642d218b26532"><code>0xd9c870Ac0a84C3244286d39d870642d218b26532</code></a></p><h3 id="注入初始流动性"><a href="#注入初始流动性" class="headerlink" title="注入初始流动性"></a>注入初始流动性</h3><p>这个 AMM_B 池子我们认为是价格比较高的池子，所以按照 4000 USDC&#x2F;WETH 的价格注入初始流动性：</p><pre><code class="bash">export AMM_B=0xd9c870Ac0a84C3244286d39d870642d218b26532cast send $USDC_ADDR &quot;approve(address,uint256)&quot; $AMM_B \  0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff \  --rpc-url $RPC_URL --private-key $PK_HEXcast send $WETH_ADDR &quot;approve(address,uint256)&quot; $AMM_B \  0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff \  --rpc-url $RPC_URL --private-key $PK_HEXcast send $AMM_B    &quot;addLiquidity(uint256,uint256)&quot; 4000000000000 1000000000000000000000 \  --rpc-url $RPC_URL --private-key $PK_HEX</code></pre><h3 id="部署-lender-并注资"><a href="#部署-lender-并注资" class="headerlink" title="部署 lender 并注资"></a>部署 lender 并注资</h3><p>部署合约：</p><pre><code class="bash">forge create \  --rpc-url $RPC_URL \  --private-key $PK_HEX \  --broadcast \  contracts/flash/FlashLender.sol:FlashLender \  --constructor-args 5</code></pre><p>部署后的合约是：<a href="https://sepolia.etherscan.io/address/0x3c00AB1eD5dF40f7ae8c1E4104C89445615B9D0a"><code>0x3c00AB1eD5dF40f7ae8c1E4104C89445615B9D0a</code></a></p><p>验证合约：</p><pre><code class="bash">forge verify-contract \  --chain-id 11155111 \  0x3c00AB1eD5dF40f7ae8c1E4104C89445615B9D0a \  contracts/flash/FlashLender.sol:FlashLender \  --constructor-args $(cast abi-encode &quot;constructor(uint16)&quot; 5) \  --etherscan-api-key $ETHERSCAN_API_KEY</code></pre><p>给 lender 转 20 万 USDC 作为初始资金：</p><pre><code class="bash">export LENDER=0x3c00AB1eD5dF40f7ae8c1E4104C89445615B9D0acast send $USDC_ADDR &quot;approve(address,uint256)&quot; $LENDER \  0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff \  --rpc-url $RPC_URL --private-key $PK_HEXcast send $LENDER &quot;fund(address,uint256)&quot; $USDC_ADDR 200000000000 \  --rpc-url $RPC_URL --private-key $PK_HEX</code></pre><h3 id="部署套利合约"><a href="#部署套利合约" class="headerlink" title="部署套利合约"></a>部署套利合约</h3><p>部署合约：</p><pre><code class="bash">forge create \  --rpc-url $RPC_URL \  --private-key $PK_HEX \  --broadcast \  contracts/flash/FlashArbBorrower.sol:FlashArbBorrower \  --constructor-args $LENDER $USDC_ADDR $WETH_ADDR $AMM_ADDR $AMM_B</code></pre><p>部署的合约地址是：<a href="https://sepolia.etherscan.io/address/0x62363Fe02b83b804fd65FE3b862383631fEffb49"><code>0x62363Fe02b83b804fd65FE3b862383631fEffb49</code></a></p><p>验证合约：</p><pre><code class="bash">forge verify-contract \  --chain-id 11155111 \  0x62363Fe02b83b804fd65FE3b862383631fEffb49 \  contracts/flash/FlashArbBorrower.sol:FlashArbBorrower \  --constructor-args $(cast abi-encode &quot;constructor(address,address,address,address)&quot; $LENDER $USDC_ADDR $WETH_ADDR $AMM_ADDR $AMM_B) \  --etherscan-api-key $ETHERSCAN_API_KEY</code></pre><h3 id="执行一次闪电贷套利"><a href="#执行一次闪电贷套利" class="headerlink" title="执行一次闪电贷套利"></a>执行一次闪电贷套利</h3><p>直接调用 execute 函数：</p><pre><code class="bash">export ARB=0x62363Fe02b83b804fd65FE3b862383631fEffb49cast send $ARB &quot;execute(uint256)&quot; 10000000000 \  --rpc-url $RPC_URL --private-key $PK_HEX</code></pre><p>我发起的交易哈希是：<a href="https://sepolia.etherscan.io/tx/0x948edfb7eeb5ceb924c1eb39704efd952f1cd3ed435c059a548dd7ea82031f15"><code>0x948edfb7eeb5ceb924c1eb39704efd952f1cd3ed435c059a548dd7ea82031f15</code></a></p><p>浏览器的交易过程比较直观，直接看浏览器的记录就好了：</p><img src="1.png" width="100%"><p>可以看到在第一个池子里，用 10000 USDC 买了 4.6 个 WETH，紧接着把 WETH 卖掉，换出了 18000 USDC，净赚 8000 USDC。</p><p>borrower 的合约里有写把收益金额 <a href="https://github.com/smallyunet/defi-invariant-lab/blob/v0.0.4/contracts/flash/FlashArbBorrower.sol#L76-L80">emit 为事件</a>：</p><pre><code class="solidity">uint256 profit = usdcBack - repay;if (profit &gt; 0) &#123;    require(usdc.transfer(owner, profit), &quot;payout fail&quot;);    emit Profit(profit);&#125;</code></pre><p>所以在浏览器上也能看到真的 <a href="https://sepolia.etherscan.io/tx/0x948edfb7eeb5ceb924c1eb39704efd952f1cd3ed435c059a548dd7ea82031f15#eventlog">触发了事件</a>：</p><img src="2.png" width="80%">]]></content>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;这是一个 DeFi 系列教程，在动手实践的过程中，学习和理解 DeFi 相关的概念与原理：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;a href=&quot;/2025/08/20/DeFi%E5%9F%BA%E7%A1%801/&quot;&gt;DeFi 基础: 理解 AMM</summary>
-        
-      
-    
-    
-    
-    
-    <category term="DeFi" scheme="https://smallyu.net/tags/DeFi/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>DeFi 基础: 借贷与清算</title>
-    <link href="https://smallyu.net/2025/08/21/DeFi%E5%9F%BA%E7%A1%803/"/>
-    <id>https://smallyu.net/2025/08/21/DeFi%E5%9F%BA%E7%A1%803/</id>
-    <published>2025-08-21T03:44:18.000Z</published>
-    <updated>2025-08-21T11:57:19.170Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote><p>这是一个 DeFi 系列教程，在动手实践的过程中，学习和理解 DeFi 相关的概念与原理：</p><ol><li><a href="/2025/08/20/DeFi%E5%9F%BA%E7%A1%801/">DeFi 基础: 理解 AMM 定价机制</a></li><li><a href="/2025/08/21/DeFi%E5%9F%BA%E7%A1%802/">DeFi 基础: 预言机与报价</a></li><li><a href="/2025/08/21/DeFi%E5%9F%BA%E7%A1%803/">DeFi 基础: 借贷与清算</a></li><li><a href="/2025/08/21/DeFi%E8%BF%9B%E9%98%B61/">DeFi 进阶: 闪电贷与套利</a></li></ol></blockquote><p>我们已经有了两个 ERC-20 代币 USDC 与 WETH，有了 AMM 合约，有了 Oracle 合约。接下来利用之前的合约，尝试和理解一下借贷相关的合约逻辑。</p><p>借贷合约要注意的地方是，在计算用户能借出多少资产的逻辑中，需要用到代币的价格。这里的代币价格，来自 Oracle 的报价，而不是 AMM 合约的价格。Oracle 的报价一般基于 AMM 的价格波动，如果 Oracle 遭受攻击，借贷合约也会相应受到影响。</p><h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><p>合约代码源文件在仓库：<a href="https://github.com/smallyunet/defi-invariant-lab/tree/v0.0.3">smallyunet&#x2F;defi-invariant-lab@v0.0.3</a></p><p>Oracle 使用的合约是 <a href="https://github.com/smallyunet/defi-invariant-lab/blob/v0.0.3/contracts/lending/SimpleLending.sol">SimpleLending.sol</a>，先克隆仓库：</p><pre><code class="bash">git clone https://github.com/smallyunet/defi-invariant-lab/git switch v0.0.3cd defi-invariant-lab</code></pre><p>部署合约：</p><pre><code class="bash">forge create \  --rpc-url $RPC_URL \  --private-key $PK_HEX \  --broadcast \  contracts/lending/SimpleLending.sol:SimpleLending \  --constructor-args $WETH_ADDR $USDC_ADDR $ORACLE_ADDR</code></pre><p>部署地址：<a href="https://sepolia.etherscan.io/address/0xd4bbFbCe71038b7f306319996aBbe3ed751E9A1C"><code>0xd4bbFbCe71038b7f306319996aBbe3ed751E9A1C</code></a></p><p>验证合约：</p><pre><code class="bash">forge verify-contract \  --chain-id 11155111 \  0xd4bbFbCe71038b7f306319996aBbe3ed751E9A1C \  contracts/lending/SimpleLending.sol:SimpleLending \  --constructor-args $(cast abi-encode &quot;constructor(address,address,address)&quot; $WETH_ADDR $USDC_ADDR $ORACLE_ADDR) \  --etherscan-api-key $ETHERSCAN_API_KEY</code></pre><h3 id="用-WETH-抵押借出-USDC"><a href="#用-WETH-抵押借出-USDC" class="headerlink" title="用 WETH 抵押借出 USDC"></a>用 WETH 抵押借出 USDC</h3><p>给借贷合约挖 10 万个 USDC，作为初始可以借贷的资产：</p><pre><code class="bash">export LEND_ADDR=0xd4bbFbCe71038b7f306319996aBbe3ed751E9A1Ccast send $USDC_ADDR &quot;mint(address,uint256)&quot; $LEND_ADDR 100000000000 \  --rpc-url $RPC_URL --private-key $PK_HEX</code></pre><p>存入 1 个 WETH 作为抵押物：</p><pre><code class="bash">cast send $WETH_ADDR &quot;approve(address,uint256)&quot; $LEND_ADDR \  0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff \  --rpc-url $RPC_URL --private-key $PK_HEXcast send $LEND_ADDR &quot;deposit(uint256)&quot; 1000000000000000000 \  --rpc-url $RPC_URL --private-key $PK_HEX</code></pre><p>调用 <code>borrow</code> 函数借出 USDC，借出额度的计算是：</p><pre><code class="solidity">function borrow(uint256 amt) external &#123;    _accrue();    require(_value(coll[msg.sender]) * LTV_BPS / 10_000 &gt;= borrows[msg.sender] + amt, &quot;exceeds LTV&quot;);    borrows[msg.sender] += amt;    totalBorrows += amt;    debt.transfer(msg.sender, amt);&#125;</code></pre><p>我们抵押了 1 个 WETH，按照 2000 USDC&#x2F;WETH 的价格，合约设定 LTV 最高 70%，也就是可以借出 <code>2000*0.7=1400</code> 个USDC。</p><p>来用实际交易试一下，这次借出 1400 个 USDC：</p><pre><code class="bash">cast send $LEND_ADDR &quot;borrow(uint256)&quot; 1400000000 \  --rpc-url $RPC_URL --private-key $PK_HEX</code></pre><p>查看借出 USDC 后的余额、负债、健康度：</p><pre><code class="bash">cast call $USDC_ADDR &quot;balanceOf(address)(uint256)&quot; $MY_ADDR --rpc-url $RPC_URL# 799400000000 [7.99e11]cast call $LEND_ADDR &quot;borrows(address)(uint256)&quot; $MY_ADDR --rpc-url $RPC_URL# 1400000000 [1e9]cast call $LEND_ADDR &quot;health(address)(uint256)&quot;  $MY_ADDR --rpc-url $RPC_URL# 1904761904285714285 [1.904e18]</code></pre><p>这里的健康度，指是否有可能触发清算。当查询结果大于 1，则比较安全。当健康度小于 1，则可以被清算机器人、套利者清算掉。</p><h3 id="降低价格到清算线"><a href="#降低价格到清算线" class="headerlink" title="降低价格到清算线"></a>降低价格到清算线</h3><p>如果想还债的话，调用 <a href="https://github.com/smallyunet/defi-invariant-lab/blob/v0.0.3/contracts/lending/SimpleLending.sol#L54"><code>repay</code></a> 函数就可以了。</p><p>现在要体验一次清算逻辑，我们之前抵押了 1 WETH，价值 2000 USDC，借出了 1400 USDC，此时 LTV&#x3D;1400&#x2F;2000&#x3D;70%，正好是 70%，处于安全状态。</p><p>当价格下跌到 1000 USDC&#x2F;WETH，此时的 LTV&#x3D;1400&#x2F;1000&#x3D;140%，已经超过 70% 的安全值，也超过了 75% 的清算阈值。</p><p>我们修改下在预言机里的价格，让借贷合约感知到 WETH 价格下跌了（这也就是预言机的主要作用，决定了链上的报价）：</p><pre><code class="bash">cast send $ORACLE &quot;post(uint256[])&quot; \  &quot;[99900000000,100000000000,100000000000,100000000000,100100000000]&quot; \  --rpc-url $RPC_URL --private-key $PK_HEX</code></pre><p>再查一下健康度：</p><pre><code class="bash">cast call $LEND_ADDR &quot;health(address)(uint256)&quot;  $MY_ADDR --rpc-url $RPC_URL# 952380952142857142 [9.523e17]</code></pre><p>这里的健康度实际上是 0.9 1e18，已经小于 1 了，处于可以被清算的状态。</p><h3 id="执行清算"><a href="#执行清算" class="headerlink" title="执行清算"></a>执行清算</h3><p>任何人都可以执行清算，执行清算成功后，可以获得 10% 的清算奖励，这就是很多人需要抢跑交易、优先执行清算的原因。10% 的清算奖励是指，假如你替抵押者还债 200 USDC，让他的仓位健康度大于 1，那么这个时候，按理你可以清算（部分清算）得到 0.2 WETH，由于 10% 的清算奖励，你实际上得到了 0.22 WETH。</p><p>我们现在执行交易还债 200 USDC：</p><pre><code class="bash">cast send $USDC_ADDR &quot;approve(address,uint256)&quot; $LEND_ADDR \  0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff \  --rpc-url $RPC_URL --private-key $PK_HEXcast send $LEND_ADDR &quot;liquidate(address,uint256)&quot; $MY_ADDR 300000000 \  --rpc-url $RPC_URL --private-key $PK_HEX</code></pre><p>查看执行清算后，一些数据的变化：</p><pre><code class="bash">cast call $LEND_ADDR &quot;borrows(address)(uint256)&quot; $MY_ADDR --rpc-url $RPC_URL# 1200000000 [1.2e9]cast call $LEND_ADDR &quot;coll(address)(uint256)&quot;    $MY_ADDR --rpc-url $RPC_URL# 999999999780000000 [9.999e17]cast call $WETH_ADDR &quot;balanceOf(address)(uint256)&quot; $MY_ADDR --rpc-url $RPC_URL# 899987136079723472734 [8.999e20]</code></pre><h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>可以看到，Defi 的借贷就是在玩这些金钱的数字游戏。</p><p>DeFi 开发的难点在于，需要理解一大堆金融相关的公式，看懂合约代码背后表达的业务含义，计算利息、负债率什么的。这个方向对金融行业从业者更友好一点。</p><p>Solidity 语言只是表达金融公式的工具，Solidity 的语法本身很简单，普通的开发人员很快就可以掌握。但是掌握 Solidity 语法，不代表能够理解金融体系，不代表能看懂金融公式。</p>]]></content>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;这是一个 DeFi 系列教程，在动手实践的过程中，学习和理解 DeFi 相关的概念与原理：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;a href=&quot;/2025/08/20/DeFi%E5%9F%BA%E7%A1%801/&quot;&gt;DeFi 基础: 理解 AMM</summary>
-        
-      
-    
-    
-    
-    
-    <category term="DeFi" scheme="https://smallyu.net/tags/DeFi/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>DeFi 基础: 预言机与报价</title>
-    <link href="https://smallyu.net/2025/08/21/DeFi%E5%9F%BA%E7%A1%802/"/>
-    <id>https://smallyu.net/2025/08/21/DeFi%E5%9F%BA%E7%A1%802/</id>
-    <published>2025-08-21T03:24:02.000Z</published>
-    <updated>2025-08-21T11:57:19.165Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote><p>这是一个 DeFi 系列教程，在动手实践的过程中，学习和理解 DeFi 相关的概念与原理：</p><ol><li><a href="/2025/08/20/DeFi%E5%9F%BA%E7%A1%801/">DeFi 基础: 理解 AMM 定价机制</a></li><li><a href="/2025/08/21/DeFi%E5%9F%BA%E7%A1%802/">DeFi 基础: 预言机与报价</a></li><li><a href="/2025/08/21/DeFi%E5%9F%BA%E7%A1%803/">DeFi 基础: 借贷与清算</a></li><li><a href="/2025/08/21/DeFi%E8%BF%9B%E9%98%B61/">DeFi 进阶: 闪电贷与套利</a></li></ol></blockquote><p>预言机（Oracle）的逻辑相对简单，基本功能是，会有链下服务定时向链上提交一些数据，比如 WETH 的价格，合约保存下数据后，就可以被其他智能合约调用，直接获取到价格信息。</p><p>那么链下服务的价格信息，从哪里来？简单处理的话，可以来自 AMM 合约的初始流动性的定价。</p><p>以下所有操作都在 Sepolia 测试网进行。这些操作步骤，其实都是一些普通的合约交互步骤。主要是在操作过程中，进一步体会和理解合约的代码功能。</p><h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><p>合约代码源文件在仓库：<a href="https://github.com/smallyunet/defi-invariant-lab/tree/v0.0.2">smallyunet&#x2F;defi-invariant-lab@v0.0.2</a></p><p>Oracle 使用的合约是 <a href="https://github.com/smallyunet/defi-invariant-lab/blob/v0.0.2/contracts/oracle/MedianOracle.sol">MedianOracle.sol</a>，先克隆仓库：</p><pre><code class="bash">git clone https://github.com/smallyunet/defi-invariant-lab/git switch v0.0.2cd defi-invariant-lab</code></pre><p>部署合约：</p><pre><code class="bash">forge create \  --rpc-url $RPC_URL \  --private-key $PK_HEX \  --broadcast \  contracts/oracle/MedianOracle.sol:MedianOracle</code></pre><p>部署的合约地址是 <a href="https://sepolia.etherscan.io/address/0xdE342a228A2A83b47cA4eB3D3852578837E60750"><code>0xdE342a228A2A83b47cA4eB3D3852578837E60750</code></a>。</p><p>验证合约：</p><pre><code class="bash">forge verify-contract \  --chain-id 11155111 \  0xdE342a228A2A83b47cA4eB3D3852578837E60750 \  contracts/oracle/MedianOracle.sol:MedianOracle \  --etherscan-api-key $ETHERSCAN_API_KEY</code></pre><h3 id="设置喂价人"><a href="#设置喂价人" class="headerlink" title="设置喂价人"></a>设置喂价人</h3><p>调用合约的 <a href="https://github.com/smallyunet/defi-invariant-lab/blob/v0.0.2/contracts/oracle/MedianOracle.sol#L14"><code>setFeeder</code></a> 函数，设定谁可以向 Oracle 提交数据：</p><pre><code class="bash">export ORACLE_ADDR=0xdE342a228A2A83b47cA4eB3D3852578837E60750cast send $ORACLE_ADDR &quot;setFeeder(address,bool)&quot; \  0x44D7A0F44e6340E666ddaE70dF6eEa9b5b17a657 true \  --rpc-url $RPC_URL --private-key $PK_HEX</code></pre><p>然后能查询到设置结果：</p><pre><code class="bash">cast call $ORACLE_ADDR &quot;feeders(address)((bool))&quot; $MY_ADDR --rpc-url $RPC_URL# (true)</code></pre><h3 id="首次喂价"><a href="#首次喂价" class="headerlink" title="首次喂价"></a>首次喂价</h3><p>发起交易：</p><pre><code class="bash">cast send $ORACLE_ADDR &quot;post(uint256[])&quot; \  &quot;[199900000000,200000000000,200000000000,200000000000,200100000000]&quot; \  --rpc-url $RPC_URL --private-key $PK_HEX</code></pre><h3 id="读取最新价格"><a href="#读取最新价格" class="headerlink" title="读取最新价格"></a>读取最新价格</h3><p>读取价格：</p><pre><code class="bash">cast call $ORACLE_ADDR &quot;latest()(uint256,uint256)&quot; --rpc-url $RPC_URL</code></pre>]]></content>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;这是一个 DeFi 系列教程，在动手实践的过程中，学习和理解 DeFi 相关的概念与原理：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;a href=&quot;/2025/08/20/DeFi%E5%9F%BA%E7%A1%801/&quot;&gt;DeFi 基础: 理解 AMM</summary>
-        
-      
-    
-    
-    
-    
-    <category term="DeFi" scheme="https://smallyu.net/tags/DeFi/"/>
-    
-  </entry>
   
   <entry>
     <title>DeFi 基础: 理解 AMM 定价机制</title>
