@@ -1,7 +1,7 @@
 # Navigation bar without starting with a slash
 menu:
   博客: ''
-  Paragraph: https://paragraph.com/@smallyu
+  # Paragraph: https://paragraph.com/@smallyu
   联系: about
   # English: https://en.smallyu.net
 
