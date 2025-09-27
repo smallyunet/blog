@@ -1,0 +1,321 @@
+/*
+  Typography system (Chinese-optimized)
+  - Unify font stacks for Chinese and Latin
+  - Establish consistent rhythm (font-size, line-height, spacing)
+  - Improve readability for headings, paragraphs, lists, quotes, code
+  - Responsive scaling
+
+  Design principles
+  - Base size: 18px (desktop), 16px for micro-blog, 32px for body.mobile retained but scaled.
+  - Line height: body 1.8 for CJK; headings tighter but >=1.3
+  - Modular scale: 1.25 (Minor Third) for headings
+  - Comfortable paragraph spacing and list spacing
+  - Chinese-friendly font stack prioritizing PingFang/Hiragino/Microsoft YaHei
+*/
+
+:root {
+  /* Scale variables */
+  --font-size-base: 18px; /* body base on desktop */
+  --font-size-sm: 0.8889rem; /* ~16px from 18px base */
+  --font-size-xs: 0.7778rem; /* ~14px */
+  --font-size-code: 0.8889rem; /* inline/code blocks */
+
+  --lh-base: 1.8;  /* Recommended for Chinese text */
+  --lh-tight: 1.3; /* Code, headings minimal */
+
+  /* Background */
+  --bg-color: #ffffff;
+
+  --color-text: #111;
+  --color-muted: #666;
+  /* Accent & link colors (adjust here to switch theme hues) */
+  --color-accent: #7a3cff; /* accent used in some elements */
+  --link-color: #2563eb;      /* blue-600 */
+  --link-hover: #1d4ed8;      /* blue-700 */
+  --link-visited: #1e40af;    /* blue-800 */
+  --color-hr: #e5e5e5;
+  --color-quote-bg: #fafafa;
+  --color-quote-border: #e0e0e0;
+  --color-code-bg: #f6f6f6;
+  --color-code-border: #e2e2e2;
+
+  /* Heading */
+  --heading-color: #333;
+  --heading-underline: #e6e6e6;
+  --heading-underline-accent: var(--link-color);
+}
+
+/* Unified font stack */
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", "WenQuanYi Micro Hei", "Helvetica Neue", Arial, sans-serif;
+  color: var(--color-text);
+  background: var(--bg-color);
+  color-scheme: light dark; /* enable form controls adapting to theme */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Base sizing */
+body { font-size: var(--font-size-base); }
+body.mobile { font-size: 32px; }
+
+/* Headings hierarchy with Chinese serif option for large titles */
+h1, h2, h3, h4, h5, h6 {
+  margin: 1.4em 0 0.8em; /* slightly tighter top spacing by default */
+  line-height: 1.35;
+  color: var(--heading-color);
+  font-weight: 600;
+}
+
+/* Keep the classic Palatino look for main titles but fallback sensibly for CJK */
+h1, h2 {
+  font-family: "Palatino Linotype", Palatino, "Times New Roman", STKaiti, "Kaiti SC", serif;
+}
+
+h1 { font-size: clamp(1.75em, 4.2vw, 2em); }
+h2 { font-size: 1.6em; }
+h3 { font-size: 1.25em; }
+h4 { font-size: 1.1em; }
+
+/* Center main H1 as original theme does */
+h1 { text-align: center; }
+
+/* Remove legacy full-width borders from theme for a cleaner look */
+h2, h3, h4 { border-bottom: none; }
+
+/* Decorative underlines using pseudo-elements (proportional, not full-width) */
+h1::after {
+  content: "";
+  display: block;
+  width: 4em;   /* scales with font-size */
+  max-width: 12ch; /* prevent overly long on very large titles */
+  height: 3px;
+  margin: 0.45em auto 0; /* center under H1 */
+  background: var(--heading-underline);
+  border-radius: 2px;
+}
+
+h2::after {
+  content: "";
+  display: block;
+  width: 3.5em; /* a touch longer for visual balance */
+  height: 2px;
+  margin-top: 0.4em;
+  background: var(--heading-underline);
+  border-radius: 2px;
+}
+
+h3::after {
+  content: "";
+  display: block;
+  width: 3em; /* lengthen to avoid looking too short on dense CJK */
+  height: 2px;
+  margin-top: 0.35em;
+  background: var(--heading-underline);
+  border-radius: 2px;
+}
+
+/* H4+ no underline by default for cleanliness */
+
+/* Paragraphs and lists */
+p, li {
+  font-size: 1em;
+  line-height: var(--lh-base);
+}
+
+p { margin: 1em 0; }
+
+ul, ol { margin: 0.8em 0 1.2em 1.4em; }
+ul ul, ol ol, ul ol, ol ul { margin-top: 0.3em; margin-bottom: 0.6em; }
+
+/* Quotes */
+blockquote {
+  background: var(--color-quote-bg);
+  border-left: 4px solid var(--color-quote-border);
+  padding: 0.6em 1em; /* give quotes comfortable breathing room */
+  margin: 1em 0 1.2em 0;
+  color: #444;
+  font-size: 0.95rem; /* slightly smaller */
+}
+blockquote p { margin: 0.6em 0; }
+
+/* Code */
+code, pre, kbd, samp {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Noto Sans Mono CJK SC", "Source Han Mono SC", monospace;
+}
+
+p code, li code {
+  font-size: 0.9em;
+  background: var(--color-code-bg);
+  border: 1px solid var(--color-code-border);
+  border-radius: 3px;
+  padding: 0 0.25em;
+  margin: 0 0.15em;
+  word-break: break-word;
+}
+
+pre {
+  font-size: 0.95em;
+  line-height: 1.5;
+  background: var(--color-code-bg);
+  border: 1px solid var(--color-code-border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin: 1.2em 0; /* consistent vertical rhythm around code blocks */
+  overflow: auto;
+}
+
+/* Avoid double backgrounds when using highlight.js */
+pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+/* Links */
+/* Links: readable, accessible, and elegant */
+a {
+  color: var(--link-color);
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: 0.08em;
+  text-decoration-skip-ink: auto;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+a:hover,
+a:focus {
+  color: var(--link-hover);
+  text-decoration-thickness: 0.12em;
+}
+
+a:visited { color: var(--link-visited); }
+
+/* Keyboard focus ring */
+a:focus-visible {
+  outline: 2px solid var(--link-hover);
+  outline-offset: 2px;
+}
+
+/* Avoid heavy decoration in headings; reveal on hover/focus */
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+  color: inherit;
+  text-decoration: none;
+}
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover,
+h1 a:focus, h2 a:focus, h3 a:focus, h4 a:focus, h5 a:focus, h6 a:focus {
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+/* Links wrapping code should not double-decorate */
+a code { text-decoration: none; }
+
+/* Navigation/controls: no underline by default */
+.navbar a, .paginator a, ul.tags a { text-decoration: none; }
+
+/* HR and small text */
+hr { border: none; border-top: 1px solid var(--color-hr); margin: 2em 0; }
+small, .muted { color: var(--color-muted); font-size: var(--font-size-xs); }
+
+/* Tables */
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #e6e6e6; padding: 8px 10px; }
+tr { background: #fff; }
+/* tr:nth-child(2n){ background:#fafafa; } keep optional */
+
+/* Images and video */
+img, video { max-width: 100%; height: auto; }
+
+/* Time/metadata */
+.time { font-size: 0.95rem; color: var(--color-muted); }
+
+/* Tag list harmonization */
+ul.tags { font-size: 0.9rem; }
+
+/* Micro-blog adjustments keep smaller base */
+.micro-blog { font-size: 16px; }
+
+/* Mobile scaling: keep existing .mobile class behavior but harmonize headings */
+@media (max-width: 860px) {
+  :root { --font-size-base: 17px; }
+  h2 { font-size: 1.4em; }
+  h3 { font-size: 1.2em; }
+}
+
+/* Trim the very first article title spacing inside the post container */
+.inner h1:first-child,
+.inner-narrow h1:first-child {
+  margin-top: 0.8em;
+}
+
+/* Print refinements */
+@media print {
+  a { color: #000; border-bottom: 0; }
+  pre { box-shadow: none; }
+}
+
+/* ===================== */
+/* Dark mode (variables) */
+/* ===================== */
+/* Ensure lightbox overlay stays hidden on pages that don't load post.css */
+.lb-overlay { display: none; }
+.lb-overlay.open { display: flex; }
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #0f1115;
+    --color-text: #e7e7e7;
+    --color-muted: #a6a6a6;
+    --link-color: #8ab4f8;   /* Google blue-ish for dark */
+    --link-hover: #a9c6ff;
+    --link-visited: #a0b3ff;
+    --color-hr: #2a2f37;
+    --color-quote-bg: #141a20;
+    --color-quote-border: #2a2f37;
+    --color-code-bg: #12161a;
+    --color-code-border: #2a2f37;
+    --heading-color: #f0f0f0;
+    --heading-underline: #2a2f37;
+    --heading-underline-accent: var(--link-color);
+  }
+}
+
+/* Manual theme override hooks */
+html[data-theme="dark"],
+body[data-theme="dark"] {
+  --bg-color: #0f1115;
+  --color-text: #e7e7e7;
+  --color-muted: #a6a6a6;
+  --link-color: #8ab4f8;
+  --link-hover: #a9c6ff;
+  --link-visited: #a0b3ff;
+  --color-hr: #2a2f37;
+  --color-quote-bg: #141a20;
+  --color-quote-border: #2a2f37;
+  --color-code-bg: #12161a;
+  --color-code-border: #2a2f37;
+  --heading-color: #f0f0f0;
+  --heading-underline: #2a2f37;
+  --heading-underline-accent: var(--link-color);
+}
+
+html[data-theme="light"],
+body[data-theme="light"] {
+  --bg-color: #ffffff;
+}
+
+/* Dark: ensure code text has enough contrast regardless of external themes */
+@media (prefers-color-scheme: dark) {
+  pre, code, kbd, samp { color: #e8e8e8; }
+}
+html[data-theme="dark"] pre,
+html[data-theme="dark"] code,
+html[data-theme="dark"] kbd,
+html[data-theme="dark"] samp,
+body[data-theme="dark"] pre,
+body[data-theme="dark"] code,
+body[data-theme="dark"] kbd,
+body[data-theme="dark"] samp { color: #e8e8e8; }
