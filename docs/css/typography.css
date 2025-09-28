@@ -105,20 +105,22 @@ h3::after {
 }
 
 h1::after {
-  width: 4em;   /* scales with font-size */
-  max-width: 12ch; /* prevent overly long on very large titles */
+  width: 6em;   /* proportional to title, not too long */
+  max-width: 80%; /* responsive: never exceed title width on narrow screens */
   height: 3px;
   margin: 0.45em auto 0; /* center under H1 */
 }
 
 h2::after {
-  width: 3.5em; /* a touch longer for visual balance */
+  width: 5em; /* slightly shorter than H1 for hierarchy */
+  max-width: 75%;
   height: 2px;
   margin-top: 0.4em;
 }
 
 h3::after {
-  width: 3em; /* lengthen to avoid looking too short on dense CJK */
+  width: 4em; /* shortest for clear visual hierarchy */
+  max-width: 70%;
   height: 2px;
   margin-top: 0.35em;
 }

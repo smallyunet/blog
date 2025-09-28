@@ -181,7 +181,7 @@ div.outer {
 }
 
 body.mobile div.outer {
-  margin: 2% 0% 2% 0%;
+  margin: 1% 0% 1% 0%;
 }
 
 /* Containers */
@@ -200,7 +200,7 @@ div.inner-narrow {
 
 body.mobile div.inner {
   margin: 0;
-  padding: 2% 4% 4% 4%;
+  padding: 1% 2% 2% 2%;
 }
 
 div.ad-banner {

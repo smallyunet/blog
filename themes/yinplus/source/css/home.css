@@ -247,14 +247,14 @@ div.word-count {
     }
 
     /* Narrower horizontal paddings on phones to reduce perceived side margins */
-    ul.list-group { padding-left: 12px; padding-right: 12px; }
-    li.list-group-item.title { padding-left: 12px; padding-right: 12px; }
+    ul.list-group { padding-left: 6px; padding-right: 6px; }
+    li.list-group-item.title { padding-left: 6px; padding-right: 6px; }
 
     /* Make the main container full-width with comfortable padding on phones */
     div.inner,
     div.inner-narrow {
         margin: 0;
-        padding: 2% 4% 4% 4%;
+        padding: 1% 2% 2% 2%;
     }
 
     /* Mobile nav: override legacy large sizes; keep comfortable hit height */
@@ -266,7 +266,7 @@ div.word-count {
     .navbar-nav>li>a { line-height: 36px; }
 
     /* Reduce the top gap between fixed navbar and list on phones */
-    div.outer { margin: 20px 4% 40px 4%; }
+    div.outer { margin: 10px 2% 20px 2%; }
 
     div.word-count {
         display: none;
@@ -277,7 +277,7 @@ div.word-count {
     }
 
     /* Touch targets: keep ≥ 44px row height */
-    .list-group-item { padding-top: 16px; padding-bottom: 16px; }
+    .list-group-item { padding-top: 8px; padding-bottom: 8px; }
 
     /* Let titles wrap to two lines on mobile */
     ul.list-group li.title a {
