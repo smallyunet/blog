@@ -238,6 +238,18 @@ div.word-count {
         padding-top: 16px;
         padding-bottom: 16px;
     }
+
+    /* Let titles use the freed right space (word-count is hidden) */
+    ul.list-group li.title a {
+        padding-right: 0;               /* was 120px for desktop word-count */
+        white-space: normal;            /* allow wrapping instead of forced single line */
+        overflow: hidden;               /* keep tidy */
+        text-overflow: ellipsis;        /* still ellipsize if exceeding clamp */
+    display: -webkit-box;           /* multiline clamp */
+    -webkit-line-clamp: 2;          /* show up to 2 lines on mobile */
+    line-clamp: 2;                  /* standard property for newer engines */
+        -webkit-box-orient: vertical;
+    }
 }
 
 /* paginator CSS */
