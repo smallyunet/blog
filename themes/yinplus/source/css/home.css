@@ -225,11 +225,13 @@ div.word-count {
 }
 
 @media screen and (max-width: 860px) {
-    /* Avoid overlap: fixed navbar becomes static on phones */
-    .navbar-fixed-top { position: static; }
+    /* Define shared mobile navbar height at root so all elements (including body) can read it */
+    :root { --mobile-navbar-height: 44px; }
+    /* Keep navbar fixed on phones as well */
+    .navbar-fixed-top { position: fixed; top: 0; left: 0; right: 0; z-index: 1030; }
     /* Keep navbar expanded on phones: hide hamburger; use flex to stay on one line */
     .navbar-toggle { display: none !important; }
-    .navbar .container-fluid { display: flex; align-items: center; flex-wrap: nowrap; }
+    .navbar .container-fluid { display: flex; align-items: center; flex-wrap: nowrap; position: relative; }
     .navbar-header { flex: 0 0 auto; }
     .navbar-collapse.collapse { display: flex !important; height: auto !important; overflow: visible !important; flex: 1 1 auto; }
     .navbar-nav { display: flex; flex-wrap: nowrap; margin-left: auto; float: none !important; }
@@ -263,13 +265,21 @@ div.word-count {
     /* Mobile: remove inner content box border */
     div.inner .box { border: 0; }
 
-    /* Mobile nav: override legacy large sizes; keep comfortable hit height */
+    /* Mobile nav: normalize height (no taller than desktop) */
     /* Increase specificity to override legacy body.mobile sizes */
+    /* Use a fixed mobile navbar height and center contents vertically */
+    .navbar { height: var(--mobile-navbar-height); min-height: var(--mobile-navbar-height); padding-top: env(safe-area-inset-top); padding-bottom: 0; }
+    .navbar .container-fluid { height: var(--mobile-navbar-height); }
     .navbar-brand,
     .navbar-nav { font-size: 17px; }
-    .navbar-nav>li>a { line-height: 36px; }
+    .navbar-brand { height: var(--mobile-navbar-height); line-height: var(--mobile-navbar-height); padding-top: 0; padding-bottom: 0; }
+    .navbar-nav>li>a { height: var(--mobile-navbar-height); line-height: var(--mobile-navbar-height); padding-top: 0; padding-bottom: 0; }
 
-    /* Reduce top gap and increase side gutters on phones */
+    /* Note: horizontal alignment remains default; only vertical centering adjusted */
+
+    /* Offset page content for fixed navbar on phones */
+    body { padding-top: calc(var(--mobile-navbar-height) + env(safe-area-inset-top) + 12px); }
+    /* Reduce top gap and increase side gutters on phones (content margins remain) */
     div.outer { margin: 6px 3% 16px 3%; }
 
     div.word-count {
@@ -296,9 +306,11 @@ div.word-count {
 }
 /* Extra-narrow phones: modestly smaller nav text */
 @media screen and (max-width: 360px) {
+    .navbar { min-height: 40px; }
     .navbar-brand,
     .navbar-nav { font-size: 16px; }
-    .navbar-nav>li>a { line-height: 34px; }
+    .navbar-brand { line-height: 26px; padding-top: 6px; padding-bottom: 6px; }
+    .navbar-nav>li>a { line-height: 26px; padding-top: 6px; padding-bottom: 6px; }
 }
 
 /* Extra-narrow phones: shave another 2px while keeping ≥44px touch height */
