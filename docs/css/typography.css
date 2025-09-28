@@ -118,8 +118,6 @@ h1::after {
 h2::after {
   width: 5em; /* slightly shorter than H1 for hierarchy */
   max-width: 75%;
-.muted, .time, .word-count { color: var(--text-muted); }
-.time { font-size: 0.9rem; }
   height: 2px;
   margin-top: 0.4em;
 }
@@ -185,7 +183,9 @@ blockquote {
   border-left: 4px solid var(--color-quote-border);
   padding: 0.6em 1em; /* give quotes comfortable breathing room */
   margin: 1em 0 1.2em 0;
-  color: #444;
+  /* Use theme text color so quotes remain readable in both light and dark modes.
+     A previous hard-coded dark gray (#444) reduced contrast in dark mode. */
+  color: var(--color-text);
   font-size: 0.95rem; /* slightly smaller */
 }
 blockquote p { margin: 0.6em 0; }
@@ -224,6 +224,14 @@ pre code {
   border: 0;
   padding: 0;
 }
+
+/* Some highlight.js styles may set a fixed background; keep it transparent so
+   our theme variables control the surface in both light and dark modes. */
+.hljs { background: transparent; }
+
+/* Ensure links inside blockquotes maintain clear contrast */
+blockquote a { color: var(--link-color); }
+blockquote a:hover, blockquote a:focus { color: var(--link-hover); }
 
 /* ===== */
 /* Links */
@@ -285,8 +293,8 @@ small, .muted { color: var(--text-muted); font-size: var(--font-size-xs); }
 /* Tables */
 /* ====== */
 table { border-collapse: collapse; width: 100%; }
-th, td { border: 1px solid #e6e6e6; padding: 8px 10px; }
-tr { background: #fff; }
+th, td { border: 1px solid var(--border-color); padding: 8px 10px; }
+tr { background: var(--surface-1); }
 /* tr:nth-child(2n){ background:#fafafa; } keep optional */
 
 /* Content tables inside post/home inner containers (shared) */
@@ -300,8 +308,8 @@ tr { background: #fff; }
 }
 .inner table tr,
 .inner-narrow table tr {
-  background-color: #fff;
-  border-top: 1px solid #c6cbd1;
+  background-color: var(--surface-1);
+  border-top: 1px solid var(--border-color);
 }
 .inner table th,
 .inner-narrow table th { text-align: center; }
@@ -310,7 +318,7 @@ tr { background: #fff; }
 .inner-narrow table th,
 .inner-narrow table td {
   padding: 6px 13px;
-  border: 1px solid #dfe2e5;
+  border: 1px solid var(--border-color);
 }
 
 /* ================= */
