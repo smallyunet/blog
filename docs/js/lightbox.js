@@ -17,7 +17,7 @@
     overlay.setAttribute('role', 'dialog');
     overlay.setAttribute('aria-modal', 'true');
     overlay.setAttribute('aria-hidden', 'true');
-    overlay.innerHTML = '<img alt="" /><div class="lb-close-hint">Click or press ESC to close</div>';
+  overlay.innerHTML = '<img alt="" />';
     overlay.style.display = 'none';
     var imgEl = overlay.querySelector('img');
     document.body.appendChild(overlay);

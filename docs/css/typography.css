@@ -473,6 +473,35 @@ body[data-theme="dark"] .inner-narrow table tr { background-color: #0f1115; bord
 html[data-theme="dark"] .inner table th,
 html[data-theme="dark"] .inner table td,
 body[data-theme="dark"] .inner table th,
+/* ================================================ */
+/* Code typography refinements (scoped to .inner)   */
+/* Slightly smaller code for better hierarchy        */
+/* Desktop and mobile tuned separately               */
+/* ================================================ */
+/* Block code within post content */
+.inner pre {
+  font-size: 0.84em;   /* ~15.1px on desktop (body=18px) */
+  line-height: 1.55;   /* comfortable for long lines */
+}
+
+/* Inline code a notch smaller than block */
+.inner p code,
+.inner li code {
+  font-size: 0.82em;   /* ~14.8px on desktop */
+}
+
+/* Mobile adjustments (<=860px) */
+@media screen and (max-width: 860px) {
+  .inner pre {
+    font-size: 0.83em; /* ~14.1px when body≈17px */
+    line-height: 1.55;
+  }
+  .inner p code,
+  .inner li code {
+    font-size: 0.81em; /* ~13.8px */
+  }
+}
+
 body[data-theme="dark"] .inner table td,
 html[data-theme="dark"] .inner-narrow table th,
 html[data-theme="dark"] .inner-narrow table td,

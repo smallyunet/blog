@@ -278,21 +278,11 @@ figcaption {
 .lb-overlay.open { display: flex; }
 .lb-overlay img {
   max-width: 92vw;
-  /* Reserve space for the close hint to avoid crowding the image */
-  max-height: calc(92vh - 44px);
+  /* No hint: allow full viewport height with comfortable margins */
+  max-height: 92vh;
   border-radius: 8px;
   box-shadow: 0 8px 30px rgba(0,0,0,0.35);
   background: #fff;
-}
-.lb-overlay .lb-close-hint {
-  position: fixed;
-  bottom: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: rgba(255,255,255,0.85);
-  font-size: 12px;
-  letter-spacing: .02em;
-  user-select: none;
 }
 
 /* custom modal style */
