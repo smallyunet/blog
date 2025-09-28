@@ -46,8 +46,8 @@ body[data-theme="light"] li.title:hover {
 li.list-group-item.title {
     position: relative;
     display: grid;
-    grid-template-columns: 10ch 1fr auto; /* YYYY-MM-DD fits in ~10ch */
-    grid-template-areas: "date title count";
+    /* columns: [date] [title] [word-count] [tags] */
+    grid-template-columns: 10ch 1fr auto auto; /* allow both meta blocks on the right */
     column-gap: 16px;
     align-items: center;
 }
@@ -125,9 +125,10 @@ ul.list-group li.title a:focus {
     }
 }
 
+/* Navigation: refine base typography */
 .navbar-brand,
 .navbar-nav {
-    font-size: 24px;
+    font-size: 20px; /* desktop base size; was 24px */
 }
 
 .navbar-nav.navbar-right:last-child {
@@ -180,9 +181,9 @@ div.outer {
 
 .list-group-item {
     transition: background-color 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-    padding-top: 12px; /* slightly tighter to reduce blank feel */
-    padding-bottom: 12px;
-    border-color: #eef1f4; /* softer separators */
+    padding-top: 16px; /* baseline breathing room */
+    padding-bottom: 16px;
+    border-color: var(--color-hr);
 }
 
 /* Constrain list width for better readability on ultra-wide screens */
@@ -201,28 +202,29 @@ ul.list-group {
 /* Home list: use explicit separators instead of Bootstrap's stacked borders
    to avoid occasional missing bottom border on the first item */
 /* Quiet list (no persistent separators): keep items clean and rely on hover/focus cues */
+/* Hairline bottom separator via background gradient (crisper than borders on HiDPI) */
+ul.list-group { --row-separator: rgba(0,0,0,0.06); } /* lighter than --color-hr for subtle hairline */
 ul.list-group > li.list-group-item.title {
-    border: 0; /* remove all sides */
-    margin-bottom: 0; /* neutralize Bootstrap stacked-border overlap */
+    border: 0; /* reset Bootstrap's borders */
+    margin-bottom: 0; /* neutralize stacked overlap */
+    background-image: linear-gradient(to bottom, transparent calc(100% - 1px), var(--row-separator, var(--color-hr)) 0);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
 }
+ul.list-group > li.list-group-item.title:last-child { background-image: none; }
 
-/* Ultra-light zebra to reduce the "all white" feel without adding real lines */
-ul.list-group > li.list-group-item.title:nth-child(odd) {
-    background-color: rgba(15, 23, 42, 0.015); /* slate-900 @ 1.5%: subtler zebra */
-}
+/* Zebra disabled globally */
+ul.list-group > li.list-group-item.title:nth-child(odd) { background-color: transparent; }
 
 div.date {
     font-size: 80%;
     color: #9aa0a6; /* lighter gray for secondary information */
     margin-bottom: 2px; /* tuck date closer to title to form a visual unit */
     font-variant-numeric: tabular-nums; /* ensure perfect column alignment */
-    grid-area: date;
 }
 
-/* Title grows to fill space; word-count aligns right */
-.title a { flex: 1 1 auto; grid-area: title; }
+/* Title grows to fill space; word-count aligns right (grid auto placement puts it in column 2) */
 div.word-count {
-    grid-area: count;
     margin-left: 12px;
     color: darkgray;
     min-width: 60px;
@@ -239,13 +241,14 @@ div.word-count {
     /* Mobile: stack date above title, hide count (kept below) */
     li.list-group-item.title {
         grid-template-columns: 1fr;
-        grid-template-areas:
-            "date"
-            "title";
         row-gap: 4px;
         column-gap: 0;
         align-items: start;
     }
+
+    /* Narrower horizontal paddings on phones to reduce perceived side margins */
+    ul.list-group { padding-left: 12px; padding-right: 12px; }
+    li.list-group-item.title { padding-left: 12px; padding-right: 12px; }
 
     /* Make the main container full-width with comfortable padding on phones */
     div.inner,
@@ -253,6 +256,14 @@ div.word-count {
         margin: 0;
         padding: 2% 4% 4% 4%;
     }
+
+    /* Mobile nav: override legacy large sizes; keep comfortable hit height */
+    /* Increase specificity to override legacy body.mobile sizes */
+    .navbar-brand,
+    .navbar-nav,
+    body.mobile .navbar-brand,
+    body.mobile .navbar-nav { font-size: 17px; }
+    .navbar-nav>li>a { line-height: 36px; }
 
     /* Reduce the top gap between fixed navbar and list on phones */
     div.outer { margin: 20px 4% 40px 4%; }
@@ -265,11 +276,8 @@ div.word-count {
         display: none;
     }
 
-    /* Touch targets: keep ≥ 44px row height while calming density */
-    .list-group-item {
-        padding-top: 14px;
-        padding-bottom: 14px;
-    }
+    /* Touch targets: keep ≥ 44px row height */
+    .list-group-item { padding-top: 16px; padding-bottom: 16px; }
 
     /* Let titles wrap to two lines on mobile */
     ul.list-group li.title a {
@@ -281,6 +289,20 @@ div.word-count {
         line-clamp: 2;                  /* standard property for newer engines */
         -webkit-box-orient: vertical;
     }
+}
+/* Extra-narrow phones: modestly smaller nav text */
+@media screen and (max-width: 360px) {
+    .navbar-brand,
+    .navbar-nav,
+    body.mobile .navbar-brand,
+    body.mobile .navbar-nav { font-size: 16px; }
+    .navbar-nav>li>a { line-height: 34px; }
+}
+
+/* Extra-narrow phones: shave another 2px while keeping ≥44px touch height */
+@media screen and (max-width: 360px) {
+    ul.list-group { padding-left: 10px; padding-right: 10px; }
+    li.list-group-item.title { padding-left: 10px; padding-right: 10px; }
 }
 
 ul.tags {
@@ -316,12 +338,19 @@ ul.tags li a:hover {
     color: #559bce;
 }
 
-/* micro blog highlight */
-.highlight {
-    border: 2px solid #ff9800;
-    box-shadow: 0 0 10px rgba(255, 152, 0, 0.7);
-    transition: all 0.5s ease;
+/* In article rows, place tags in the right grid column instead of floating */
+ul.list-group li.list-group-item.title ul.tags {
+    float: none;              /* cancel global float */
+    margin: 0 0 0 12px;       /* space from title */
+    align-self: center;       /* vertical align */
+    justify-self: end;        /* push to the right column */
+    display: flex;            /* place tags on a single line */
+    flex-wrap: wrap;
+    gap: 0 8px;
 }
+ul.list-group li.list-group-item.title ul.tags li span { color: darkgray; }
+
+
 
 /************************ home inner (all)***************************/
 
@@ -690,13 +719,19 @@ div.inner div.title-margin {
 
     .list-group { background: transparent; }
     .list-group-item {
-        background-color: rgba(255,255,255,0.02);
+        background-color: transparent; /* remove persistent tint to avoid zebra-like perception */
         border-color: #2a2f37;
     }
-    /* Quiet list also in dark mode: no persistent separators */
-    ul.list-group > li.list-group-item.title { border: 0; }
-    /* Dark zebra tint */
-    ul.list-group > li.list-group-item.title:nth-child(odd) { background-color: rgba(255, 255, 255, 0.028); }
+    /* Dark mode: hairline gradient separator */
+    ul.list-group { --row-separator: rgba(255,255,255,0.07); }
+    ul.list-group > li.list-group-item.title {
+        border: 0;
+        background-image: linear-gradient(to bottom, transparent calc(100% - 1px), var(--row-separator, var(--color-hr)) 0);
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+    /* Zebra disabled in dark mode */
+    ul.list-group > li.list-group-item.title:nth-child(odd) { background-color: transparent; }
     /* Ensure dark hover stays dark-tinted */
     ul.list-group > li.list-group-item.title:hover { background-color: rgba(138,180,248,0.08); }
     li.title:hover {
@@ -736,13 +771,19 @@ body[data-theme="dark"] .panel-default>.panel-heading { background-color: #1a1f2
 html[data-theme="dark"] .list-group,
 body[data-theme="dark"] .list-group { background: transparent; }
 html[data-theme="dark"] .list-group-item,
-body[data-theme="dark"] .list-group-item { background-color: rgba(255,255,255,0.02); border-color: #2a2f37; }
-/* Quiet list for manual dark override as well */
+body[data-theme="dark"] .list-group-item { background-color: transparent; border-color: #2a2f37; }
+/* Manual dark override: hairline gradient separator */
+html[data-theme="dark"] ul.list-group { --row-separator: rgba(255,255,255,0.07); }
 html[data-theme="dark"] ul.list-group > li.list-group-item.title,
-body[data-theme="dark"] ul.list-group > li.list-group-item.title { border: 0; }
+body[data-theme="dark"] ul.list-group > li.list-group-item.title {
+    border: 0;
+    background-image: linear-gradient(to bottom, transparent calc(100% - 1px), var(--row-separator, var(--color-hr)) 0);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
 /* Manual dark zebra */
 html[data-theme="dark"] ul.list-group > li.list-group-item.title:nth-child(odd),
-body[data-theme="dark"] ul.list-group > li.list-group-item.title:nth-child(odd) { background-color: rgba(255, 255, 255, 0.028); }
+body[data-theme="dark"] ul.list-group > li.list-group-item.title:nth-child(odd) { background-color: transparent; }
 
 /* Manual dark hover */
 html[data-theme="dark"] ul.list-group > li.list-group-item.title:hover,
@@ -780,3 +821,5 @@ html[data-theme="dark"] ul.tags li a,
 body[data-theme="dark"] ul.tags li a { color: var(--link-color); }
 html[data-theme="dark"] ul.tags li a:hover,
 body[data-theme="dark"] ul.tags li a:hover { color: var(--link-hover); }
+
+/* Zebra stripes are disabled globally (see rules above). */

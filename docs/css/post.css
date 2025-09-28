@@ -1,3 +1,8 @@
+/* ===================================== */
+/* Post styles: layout, media, utilities */
+/* (No visual changes, readability only) */
+/* ===================================== */
+
 * {
   box-sizing: border-box;
 }
@@ -14,28 +19,18 @@ table {
 
 /* Base body font and sizes are unified in typography.css */
 
+/* Headings (post page)
+   Typography for headings is centralized in typography.css.
+   We keep post-specific alignment and legacy borders where present. */
 H1 {
   /* Typography handled in typography.css; keep alignment only */
   text-align: center;
 }
 
-H2 {
-  margin-bottom: 40px;
-  padding: 5px 0;
-  border-bottom: 2px LightGrey solid;
-}
-
-H3 {
-  margin-top: 40px;
-  margin-bottom: 30px;
-  border-bottom: 1px LightGrey solid;
-}
-
-H4 {
-  margin-top: 40px;
-  margin-bottom: 30px;
-  border-bottom: 1px LightGrey solid;
-}
+/* Heading decorations are handled by typography.css; remove legacy borders to avoid duplication */
+H2 { margin-bottom: 40px; padding: 5px 0; border-bottom: none; }
+H3 { margin-top: 40px; margin-bottom: 30px; border-bottom: none; }
+H4 { margin-top: 40px; margin-bottom: 30px; border-bottom: none; }
 
 .time {
   text-align: center;
@@ -50,12 +45,59 @@ H4 {
 }
 
 
-li {
-  margin-left: 10px;
+/* Content lists: scope to article inner container */
+.inner li { margin-left: 0; }
+
+/* Comfortable list spacing and marker styling */
+.inner ul,
+.inner ol {
+  padding-left: 1.6em;        /* increase left indent for clearer bullet separation */
+  margin: 0.8em 0 1.2em 0;    /* align with typography defaults, explicit here for clarity */
+  list-style-position: outside;
 }
+.inner li + li { margin-top: 0.5em; } /* vertical rhythm between items */
+
+/* Toned-down markers for elegance; supported in modern browsers */
+.inner ul li::marker { color: var(--color-muted); font-size: 0.75em; }
+.inner ol li::marker { color: var(--color-muted); font-weight: 600; }
+
+/* Links inside lists: slightly larger underline offset for dense lists */
+.inner li a {
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 0.09em;
+}
+.inner li a:hover,
+.inner li a:focus {
+  text-decoration-thickness: 0.12em;
+}
+
+/* If a list directly follows a heading, tighten the top gap slightly */
+.inner h2 + ul,
+.inner h3 + ul,
+.inner h4 + ul { margin-top: 0.6em; }
 
 
 /* Blockquotes and code typography unified in typography.css */
+/* Post page blockquote refinements (scoped to .inner) */
+.inner blockquote {
+  /* keep variables from typography.css for theme compatibility */
+  background: var(--color-quote-bg);
+  border-left: 3px solid var(--color-quote-border); /* a touch slimmer for elegance */
+  padding: 0.75em 1em; /* slightly more breathing room */
+  margin: 1em 0 1.2em 0;
+  border-radius: 4px; /* calm the sharp rectangle just a bit */
+}
+.inner blockquote p { margin: 0.55em 0; }
+/* Lists inside quotes: improve contrast and rhythm */
+.inner blockquote ul,
+.inner blockquote ol { padding-left: 1.2em; margin: 0.6em 0 0.8em 0; }
+.inner blockquote li + li { margin-top: 0.35em; }
+.inner blockquote ul li::marker,
+.inner blockquote ol li::marker { color: var(--color-muted); }
+/* Links inside quotes keep standard emphasis */
+.inner blockquote a { text-underline-offset: 0.18em; text-decoration-thickness: 0.10em; }
+.inner blockquote a:hover,
+.inner blockquote a:focus { text-decoration-thickness: 0.12em; }
 
 /* Let <pre> in typography.css control the background */
 .hljs { background: transparent; }
@@ -63,7 +105,9 @@ li {
 /* Inline code typography unified in typography.css */
 
 
-/* Article images */
+/* ---------------- */
+/* Article images   */
+/* ---------------- */
 img {
   display: block;
   max-width: 100%;
@@ -100,6 +144,9 @@ video {
   max-width: 100%;
 }
 
+/* ------------------------ */
+/* Responsive media (<=800) */
+/* ------------------------ */
 @media only screen and (max-width: 800px) {
   img {
     width: 100%;
@@ -112,6 +159,14 @@ video {
     margin-left: 0% !important;
     margin-right: 0% !important;
   }
+  /* Mobile: reduce quote padding a touch */
+  .inner blockquote { padding: 0.65em 0.9em; border-left-width: 3px; border-radius: 4px; }
+}
+
+/* Mobile list padding: save horizontal space while keeping clarity */
+@media only screen and (max-width: 800px) {
+  .inner ul,
+  .inner ol { padding-left: 1.2em; }
 }
 
 /* hr styling unified in typography.css */
@@ -129,6 +184,8 @@ body.mobile div.outer {
   margin: 2% 0% 2% 0%;
 }
 
+/* Containers */
+/* Constrain content width for better readability */
 div.inner {
   margin: 0% 14%;
   padding: 2% 8% 4% 8%;
@@ -158,6 +215,7 @@ body.mobile div.ad-banner {
   display: none;
 }
 
+/* NOTE: padding uses unitless values in original theme (invalid in CSS). Kept as-is to avoid visual change. */
 .left {
   float: left;
   clear: both;
@@ -166,6 +224,7 @@ body.mobile div.ad-banner {
   border-top: 1px solid lightblue;
 }
 
+/* NOTE: padding uses unitless values in original theme (invalid in CSS). Kept as-is to avoid visual change. */
 .right {
   float: left;
   clear: none;
@@ -224,7 +283,8 @@ figcaption {
 .lb-overlay.open { display: flex; }
 .lb-overlay img {
   max-width: 92vw;
-  max-height: 92vh;
+  /* Reserve space for the close hint to avoid crowding the image */
+  max-height: calc(92vh - 44px);
   border-radius: 8px;
   box-shadow: 0 8px 30px rgba(0,0,0,0.35);
   background: #fff;
@@ -260,27 +320,9 @@ figcaption {
   background-size: 25px 25px !important;
 }
 
-/* table style */
-table {
-  display: block;
-  width: 100%;
-  overflow: auto;
-  border-spacing: 0;
-  border-collapse: collapse;
-}
-table tr {
-  background-color: #fff;
-  border-top: 1px solid #c6cbd1;
-}
-table th, table td {
-  padding: 6px 13px;
-  border: 1px solid #dfe2e5;
-}
-/* table tr:nth-child(2n) {
-  background-color: #f6f8fa;
-} */
+/* table style moved to typography.css (global + inner containers) */
 
-/****** weibo card ******/
+/* ------ weibo card ------ */
 .cards {
   background: #f4f4f4;
   padding: 15px;
@@ -307,6 +349,17 @@ table th, table td {
 }
 
 @media screen and (max-width: 860px) { 
+  /* Post page: no left/right margins on phones */
+  div.outer { margin: 0; }
+  div.inner,
+  div.inner-narrow {
+    margin: 0;              /* remove outer gaps */
+    /* Keep borderless look but add comfortable reading gutters */
+    padding: 0 16px 20px;   /* left/right 16px, bottom 20px, top 0 */
+    border: none;           /* remove surrounding border on mobile */
+    box-shadow: none;       /* ensure no residual card effect */
+  }
+  div.ad-banner { margin: 0; }
   .card {
     display: flex;
     flex-direction: column;
@@ -329,7 +382,7 @@ table th, table td {
 } 
 
 
-/*********************************/
+/* ------------- misc ------------- */
 
 /* subtitle description */
 sd {
@@ -403,24 +456,7 @@ tomato {
 }
 
 
-ul.tags {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  text-align: center;
-  font-size: 90%;
-  margin-bottom: 20px;
-}
-
-ul.tags li {
-  display: inline-block;
-  margin-left: 0;
-}
-
-ul.tags li:not(:last-child) {
-  margin-right: 10px;
-}
+/* tags list styles consolidated in typography.css */
 
 
 div.title-margin {
@@ -501,6 +537,7 @@ html[data-theme="dark"] .box,
 body[data-theme="dark"] div.inner,
 body[data-theme="dark"] div.inner-narrow,
 body[data-theme="dark"] .box { border-color: #2a2f37; background-color: rgba(255,255,255,0.02); }
+/* (removed custom dimmer inner override to match original) */
 html[data-theme="dark"] table tr,
 body[data-theme="dark"] table tr { background-color: #0f1115; border-top-color: #2a2f37; }
 html[data-theme="dark"] table th,

@@ -45,12 +45,59 @@ H4 { margin-top: 40px; margin-bottom: 30px; border-bottom: none; }
 }
 
 
-li {
-  margin-left: 10px;
+/* Content lists: scope to article inner container */
+.inner li { margin-left: 0; }
+
+/* Comfortable list spacing and marker styling */
+.inner ul,
+.inner ol {
+  padding-left: 1.6em;        /* increase left indent for clearer bullet separation */
+  margin: 0.8em 0 1.2em 0;    /* align with typography defaults, explicit here for clarity */
+  list-style-position: outside;
 }
+.inner li + li { margin-top: 0.5em; } /* vertical rhythm between items */
+
+/* Toned-down markers for elegance; supported in modern browsers */
+.inner ul li::marker { color: var(--color-muted); font-size: 0.75em; }
+.inner ol li::marker { color: var(--color-muted); font-weight: 600; }
+
+/* Links inside lists: slightly larger underline offset for dense lists */
+.inner li a {
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 0.09em;
+}
+.inner li a:hover,
+.inner li a:focus {
+  text-decoration-thickness: 0.12em;
+}
+
+/* If a list directly follows a heading, tighten the top gap slightly */
+.inner h2 + ul,
+.inner h3 + ul,
+.inner h4 + ul { margin-top: 0.6em; }
 
 
 /* Blockquotes and code typography unified in typography.css */
+/* Post page blockquote refinements (scoped to .inner) */
+.inner blockquote {
+  /* keep variables from typography.css for theme compatibility */
+  background: var(--color-quote-bg);
+  border-left: 3px solid var(--color-quote-border); /* a touch slimmer for elegance */
+  padding: 0.75em 1em; /* slightly more breathing room */
+  margin: 1em 0 1.2em 0;
+  border-radius: 4px; /* calm the sharp rectangle just a bit */
+}
+.inner blockquote p { margin: 0.55em 0; }
+/* Lists inside quotes: improve contrast and rhythm */
+.inner blockquote ul,
+.inner blockquote ol { padding-left: 1.2em; margin: 0.6em 0 0.8em 0; }
+.inner blockquote li + li { margin-top: 0.35em; }
+.inner blockquote ul li::marker,
+.inner blockquote ol li::marker { color: var(--color-muted); }
+/* Links inside quotes keep standard emphasis */
+.inner blockquote a { text-underline-offset: 0.18em; text-decoration-thickness: 0.10em; }
+.inner blockquote a:hover,
+.inner blockquote a:focus { text-decoration-thickness: 0.12em; }
 
 /* Let <pre> in typography.css control the background */
 .hljs { background: transparent; }
@@ -112,6 +159,14 @@ video {
     margin-left: 0% !important;
     margin-right: 0% !important;
   }
+  /* Mobile: reduce quote padding a touch */
+  .inner blockquote { padding: 0.65em 0.9em; border-left-width: 3px; border-radius: 4px; }
+}
+
+/* Mobile list padding: save horizontal space while keeping clarity */
+@media only screen and (max-width: 800px) {
+  .inner ul,
+  .inner ol { padding-left: 1.2em; }
 }
 
 /* hr styling unified in typography.css */

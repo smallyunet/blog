@@ -14,8 +14,11 @@
     // Create overlay once
     var overlay = document.createElement('div');
     overlay.className = 'lb-overlay';
-  overlay.innerHTML = '<img alt="" /><div class="lb-close-hint">Click or press ESC to close</div>';
-  overlay.style.display = 'none';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.innerHTML = '<img alt="" /><div class="lb-close-hint">Click or press ESC to close</div>';
+    overlay.style.display = 'none';
     var imgEl = overlay.querySelector('img');
     document.body.appendChild(overlay);
 
@@ -23,15 +26,17 @@
       if (!src) return;
       imgEl.src = src;
       if (alt) imgEl.alt = alt;
-  overlay.classList.add('open');
-  overlay.style.display = 'flex';
+    overlay.classList.add('open');
+    overlay.style.display = 'flex';
+    overlay.setAttribute('aria-hidden', 'false');
       // prevent background scroll
       document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
     }
     function close(){
-  overlay.classList.remove('open');
-  overlay.style.display = 'none';
+    overlay.classList.remove('open');
+    overlay.style.display = 'none';
+    overlay.setAttribute('aria-hidden', 'true');
       imgEl.src = '';
       document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
