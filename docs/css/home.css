@@ -32,7 +32,7 @@ table {
 /* Hover background in light theme only */
 @media (prefers-color-scheme: light) {
     li.title:hover {
-        background-color: #f6f9ff; /* softer hover */
+        background-color: #f6f9ff; /* soft light-blue hover like original */
         box-shadow: none;
     }
 }
@@ -135,42 +135,6 @@ ul.list-group li.title a:focus {
     margin-right: -15px;
 }
 
-body.mobile .navbar {
-    padding: 20px 20px;
-    margin: 4% 4% 0% 4%;
-    border-radius: 20px;
-}
-
-body.mobile #navbar-bs {
-    margin-top: 20px;
-    padding-top: 15px;
-}
-
-body.mobile .nav>li {
-    padding: 5px 0;
-}
-
-body.mobile .navbar-brand {
-    font-size: 36px;
-}
-
-body.mobile .navbar-nav {
-    font-size: 32px;
-}
-
-body.mobile div.outer {
-    margin: 40px 4% 60px 4%;
-}
-
-body.mobile .navbar-nav>li>a {
-    line-height: 40px;
-}
-
-body.mobile .navbar-default .navbar-toggle {
-    transform: scale(1.3);
-    transform-origin: right;
-}
-
 div.outer {
     margin: 7% 10% 4% 10%;
 }
@@ -195,6 +159,29 @@ ul.list-group {
     padding-right: 16px;
 }
 
+/* Light theme: make the whole list container white (flat, no shadow) */
+@media (prefers-color-scheme: light) {
+    ul.list-group {
+        background: var(--surface-1);
+        border-radius: 12px;
+        border: 1px solid var(--border-color-subtle); /* define gentle container edge */
+        padding-top: 12px;
+        padding-bottom: 12px;
+        padding-left: 24px;  /* wider side air for desktop */
+        padding-right: 24px;
+    }
+}
+html[data-theme="light"] ul.list-group,
+body[data-theme="light"] ul.list-group {
+    background: var(--surface-1);
+    border-radius: 12px;
+    border: 1px solid var(--border-color-subtle);
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
 .list-group-item:last-child {
     border-bottom-color: transparent; /* avoid trailing line */
 }
@@ -202,8 +189,9 @@ ul.list-group {
 /* Home list: use explicit separators instead of Bootstrap's stacked borders
    to avoid occasional missing bottom border on the first item */
 /* Quiet list (no persistent separators): keep items clean and rely on hover/focus cues */
-/* Hairline bottom separator via background gradient (crisper than borders on HiDPI) */
-ul.list-group { --row-separator: rgba(0,0,0,0.06); } /* lighter than --color-hr for subtle hairline */
+/* Hairline bottom separator via background gradient (crisper than borders on HiDPI)
+   Also define zebra colors for better contrast against page tint (light theme) */
+ul.list-group { --row-separator: rgba(0,0,0,0.08); }
 ul.list-group > li.list-group-item.title {
     border: 0; /* reset Bootstrap's borders */
     margin-bottom: 0; /* neutralize stacked overlap */
@@ -213,12 +201,13 @@ ul.list-group > li.list-group-item.title {
 }
 ul.list-group > li.list-group-item.title:last-child { background-image: none; }
 
-/* Zebra disabled globally */
-ul.list-group > li.list-group-item.title:nth-child(odd) { background-color: transparent; }
+/* Zebra stripes disabled (light): keep rows transparent, rely on separators and hover */
+ul.list-group > li.list-group-item.title:nth-child(odd),
+ul.list-group > li.list-group-item.title:nth-child(even) { background-color: transparent; }
 
 div.date {
     font-size: 80%;
-    color: #9aa0a6; /* lighter gray for secondary information */
+    color: var(--text-muted); /* unified secondary tone */
     margin-bottom: 2px; /* tuck date closer to title to form a visual unit */
     font-variant-numeric: tabular-nums; /* ensure perfect column alignment */
 }
@@ -226,7 +215,7 @@ div.date {
 /* Title grows to fill space; word-count aligns right (grid auto placement puts it in column 2) */
 div.word-count {
     margin-left: 12px;
-    color: darkgray;
+    color: var(--text-muted);
     min-width: 60px;
     font-size: 85%;
     line-height: 1; /* avoid optical offset */
@@ -238,6 +227,14 @@ div.word-count {
 @media screen and (max-width: 860px) {
     /* Avoid overlap: fixed navbar becomes static on phones */
     .navbar-fixed-top { position: static; }
+    /* Keep navbar expanded on phones: hide hamburger; use flex to stay on one line */
+    .navbar-toggle { display: none !important; }
+    .navbar .container-fluid { display: flex; align-items: center; flex-wrap: nowrap; }
+    .navbar-header { flex: 0 0 auto; }
+    .navbar-collapse.collapse { display: flex !important; height: auto !important; overflow: visible !important; flex: 1 1 auto; }
+    .navbar-nav { display: flex; flex-wrap: nowrap; margin-left: auto; float: none !important; }
+    .navbar-nav.navbar-right { margin-right: 0; }
+    .navbar-nav > li { float: none; }
     /* Mobile: stack date above title, hide count (kept below) */
     li.list-group-item.title {
         grid-template-columns: 1fr;
@@ -246,27 +243,34 @@ div.word-count {
         align-items: start;
     }
 
-    /* Narrower horizontal paddings on phones to reduce perceived side margins */
-    ul.list-group { padding-left: 6px; padding-right: 6px; }
-    li.list-group-item.title { padding-left: 6px; padding-right: 6px; }
+    /* Mobile gutters: container controls the side insets, rows have zero side padding */
+    ul.list-group { padding-left: 12px !important; padding-right: 12px !important; padding-top: 8px !important; padding-bottom: 8px !important; }
+    li.list-group-item.title { padding-left: 0; padding-right: 0; }
+
+    /* Ensure date and title align to container gutters */
+    ul.list-group div.date { padding-left: 0; padding-right: 0; }
 
     /* Make the main container full-width with comfortable padding on phones */
     div.inner,
     div.inner-narrow {
         margin: 0;
         padding: 1% 2% 2% 2%;
+        /* Mobile: keep white content surface without the border */
+        border: 0;
+        background: var(--surface-1);
+        box-shadow: none;
     }
+    /* Mobile: remove inner content box border */
+    div.inner .box { border: 0; }
 
     /* Mobile nav: override legacy large sizes; keep comfortable hit height */
     /* Increase specificity to override legacy body.mobile sizes */
     .navbar-brand,
-    .navbar-nav,
-    body.mobile .navbar-brand,
-    body.mobile .navbar-nav { font-size: 17px; }
+    .navbar-nav { font-size: 17px; }
     .navbar-nav>li>a { line-height: 36px; }
 
-    /* Reduce the top gap between fixed navbar and list on phones */
-    div.outer { margin: 10px 2% 20px 2%; }
+    /* Reduce top gap and increase side gutters on phones */
+    div.outer { margin: 6px 3% 16px 3%; }
 
     div.word-count {
         display: none;
@@ -276,8 +280,8 @@ div.word-count {
         display: none;
     }
 
-    /* Touch targets: keep ≥ 44px row height */
-    .list-group-item { padding-top: 8px; padding-bottom: 8px; }
+    /* Touch targets: keep ≥ 44px row height; add slight horizontal padding for visual air */
+    .list-group-item { padding-top: 8px; padding-bottom: 8px; padding-left: 2px; padding-right: 2px; }
 
     /* Let titles wrap to two lines on mobile */
     ul.list-group li.title a {
@@ -293,16 +297,15 @@ div.word-count {
 /* Extra-narrow phones: modestly smaller nav text */
 @media screen and (max-width: 360px) {
     .navbar-brand,
-    .navbar-nav,
-    body.mobile .navbar-brand,
-    body.mobile .navbar-nav { font-size: 16px; }
+    .navbar-nav { font-size: 16px; }
     .navbar-nav>li>a { line-height: 34px; }
 }
 
 /* Extra-narrow phones: shave another 2px while keeping ≥44px touch height */
 @media screen and (max-width: 360px) {
-    ul.list-group { padding-left: 10px; padding-right: 10px; }
-    li.list-group-item.title { padding-left: 10px; padding-right: 10px; }
+    /* Extra-narrow phones: slightly larger gutters for balance */
+    ul.list-group { padding-left: 14px; padding-right: 14px; }
+    li.list-group-item.title { padding-left: 0; padding-right: 0; }
 }
 
 ul.tags {
@@ -326,7 +329,7 @@ ul.tags li {
 }
 
 ul.tags li span {
-    color: darkgray;
+    color: var(--text-muted);
 }
 
 ul.tags li a {
@@ -371,11 +374,7 @@ div.inner {
     padding: 2% 8% 4% 8%;
     border: 1px solid var(--color-hr); /* adapt to dark mode via variable */
     margin: 7% 14% 4% 14%;
-}
-
-.mobile div.inner {
-    /* Legacy rule kept aligned to token (UA-sniffed .mobile no longer used) */
-    font-size: var(--font-size-base);
+    background: var(--surface-1);
 }
 
 div.inner p,
@@ -531,21 +530,8 @@ div.inner-narrow {
     border: 1px solid var(--color-hr);
 }
 
-body.mobile div.inner {
-    margin: 0;
-    padding: 2% 4% 4% 4%;
-}
-
 div.inner div.ad-banner {
     margin: 0% 14%;
-}
-
-body.mobile div.inner div.ad-banner {
-    margin: 0;
-}
-
-div.inner .side-ad.mobile {
-    display: none;
 }
 
 div.inner .left {
@@ -717,13 +703,17 @@ div.inner div.title-margin {
     .panel { background: transparent; border-color: #2a2f37; }
     .panel-default>.panel-heading { background-color: #1a1f26; color: var(--color-muted); }
 
-    .list-group { background: transparent; }
+    .list-group {
+        background: var(--surface-1);
+        border: 1px solid var(--border-color); /* stronger than subtle for visibility */
+        border-radius: 12px;
+    }
     .list-group-item {
         background-color: transparent; /* remove persistent tint to avoid zebra-like perception */
         border-color: #2a2f37;
     }
-    /* Dark mode: hairline gradient separator */
-    ul.list-group { --row-separator: rgba(255,255,255,0.07); }
+    /* Dark mode: hairline gradient separator + container paddings */
+    ul.list-group { --row-separator: rgba(255,255,255,0.07); padding-top: 12px; padding-bottom: 12px; padding-left: 24px; padding-right: 24px; }
     ul.list-group > li.list-group-item.title {
         border: 0;
         background-image: linear-gradient(to bottom, transparent calc(100% - 1px), var(--row-separator, var(--color-hr)) 0);
@@ -736,7 +726,7 @@ div.inner div.title-margin {
     ul.list-group > li.list-group-item.title:hover { background-color: rgba(138,180,248,0.08); }
     li.title:hover {
         background-color: rgba(138,180,248,0.08); /* subtle blue tint on hover */
-        box-shadow: inset 1.5px 0 0 var(--link-color);
+        box-shadow: none; /* remove blue inset shadow */
     }
     div.word-count { color: #8b8f98; }
 
@@ -769,11 +759,11 @@ body[data-theme="dark"] .panel { background: transparent; border-color: #2a2f37;
 html[data-theme="dark"] .panel-default>.panel-heading,
 body[data-theme="dark"] .panel-default>.panel-heading { background-color: #1a1f26; color: var(--color-muted); }
 html[data-theme="dark"] .list-group,
-body[data-theme="dark"] .list-group { background: transparent; }
+body[data-theme="dark"] .list-group { background: var(--surface-1); border: 1px solid var(--border-color); border-radius: 12px; }
 html[data-theme="dark"] .list-group-item,
 body[data-theme="dark"] .list-group-item { background-color: transparent; border-color: #2a2f37; }
-/* Manual dark override: hairline gradient separator */
-html[data-theme="dark"] ul.list-group { --row-separator: rgba(255,255,255,0.07); }
+/* Manual dark override: hairline gradient separator + container paddings */
+html[data-theme="dark"] ul.list-group { --row-separator: rgba(255,255,255,0.07); padding-top: 12px; padding-bottom: 12px; padding-left: 24px; padding-right: 24px; }
 html[data-theme="dark"] ul.list-group > li.list-group-item.title,
 body[data-theme="dark"] ul.list-group > li.list-group-item.title {
     border: 0;
@@ -781,9 +771,6 @@ body[data-theme="dark"] ul.list-group > li.list-group-item.title {
     background-size: 100% 100%;
     background-repeat: no-repeat;
 }
-/* Manual dark zebra */
-html[data-theme="dark"] ul.list-group > li.list-group-item.title:nth-child(odd),
-body[data-theme="dark"] ul.list-group > li.list-group-item.title:nth-child(odd) { background-color: transparent; }
 
 /* Manual dark hover */
 html[data-theme="dark"] ul.list-group > li.list-group-item.title:hover,
@@ -823,3 +810,23 @@ html[data-theme="dark"] ul.tags li a:hover,
 body[data-theme="dark"] ul.tags li a:hover { color: var(--link-hover); }
 
 /* Zebra stripes are disabled globally (see rules above). */
+
+/* Final mobile overrides: ensure borders are removed on small screens */
+@media screen and (max-width: 860px) {
+    div.inner,
+    div.inner-narrow { border: 0; background: var(--surface-1); box-shadow: none; }
+    div.inner .box { border: 0; }
+    div.inner { margin: 0; }
+}
+
+/* Light theme only: re-add a gentle border for clearer edge definition on phones */
+@media screen and (max-width: 860px) and (prefers-color-scheme: light) {
+    div.inner,
+    div.inner-narrow { border: 1px solid var(--border-color-subtle); }
+}
+@media screen and (max-width: 860px) {
+    html[data-theme="light"] div.inner,
+    body[data-theme="light"] div.inner,
+    html[data-theme="light"] div.inner-narrow,
+    body[data-theme="light"] div.inner-narrow { border: 1px solid var(--border-color-subtle); }
+}

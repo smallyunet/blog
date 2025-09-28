@@ -41,7 +41,8 @@ H4 { margin-top: 40px; margin-bottom: 30px; border-bottom: none; }
 
 .box {
   padding: 2% 8% 5% 8%;
-  border: 1px solid LightGrey;
+  border: 1px solid var(--border-color);
+  background: var(--surface-1);
 }
 
 
@@ -163,6 +164,9 @@ video {
   .inner blockquote { padding: 0.65em 0.9em; border-left-width: 3px; border-radius: 4px; }
 }
 
+/* Mobile: remove inner content box border */
+div.inner .box { border: 0; }
+
 /* Mobile list padding: save horizontal space while keeping clarity */
 @media only screen and (max-width: 800px) {
   .inner ul,
@@ -180,39 +184,24 @@ div.outer {
   margin: 2% 5% 2% 5%;
 }
 
-body.mobile div.outer {
-  margin: 1% 0% 1% 0%;
-}
-
 /* Containers */
 /* Constrain content width for better readability */
 div.inner {
   margin: 0% 14%;
   padding: 2% 8% 4% 8%;
-  border: 1px solid LightGrey;
+  border: 1px solid var(--border-color);
+  background: var(--surface-1);
 }
 
 div.inner-narrow {
   margin: 0% 7%;
   padding: 2% 8% 4% 8%;
-  border: 1px solid LightGrey;
-}
-
-body.mobile div.inner {
-  margin: 0;
-  padding: 1% 2% 2% 2%;
+  border: 1px solid var(--border-color);
+  background: var(--surface-1);
 }
 
 div.ad-banner {
   margin: 0% 14%;
-}
-
-body.mobile div.ad-banner {
-  margin: 0;
-}
-
-.side-ad.mobile {
-  display: none;
 }
 
 /* NOTE: padding uses unitless values in original theme (invalid in CSS). Kept as-is to avoid visual change. */
@@ -349,15 +338,18 @@ figcaption {
 }
 
 @media screen and (max-width: 860px) { 
-  /* Post page: no left/right margins on phones */
-  div.outer { margin: 0; }
+  /* Remove default UA margins to avoid gray bands at the edges */
+  html, body { margin: 0; padding: 0; }
+  /* Post page: no left/right margins on phones (override any later-loaded rules) */
+  div.outer { margin: 0 !important; }
   div.inner,
   div.inner-narrow {
-    margin: 0;              /* remove outer gaps */
-    /* Keep borderless look but add comfortable reading gutters */
-    padding: 0 16px 20px;   /* left/right 16px, bottom 20px, top 0 */
-    border: none;           /* remove surrounding border on mobile */
-    box-shadow: none;       /* ensure no residual card effect */
+    margin: 0;                 /* remove outer gaps */
+    /* Keep comfortable white gutters so no gray shows around content */
+    padding: 8px 22px 20px;   /* top 12px, left/right 18px, bottom 20px */
+    border: none;              /* remove surrounding border on mobile */
+    box-shadow: none;          /* ensure no residual card effect */
+    background: var(--surface-1); /* explicitly keep white surface */
   }
   div.ad-banner { margin: 0; }
   .card {
@@ -381,6 +373,15 @@ figcaption {
   }
 } 
 
+/* Light theme on phones: make the page background pure white so no side gray shows */
+@media screen and (max-width: 860px) and (prefers-color-scheme: light) {
+  html, body { background: #ffffff; }
+}
+@media screen and (max-width: 860px) {
+  html[data-theme="light"],
+  body[data-theme="light"] { background: #ffffff; }
+}
+
 
 /* ------------- misc ------------- */
 
@@ -389,8 +390,10 @@ sd {
   font-size: 75%;
   color: #0006;
 }
+
+/* Keep selectors lean; borders stay none on mobile via rule above */
 sd:hover {
-  color: #000f;
+  background: var(--surface-1);  /* keep transparent PNGs readable on tinted backgrounds */
 }
 
 sdr {
