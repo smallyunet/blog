@@ -1,9 +1,9 @@
 
 block content
-  .inner
+  .outer
     h3= page.category
     if page.posts.length > 0
-      // Article list – row-style
+      // Article list – same structure as homepage
       ul.list-group
         each post in page.posts.sort('date', -1).toArray()
           li.list-group-item.title

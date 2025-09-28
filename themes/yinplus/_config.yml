@@ -44,3 +44,7 @@ tags:
 google_analysis:
   enable: true
   id: G-5JRBZ6P1W3
+
+# Static assets version (for cache busting). Bump this when CSS/JS changes.
+# Leaving it empty avoids touching all generated HTML on each build.
+asset_version: "2025-09-28"
