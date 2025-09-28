@@ -19,14 +19,7 @@ block content
                       span #
                       a(href= config.root + tag.path)= tag.name
                   - });
-  if (theme.paginator)
-    div(class="paginator")
-      -
-        var options = {
-          prev_text: __('prev_page'),
-          next_text: __('next_page')
-        }
-      != paginator(options)
+  // paginator removed by request: theme no longer renders pagination
   if theme.footer.display
     div.footer
       if theme.footer.href

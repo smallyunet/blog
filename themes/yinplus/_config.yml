@@ -39,24 +39,7 @@ post:
 tags:
   all: false       # Display all tags on the tag cloud page
 
-# Micro-blog
-github:
-  owner: smallyunet
-  repo: hexo-blog
-micro_blogs:
-  - year: 2020
-    issue: 7
-  - year: 2021
-    issue: 10
-  - year: 2022
-    issue: 19
-  - year: 2023
-    issue: 29
-  - year: 2024
-    issue: 32
-  - year: 2025
-    issue: 35
-issue_years: []
+# Micro-blog (removed)
 
 google_analysis:
   enable: true

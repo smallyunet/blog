@@ -6,20 +6,34 @@ html(lang=config.language)
   head
     title= pageTitle
     meta(http-equiv="content-type", content="text/html; charset=utf-8")
-    meta(name="viewport", content="width=device-width, initial-scale=0.5")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    // SEO basics
+    - var description = page.description || (page.excerpt ? strip_html(page.excerpt) : '') || config.description
+    meta(name="description", content= description)
+    // Open Graph & Twitter
+    - var canonicalUrl = (config.url || '') + (config.root || '') + (page.path || '')
+    link(rel="canonical", href= canonicalUrl)
+    meta(property="og:title", content= pageTitle)
+    meta(property="og:type", content= (is_post() ? "article" : "website"))
+    meta(property="og:url", content= canonicalUrl)
+    meta(property="og:site_name", content= config.title)
+    if page.thumbnail
+      meta(property="og:image", content=(config.url || '') + (config.root || '') + page.thumbnail)
+    meta(name="twitter:card", content="summary_large_image")
+    // Browser UI color
+    meta(name="theme-color", media="(prefers-color-scheme: light)", content="#ffffff")
+    meta(name="theme-color", media="(prefers-color-scheme: dark)", content="#0f1115")
     
     //- link(rel='icon' type='image/svg+xml' href=root+'favicon.svg')
-    link(rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png")
-    link(rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png")
-    link(rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png")
-    link(rel="manifest" href="/site.webmanifest")
-
+    link(rel="apple-touch-icon" sizes="180x180" href=root+"apple-touch-icon.png")
+    link(rel="icon" type="image/png" sizes="32x32" href=root+"favicon-32x32.png")
+    link(rel="icon" type="image/png" sizes="16x16" href=root+"favicon-16x16.png")
+    link(rel="manifest" href=root+"site.webmanifest")
+    // stylesheets
     link(rel='stylesheet', href=root+"css/highlight/xcode.min.css")
-    link(rel='stylesheet', href=root+"css/bootstrap/bootstrap-tooltips.css")
 
-    if is_home() || is_tag() || page.type=='home' || page.type=='tags' || page.type=='micro-blog' || page.type=='404' || page.type=='about' || page.navbar
-      link(rel='stylesheet', href=root+"css/bootstrap/bootstrap.min.css")
-      link(rel='stylesheet', href=root+"css/bootstrap/bootstrap-theme.min.css")
+    if is_home() || is_tag() || page.type=='home' || page.type=='tags' || page.type=='404' || page.type=='about' || page.navbar
+      link(rel='stylesheet', href=root+"css/bootstrap.min.css")
       link(rel='stylesheet', href=root+"css/home.css")
     else 
       link(rel='stylesheet', href=root+"css/post.css")
@@ -27,10 +41,8 @@ html(lang=config.language)
     // unified typography overrides for both home and post pages
     link(rel='stylesheet', href=root+"css/typography.css")
 
-    script(src=root+"js/jquery.min.js")
-
   body
-    if is_home() || is_tag() || page.type=='home' || page.type=='tags' || page.type=='micro-blog' || page.type=="404" || page.type=='about' || page.navbar
+    if is_home() || is_tag() || page.type=='home' || page.type=='tags' || page.type=="404" || page.type=='about' || page.navbar
       nav.navbar.navbar-default.navbar-fixed-top(style={opacity:".9"}, role="navigation")
         div.container-fluid
           div.navbar-header
@@ -49,37 +61,26 @@ html(lang=config.language)
               each url, label in theme.menu
                 li(class=(
                     ((url == '' && is_home()) || 
-                    (page.type == 'micro-blog' && url == 'micro-blog') || 
+                    
                     (page.type == 'tags' && url == 'tags') || 
-                    (page.type == 'home' && url == 'ri') ||
+                    (page.type == 'home' && url == '') ||
                     (page.type == 'about' && url == 'about'))
                     ? 'active' : ''
                   ))
                   - var href = url.startsWith('http') ? url : root + url
                   a(href=href, target=theme.header.blank ? "_blank" : "_self")= label
-    
-    script.
-      if (/mobile/i.test(navigator.userAgent) || /android/i.test(navigator.userAgent)) {
-        document.body.classList.add('mobile')
-        var navbar = document.querySelector('nav.navbar');
-        if (navbar) {
-          navbar.classList.remove('navbar-fixed-top');
-        }
-      }
 
     if body
       div!= body
     else
       block content
   
-  script(src=root+"js/highlight.min.js")
-  script(src=root+"js/main.js")
-  script(src=root+"js/lightbox.js")
-  script(src=root+"js/bootstrap/bootstrap.min.js")
-
-  if page.type=='micro-blog'
-    script(src=root+"js/micro-blog/main.js")
-    script(src=root+"js/marked.min.js")
+  // Defer non-critical scripts for better performance
+  script(defer src=root+"js/jquery.min.js")
+  script(defer src=root+"js/highlight.min.js")
+  script(defer src=root+"js/main.js")
+  script(defer src=root+"js/lightbox.js")
+  script(defer src=root+"js/bootstrap.min.js")
 
   if theme.google_analysis.enable
     script(async="" src="https://www.googletagmanager.com/gtag/js?id="+theme.google_analysis.id)
