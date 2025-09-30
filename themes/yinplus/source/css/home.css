@@ -131,10 +131,6 @@ ul.list-group li.title a:focus {
     font-size: 20px; /* desktop base size; was 24px */
 }
 
-.navbar-nav.navbar-right:last-child {
-    margin-right: -15px;
-}
-
 div.outer {
     margin: 7% 10% 4% 10%;
 }
@@ -205,6 +201,105 @@ ul.list-group > li.list-group-item.title:last-child { background-image: none; }
 ul.list-group > li.list-group-item.title:nth-child(odd),
 ul.list-group > li.list-group-item.title:nth-child(even) { background-color: transparent; }
 
+/* --- Series (collapsible) lightweight styles --- */
+/* Hidden checkbox controls toggle without affecting grid layout */
+.series-toggle { display: none; }
+/* Label acts as the title; match normal title link styles */
+label.series-summary {
+    display: block;
+    color: var(--link-color);
+    font-weight: inherit; /* avoid Bootstrap's label bold */
+    margin: 0; /* override Bootstrap label margin */
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+/* inline chevron beside the title */
+label.series-summary::after {
+    content: '\00a0+'; /* one space then '>' */
+    display: inline-block;
+    opacity: 0.6;
+}
+/* switch to a down arrow when opened, keep one-space gap */
+.series-toggle:checked + label.series-summary::after { content: '\00a0-'; }
+label.series-summary:hover { color: var(--link-hover); text-decoration: none; }
+/* Collapsed state: keep it tight under the title */
+.series-toggle ~ ul.series-posts {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin-top: 0;   /* Key: no spacing when collapsed */
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    pointer-events: none;
+    visibility: hidden;
+    transition: max-height .28s ease, opacity .2s ease;
+}
+
+/* Expanded state: add a bit of breathing room */
+.series-toggle:checked ~ ul.series-posts {
+    max-height: 2000px;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+
+    margin-top: 6px;    /* Tip: adjust 4–8px to match your line spacing */
+    margin-bottom: 2px; /* Maintain original bottom spacing */
+}
+/* Inline “(series:N)” kept inside label text */
+ul.series-posts {
+    margin: 8px 0 2px 0;
+    padding-left: 0;
+    padding-right: 0; /* no extra inset to allow true right alignment */
+    list-style: none;
+    /* Span full row so inner columns align visually with main list */
+    grid-column: 1 / -1;
+}
+ul.series-posts > li.series-post {
+    display: grid;
+    grid-template-columns: 10ch 1fr auto auto; /* match outer: date | title | word-count | tags */
+    column-gap: 16px;
+    align-items: center;
+    padding: 4px 0;
+    width: 100%;
+}
+/* ensure the word-count column hugs the far right */
+ul.series-posts > li.series-post .word-count {
+    grid-column: 4;
+    justify-self: end;
+    text-align: right; /* ensure numeric rag aligns to the edge */
+    margin: 0 15px;
+}
+ul.series-posts > li.series-post a {
+    text-decoration: none;
+}
+ul.series-posts li.series-post a:hover,
+ul.series-posts li.series-post a:focus { text-decoration: none; }
+
+@media screen and (max-width: 860px) {
+    /* series label follows single-column layout automatically on mobile */
+    ul.series-posts { grid-column: 1 / -1; }
+    ul.series-posts > li.series-post {
+        grid-template-columns: 1fr;  /* stack like main list */
+        row-gap: 4px;
+        column-gap: 0;
+        align-items: start;
+    }
+    /* Let titles wrap to two lines on mobile (like main list) */
+    ul.series-posts li.series-post a {
+        white-space: normal;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+}
+
 div.date {
     font-size: 80%;
     color: var(--text-muted); /* unified secondary tone */
@@ -229,14 +324,7 @@ div.word-count {
     :root { --mobile-navbar-height: 44px; }
     /* Keep navbar fixed on phones as well */
     .navbar-fixed-top { position: fixed; top: 0; left: 0; right: 0; z-index: 1030; }
-    /* Keep navbar expanded on phones: hide hamburger; use flex to stay on one line */
-    .navbar-toggle { display: none !important; }
-    .navbar .container-fluid { display: flex; align-items: center; flex-wrap: nowrap; position: relative; }
-    .navbar-header { flex: 0 0 auto; }
-    .navbar-collapse.collapse { display: flex !important; height: auto !important; overflow: visible !important; flex: 1 1 auto; }
-    .navbar-nav { display: flex; flex-wrap: nowrap; margin-left: auto; float: none !important; }
-    .navbar-nav.navbar-right { margin-right: 0; }
-    .navbar-nav > li { float: none; }
+    /* Navbar responsive behavior is defined in the specific ranges below. */
     /* Mobile: stack date above title, hide count (kept below) */
     li.list-group-item.title {
         grid-template-columns: 1fr;
@@ -302,6 +390,116 @@ div.word-count {
         -webkit-line-clamp: 2;          /* show up to 2 lines on mobile */
         line-clamp: 2;                  /* standard property for newer engines */
         -webkit-box-orient: vertical;
+    }
+}
+
+/* Keep navbar expanded for small-but-not-tiny screens (414px–860px): hide hamburger, show horizontal nav */
+@media screen and (min-width: 414px) and (max-width: 860px) {
+    .navbar-toggle { display: none !important; }
+    .navbar .container-fluid { display: flex; align-items: center; flex-wrap: nowrap; position: relative; }
+    .navbar-header { flex: 0 0 auto; }
+    .navbar-collapse.collapse { display: flex !important; height: auto !important; overflow: visible !important; flex: 1 1 auto; }
+    .navbar-nav { display: flex; flex-wrap: nowrap; margin-left: auto; float: none !important; }
+    .navbar-nav.navbar-right { margin-right: 0; }
+    .navbar-nav > li { float: none; }
+}
+
+/* Collapse behavior below 414px (show hamburger) */
+@media screen and (max-width: 413px) {
+    /* Drawer sizing tokens for consistent width/margins */
+    :root {
+        --drawer-width: 76px;
+        --drawer-gutter: 25px; /* keep in sync with toggle margin-right */
+    }
+    /* Header layout: brand left, hamburger right */
+    .navbar .container-fluid { display: block; position: relative; }
+    .navbar-header {
+        float: none;
+        height: var(--mobile-navbar-height);
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* push toggle to right edge */
+    }
+    .navbar-brand { order: 1; display: flex; align-items: center; }
+    .navbar-toggle {
+        order: 2;
+        display: block !important;
+        margin-left: auto; /* ensure right alignment in flex */
+        margin-right: var(--drawer-gutter);
+        margin-top: 5px;
+        margin-bottom: 5px;
+        float: none; /* prevent legacy float from interfering */
+        align-self: center;
+        -webkit-tap-highlight-color: transparent; /* avoid tap flash on iOS */
+    }
+
+    /* Collapsed drawer behavior */
+    .navbar-collapse { z-index: 1040; }
+    .navbar-collapse.collapse { display: none !important; height: 0; overflow: hidden; }
+    /* Keep animation smooth; add visuals with higher specificity below */
+    .navbar-collapse.collapsing { display: block !important; overflow: hidden !important; }
+    .navbar-collapse.collapse.in { display: block !important; overflow: hidden !important; }
+    /* Solid background and container styling during and after expand */
+    .navbar-default .navbar-collapse.collapsing,
+    .navbar-default .navbar-collapse.collapse.in {
+        box-sizing: border-box; /* lock total box width across states */
+        background: var(--surface-1, #fff);
+        background-color: var(--surface-1, #fff);
+        border: 1px solid var(--border-color-subtle, rgba(0,0,0,0.08));
+        border-radius: 12px;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.10);
+        /* align drawer to the right with breathing room, fixed width for consistent alignment */
+        margin: 6px 0px 6px auto; /* top/right/bottom, push left auto */
+        width: var(--drawer-width);               /* fixed width for centered text */
+        max-width: calc(100% - (var(--drawer-gutter) * 2));/* prevent overflow on small screens */
+        padding: 0px 4px; /* unified padding to avoid height jumps */
+    }
+    /* After animation completes, allow content to size naturally */
+    .navbar-collapse.collapse.in { height: auto !important; }
+    /* Tighter polish: clip inner content at rounded corners and give a touch more breathing room */
+    .navbar-default .navbar-collapse.collapse.in {
+        overflow: hidden !important; /* prevent bleed at corners; keep same padding as during animation to avoid jump */
+    }
+
+    /* Drawer list layout */
+    .navbar-nav { float: none !important; display: block; margin: 6px 0; }
+    .navbar-nav.navbar-right { margin-right: 0; }
+    .navbar-nav > li { float: none; }
+    /* Center drawer link content robustly and improve spacing */
+    .navbar-nav > li > a {
+        display: flex;                 /* robust centering */
+        align-items: center;           /* vertical center */
+        justify-content: center;       /* horizontal center */
+        padding: 12px 10px;            /* comfortable insets */
+        min-height: 40px;              /* touch target comfort */
+        border-radius: 10px;
+        text-align: center !important; /* keep text centered */
+        width: 100%;                   /* fill container width */
+        box-sizing: border-box;        /* include padding in width */
+    }
+    /* Keep same spacing when fully expanded (explicit for clarity) */
+    .navbar-collapse.in .navbar-nav > li > a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 15px;
+        min-height: 40px;
+        text-align: center !important;
+    }
+
+    /* Drawer active state */
+    /* Bring back glassmorphism highlight for the active item inside the drawer */
+    .navbar-default .navbar-collapse.in .navbar-nav > .active > a,
+    .navbar-default .navbar-collapse.in .navbar-nav > .active > a:focus,
+    .navbar-default .navbar-collapse.in .navbar-nav > .active > a:hover {
+        color: var(--link-color);
+        background: rgba(255, 255, 255, 0.36);
+        border: 1px solid rgba(148, 163, 184, 0.26);
+        -webkit-backdrop-filter: saturate(140%) blur(6px);
+        backdrop-filter: saturate(140%) blur(6px);
+        box-shadow: 0 1px 6px rgba(30, 41, 59, 0.05);
+        border-radius: 10px;
+        text-decoration: none;
     }
 }
 /* Extra-narrow phones: modestly smaller nav text */
@@ -421,7 +619,6 @@ div.inner h3 {
     width: 98%;
     line-height: 150%;
     color: var(--heading-color);
-    font-size: 1.17em;
 }
 
 div.inner h4 {
@@ -457,50 +654,13 @@ div.inner blockquote {
     background: var(--color-quote-bg);
 }
 
-div.inner pre {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Noto Sans Mono CJK SC", "Source Han Mono SC", monospace;
-    font-size: 0.92em; /* align with global tightening */
-    background-color: var(--color-code-bg);
-    border: 1px solid var(--color-code-border);
-    border-radius: 6px;
-    padding: 8px 10px; /* align with global tightening */
-    line-height: 1.5;
-}
+/* Code block styling lives in typography.css; no per-page overrides needed here */
 
-div.inner .hljs { background-color: transparent; }
+/* .hljs background handled globally in typography.css (including dark mode) */
 
-div.inner p code {
-    font-size: 0.9em;
-    background-color: var(--color-code-bg);
-    border: 1px solid var(--color-code-border);
-    border-radius: 3px;
-    padding: 0 0.25em;
-    margin: 0 0.15em;
-}
+/* Inline code styling is defined globally in typography.css */
 
-div.inner li code {
-    font-size: 90%;
-    background-color: #f4f4f4;
-    border: 1px solid #E0E0E0;
-    border-radius: 2px;
-    padding: 0 3px;
-    margin: 0 3px;
-}
-
-div.inner a {
-    /* Align with global link styling from typography.css */
-    color: var(--link-color);
-    text-decoration: underline;
-    text-decoration-color: currentColor;
-    text-underline-offset: 0.15em;
-    text-decoration-thickness: 0.08em;
-    border-bottom: 0; /* remove legacy dashed underline */
-    cursor: pointer; /* remove crosshair */
-}
-
-div.inner a:hover {
-    background-color: transparent; /* no background tint on hover */
-}
+/* Link styling unified globally in typography.css */
 
 div.inner img {
     display: block;
@@ -576,9 +736,64 @@ div.inner .align-right {
     text-align: right;
 }
 
-/* tag page */
-div.inner .tag-list-count {
-    margin-left: 10px;
+/* ===================== */
+/* Tags page refinements */
+/* ===================== */
+/* The tags page now renders inside the standard .inner container.
+   Scope styles accordingly so we do not need extra wrappers. */
+
+.inner .tag-cloud {
+    margin: 4px 0 16px;
+    line-height: 1.6;
+}
+
+/* Make the tag cloud wrap nicely with comfortable gaps */
+.inner .tag-cloud a {
+    display: inline-block;
+    margin: 2px 6px 2px 0;
+    text-decoration: none;
+    border-bottom: none;
+}
+
+/* Tag list: tidy bullets and spacing */
+.inner .tag-list {
+    margin-top: 8px;
+    padding-left: 22px;
+}
+
+.inner .tag-list li { margin: 4px 0; }
+
+.inner .tag-list a {
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(0,0,0,0.2);
+}
+
+.inner .tag-list a:hover {
+    border-bottom-color: rgba(0,0,0,0.4);
+}
+
+/* Ensure there is breathing room between the tag text and its count */
+.tag-list .tag-list-count { margin-left: 0.4em; }
+/* Temporary fallback for previously generated pages with duplicated '-list' */
+.tag-list-list .tag-list-list-count { margin-left: 0.4em; }
+
+/* count bubble */
+/* Space and separate the count from the tag name */
+.inner .tag-list .tag-list-count {
+    margin-left: 10px; /* give the number more breathing room */
+    color: #6b7280; /* gray-500 */
+    position: relative;
+}
+
+/* Align bullet list visuals closer to post page style */
+.inner .tag-list { list-style-position: outside; }
+.inner .tag-list li::marker { color: var(--color-muted); }
+
+/* Dark mode tweaks */
+@media (prefers-color-scheme: dark) {
+    .inner .tag-list a { border-bottom-color: rgba(255,255,255,0.22); }
+    .inner .tag-list a:hover { border-bottom-color: rgba(255,255,255,0.4); }
+    .inner .tag-list .tag-list-count { color: #9aa4b2; }
 }
 
 /* image no shadow */
@@ -841,4 +1056,86 @@ body[data-theme="dark"] ul.tags li a:hover { color: var(--link-hover); }
     body[data-theme="light"] div.inner,
     html[data-theme="light"] div.inner-narrow,
     body[data-theme="light"] div.inner-narrow { border: 1px solid var(--border-color-subtle); }
+}
+
+/* ===== Series list fine-tuning ===== */
+/* Tunables: indent, font-size scale, right-side word-count inset, separator opacity */
+ul.list-group {
+    --series-indent: 1.25rem;            /* Indent for the child list block */
+    --series-font-scale: 0.95;           /* Slightly smaller font-size for child list */
+    --series-count-inset: 22px;          /* Inward inset for right-aligned word count */
+    --series-row-sep: rgba(0,0,0,0.06);  /* Row separator (light) */
+}
+@media (prefers-color-scheme: dark) {
+    ul.list-group { --series-row-sep: rgba(255,255,255,0.08); }
+}
+html[data-theme="dark"] ul.list-group,
+body[data-theme="dark"] ul.list-group {
+    --series-row-sep: rgba(255,255,255,0.08);
+}
+
+/* 1) Child list indentation + slightly smaller font-size */
+ul.series-posts {
+    padding-left: var(--series-indent);   /* Create clear hierarchy from parent row */
+    font-size: calc(1em * var(--series-font-scale));
+}
+
+/* 2) Line-height and padding tweaks for comfortable density */
+ul.series-posts > li.series-post {
+    padding: 6px 0;
+}
+
+/* 3) Very light bottom separator (skip the last item) */
+ul.series-posts > li.series-post {
+    border-bottom: 1px solid var(--series-row-sep);
+}
+ul.series-posts > li.series-post:last-child {
+    border-bottom: none;
+}
+
+/* 4) Right-aligned word count with inward inset */
+ul.series-posts > li.series-post .word-count {
+    margin: 0 var(--series-count-inset) 0 0; /* Add space only on the right */
+    opacity: 0.9;                            /* Slightly lighter to reduce emphasis */
+}
+
+/* 5) Lighter hover feedback for child item titles (no underline) */
+ul.series-posts > li.series-post a:hover,
+ul.series-posts > li.series-post a:focus {
+    text-decoration: none;
+    color: var(--link-hover);
+}
+
+/* --- Series child item hover/focus enhancements --- */
+ul.series-posts {
+    --series-item-hover-light: rgba(138,180,248,0.12); /* Slightly deeper than parent row */
+    --series-item-hover-dark:  rgba(138,180,248,0.16);
+}
+
+/* Child item base: keep grid intact; add radius and soft transitions */
+ul.series-posts > li.series-post {
+    border-radius: 6px;
+    padding: 6px 8px; /* Slight inner padding for a subtle "card" feel */
+    transition: background-color .18s ease, box-shadow .18s ease;
+}
+
+/* Hover: subtle tint; add inset left accent bar without layout shift */
+@media (prefers-color-scheme: light) {
+    ul.series-posts > li.series-post:hover {
+        background-color: var(--series-item-hover-light);
+    }
+}
+@media (prefers-color-scheme: dark) {
+    ul.series-posts > li.series-post:hover {
+        background-color: var(--series-item-hover-dark);
+        box-shadow: inset 2px 0 0 var(--link-color);
+    }
+}
+
+/* Keyboard accessibility: clear but soft focus ring on the title link */
+ul.series-posts > li.series-post a:focus-visible {
+    outline: 2px solid var(--link-hover);
+    outline-offset: 2px;
+    border-radius: 4px;
+    text-decoration: none;
 }

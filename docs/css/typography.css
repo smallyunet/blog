@@ -24,6 +24,15 @@
   --font-size-xs: 0.7778rem; /* ~14px */
   --font-size-code: 0.8889rem; /* inline/code blocks */
 
+  /* Heading size tokens (desktop defaults) */
+  --h1-size: clamp(1.75em, 4.2vw, 2em);
+  --h2-size: 1.6em;
+  /* h3 tuned to 1.17em per design */
+  --h3-size: 1.17em;
+  --h4-size: 1.1em;
+  --h5-size: 1.0em;
+  --h6-size: 0.8889em; /* ≈ 16px on 18px base */
+
   --lh-base: 1.8;  /* Recommended for Chinese text */
   --lh-tight: 1.3; /* Code, headings minimal */
 
@@ -86,10 +95,12 @@ h1, h2 {
   font-family: "Palatino Linotype", Palatino, "Times New Roman", STKaiti, "Kaiti SC", serif;
 }
 
-h1 { font-size: clamp(1.75em, 4.2vw, 2em); }
-h2 { font-size: 1.6em; }
-h3 { font-size: 1.25em; }
-h4 { font-size: 1.1em; }
+h1 { font-size: var(--h1-size); }
+h2 { font-size: var(--h2-size); }
+h3 { font-size: var(--h3-size); }
+h4 { font-size: var(--h4-size); }
+h5 { font-size: var(--h5-size); }
+h6 { font-size: var(--h6-size); }
 
 /* Center main H1 as original theme does */
 h1 { text-align: center; }
@@ -132,10 +143,15 @@ h2::after {
     --font-size-code: 0.875rem; /* keep code readable but compact */
   }
 
-  /* Balanced mobile heading scale */
-  h1 { font-size: clamp(1.6em, 7vw, 1.9em); }
-  h2 { font-size: clamp(1.25em, 4.2vw, 1.4em); }
-  h3 { font-size: clamp(1.05em, 3.2vw, 1.2em); }
+  /* Balanced mobile heading scale via variables */
+  :root {
+    --h1-size: clamp(1.6em, 7vw, 1.9em);
+    --h2-size: clamp(1.25em, 4.2vw, 1.4em);
+    --h3-size: clamp(1.05em, 3.2vw, 1.2em); /* mobile h3; desktop uses 1.17em via token above */
+    --h4-size: clamp(1.0em, 2.6vw, 1.08em);
+    --h5-size: 0.95em;
+    --h6-size: 0.85em;
+  }
 
   /* Comfortable reading rhythm on mobile */
   p, li { line-height: var(--lh-base); }
@@ -354,6 +370,68 @@ ul.tags { font-size: 0.9rem; }
 
 /* micro-blog feature removed: previously used smaller base size */
 
+/* ======================= */
+/* Details / Summary (UI)  */
+/* ======================= */
+/*
+  Goal
+  - Provide consistent cross-page styling for <details>/<summary>
+  - Replace UA marker with a lightweight chevron built with CSS
+  - Clear hover/focus affordance and good contrast in both light/dark modes
+  - Work inside regular content (.inner/.inner-narrow) and anywhere else
+*/
+
+details {
+  border: 1px solid var(--border-color);
+  background: var(--surface-1);
+  border-radius: 8px;
+  padding: 0.6em 0.9em;
+  margin: 1em 0;
+}
+
+/* Click target and visual affordance */
+summary {
+  cursor: pointer;
+  list-style: none; /* hide default marker on Firefox */
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  color: var(--heading-color);
+  font-weight: 550;
+  /* extend hit area without shifting layout */
+  margin: -0.2em -0.3em 0.1em;
+  padding: 0.2em 0.3em;
+  border-radius: 6px;
+}
+summary::-webkit-details-marker { display: none; } /* hide default marker on WebKit */
+
+/* Chevron marker */
+summary::before {
+  content: "";
+  width: 0.55em;
+  height: 0.55em;
+  border-right: 2px solid var(--text-muted);
+  border-bottom: 2px solid var(--text-muted);
+  transform: rotate(-45deg);
+  transition: transform .18s ease, border-color .18s ease;
+}
+details[open] summary::before { transform: rotate(45deg); }
+
+/* Hover/Focus states */
+summary:hover { background: var(--surface-2); }
+summary:focus-visible {
+  outline: 2px solid var(--link-hover);
+  outline-offset: 2px;
+}
+
+/* Content spacing inside details */
+details > *:not(summary) { margin-top: 0.6em; }
+details p:last-child { margin-bottom: 0; }
+
+/* Nested details: subtle indentation */
+details details { margin: 0.6em 0 0.2em 0; }
+details details summary { font-weight: 500; }
+
 /* ======================================================== */
 /* Mobile scaling: keep existing .mobile behavior & headings */
 /* ======================================================== */
@@ -383,9 +461,26 @@ ul.tags { font-size: 0.9rem; }
 /* ===================== */
 /* Dark mode (variables) */
 /* ===================== */
-/* Ensure lightbox overlay stays hidden on pages that don't load post.css */
-.lb-overlay { display: none; }
+/* Lightweight lightbox styles (shared across home and post pages) */
+/* Base: hidden by default; opened via JS by toggling the `.open` class */
+.lb-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.62);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  cursor: zoom-out;
+}
 .lb-overlay.open { display: flex; }
+.lb-overlay img {
+  max-width: 92vw;
+  max-height: 92vh;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  background: #fff;
+}
 @media (prefers-color-scheme: dark) {
   :root {
     --bg-color: #0f1115;
@@ -409,6 +504,12 @@ ul.tags { font-size: 0.9rem; }
     --heading-underline-accent: var(--link-color);
     --text-muted: #9aa4b2; /* dark secondary text */
   }
+}
+
+/* Dark theme adjustments for the lightbox */
+@media (prefers-color-scheme: dark) {
+  .lb-overlay { background: rgba(0,0,0,0.72); }
+  .lb-overlay img { background: #0f1115; }
 }
 
 /* Dark mode: content tables inside inner containers */
