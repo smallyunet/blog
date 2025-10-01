@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://smallyu.net/about/index.html</loc>
+    
+    <lastmod>2025-10-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://smallyu.net/2025/08/06/%E5%AF%B90G%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%88%86%E6%9E%90/</loc>
     
     <lastmod>2025-09-30</lastmod>
@@ -158,15 +167,6 @@
     <loc>https://smallyu.net/2025/07/23/continuation%E6%95%99%E7%A8%8B2/</loc>
     
     <lastmod>2025-09-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://smallyu.net/about/index.html</loc>
-    
-    <lastmod>2025-09-27</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
