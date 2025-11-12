@@ -50,9 +50,9 @@
     <link href="https://smallyu.net/2025/11/10/web3%E5%B0%B1%E4%B8%9A%E6%8C%87%E5%8D%97/"/>
     <id>https://smallyu.net/2025/11/10/web3%E5%B0%B1%E4%B8%9A%E6%8C%87%E5%8D%97/</id>
     <published>2025-11-10T07:33:24.000Z</published>
-    <updated>2025-11-11T17:03:27.223Z</updated>
+    <updated>2025-11-12T12:23:21.842Z</updated>
     
-    <content type="html"><![CDATA[<ol><li>不要和定居在中国二线城市、同等经济水平城市、及其以下的团队成员合作，他们技术能力都不行</li><li>凡是中国深圳团队做的 web3 项目，都不要相信其技术含量，都不要相信长期价值，都不要投资</li><li>币权不可以代替基本薪资</li><li>在市面上公开的职位都不是核心岗位，在市面上流通的打工人都不是核心人才</li><li>DeJob 的管理员说，随意裁员没有赔偿是正常的，能发工资就行</li><li>交易所关区块链什么事</li><li>好想去 Gate，体验电脑被监控、15 分钟不回消息被警告的快感</li><li>想去 Bitget，体验被暴力裁员、直接关停账号权限的感觉</li><li>钱包岗位和区块链没有关系</li><li>web3 的 HR、猎头更容易不讲礼貌、不尊重人，因为远程办公在一定程度上会泯灭一部分人性，在他们眼里都是账号而已</li><li>Boss 直聘上没有真正的 web3 职位</li><li>web3 没有、也不应该、不可能有养老型工作</li><li>行业趋势未必与个体体会一致，不要乐观，也不要悲观</li></ol>]]></content>
+    <content type="html"><![CDATA[<ol><li>不要和定居在中国二线城市、同等经济水平城市、及其以下的团队成员合作，他们技术能力都不行</li><li>凡是中国深圳团队做的 web3 项目，都不要相信其技术含量，都不要相信长期价值，都不要投资</li><li>币权不可以代替基本薪资</li><li>在市面上公开的职位都不是核心岗位，在市面上流通的打工人都不是核心人才</li><li>DeJob 的管理员说，随意裁员没有赔偿是正常的，能发工资就行</li><li>交易所关区块链什么事</li><li>好想去 Gate，体验电脑被监控、15 分钟不回消息被警告的快感</li><li>想去 Bitget，体验被暴力裁员、直接关停账号权限的感觉</li><li>钱包岗位和区块链没有关系</li><li>web3 的 HR、猎头更容易不讲礼貌、不尊重人，因为远程办公在一定程度上会泯灭一部分人性，在他们眼里都是账号而已</li><li>Boss 直聘上没有真正的 web3 职位</li><li>web3 没有、也不应该、不可能有养老型工作</li><li>行业趋势未必与个体体会一致，不要悲观，也不要乐观</li></ol>]]></content>
     
     
       
@@ -69,6 +69,32 @@
     
     
     <category term="web3" scheme="https://smallyu.net/tags/web3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>关闭 ChatGPT 的 memory 功能</title>
+    <link href="https://smallyu.net/2025/11/06/%E5%85%B3%E9%97%ADChatGPT%E7%9A%84memory%E5%8A%9F%E8%83%BD/"/>
+    <id>https://smallyu.net/2025/11/06/%E5%85%B3%E9%97%ADChatGPT%E7%9A%84memory%E5%8A%9F%E8%83%BD/</id>
+    <published>2025-11-06T03:24:49.000Z</published>
+    <updated>2025-11-12T12:23:42.158Z</updated>
+    
+    <content type="html"><![CDATA[<p>ChatGPT 在对话的过程中有一个特点，就是会倾向于说你喜欢听的话，以及赞同你说的话。</p><p>当你想要询问 ChatGPT 一些建议的时候，比如接下来做什么 side project，或者对于某种项目方向的看法，ChatGPT 会根据你的技术栈来推荐，或者说基于你最近提到的 XXX，推荐你做 YYY。</p><p>这是非常不好的一种现象，这样长期下去，你将无法从 ChatGPT 那里获得客观的建议，你自己的技术栈、信息来源，也都会被局限在你熟悉的范围内。</p><p>所以一定要关闭 ChatGPT 的 memory 功能，以避免信息茧房、判断茧房。</p><img src="1.png" width="60%"/>]]></content>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;ChatGPT 在对话的过程中有一个特点，就是会倾向于说你喜欢听的话，以及赞同你说的话。&lt;/p&gt;
+&lt;p&gt;当你想要询问 ChatGPT 一些建议的时候，比如接下来做什么 side project，或者对于某种项目方向的看法，ChatGPT</summary>
+        
+      
+    
+    
+    
+    
+    <category term="AI" scheme="https://smallyu.net/tags/AI/"/>
     
   </entry>
   
