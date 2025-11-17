@@ -1,0 +1,107 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>HTML5音乐可视化</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://smallyu.net/2017/05/17/html5音乐可视化/"><meta property="og:title" content="HTML5音乐可视化"><meta property="og:type" content="article"><meta property="og:url" content="https://smallyu.net/2017/05/17/html5音乐可视化/"><meta property="og:site_name" content="smallyu的博客"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1"><link rel="stylesheet" href="/css/post.css?v=v1"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>HTML5音乐可视化</h1><div class="time">2017-05-17</div><div class="title-margin"></div><img src="201705141494765899218386.png" />
+
+<p>下面梳理一下HTML5实现音乐可视化的流程。</p>
+<p><strong>搭建静态页面</strong></p>
+<p>静态页面的结构分三部分，header，left，right。header为语义化标签，left和right都用div来实现。</p>
+<img src="201705141494770946657494.png" />
+
+<p>类似这样，然后把背景颜色改为黑色，字体改成白色，加上或不加边框线，给一定padding或margin，静态页面就搭建好啦。</p>
+<p>不过重点不是页面布局。可以在左侧栏有一个曲目列表，点击切歌。这里就不那么麻烦，直接后台加载指定的歌曲。歌曲是许嵩的烟花笑，左侧栏显示部分歌词。</p>
+<p><strong>创建音频文件对象</strong></p>
+<p>AudioContext对象用于获取音频文件源。</p>
+<blockquote>
+<p>（节点）AudioContext：包含各个AudioNode对象以及它们的联系的对象，可以理解为上下文对象。绝大多数情况下，一个document中只有一个AudioContext。</p>
+<p>（方法）createBufferSource()：创建audioBufferSourceNode对象。</p>
+</blockquote>
+<p>可以这样写：</p>
+<pre><code>var ac = new window.AudioContext();    // 实例化ac为一个音频对象
+var bs = ac.createBufferSource();      // 用bs来保存音频文件资源
+</code></pre>
+<p>有了音频资源，是否就可以播放音频了呢？当然不可以，因为还没有指定文件，告诉对象播放哪一个音频文件。</p>
+<p><strong>获取音频数据</strong></p>
+<p>创建bufferSource后，到了AudioBufferSourceNode这个节点。这个节点有一个属性值buffer，用来指定文件资源。这个属性值需要一个buffer类型的数据。</p>
+<blockquote>
+<p>（节点）AudioBufferSourceNode：表示内存中的一段音频资源，其音频数据存在于AudioBuffer中（其buffer属性）。</p>
+<p>（属性）buffer：AudioBuffer对象，表示要播放的音频资源数据。</p>
+</blockquote>
+<p>获取buffer有两种方式，一种是ajax设置返回值类型为arraybuffer，然后解码，一种是用FileReader读取文件，获得blob值。后一种方式多用input上传文件后获得文件，再进行解析。前面一种好用一点。（留坑）  </p>
+<p>ajax的原生写法：</p>
+<pre><code>var url=&quot;...&quot;;
+var xhr = new XMLHttpRequest();
+xhr.abort();
+xhr.open(&quot;GET&quot;, url);
+xhr.responseType = &quot;arraybuffer&quot;;
+xhr.onload = function()&#123;
+    return xhr.response;
+&#125;
+xhr.send();
+</code></pre>
+<p>onload触发的函数中xhr.response就是我们想要的值。</p>
+<blockquote>
+<p>（方法）decodeAudioData(arrayBuffer, succ(buffer), err) ：异步解码包含在arrayBuffer中的音频数据。</p>
+</blockquote>
+<p>将arraybuffer解码：</p>
+<pre><code>ac.decodeAudioData(arraybuffer, function(buffer)&#123; ... &#125;,function(err)&#123; ... &#125;);
+bs.buffer = buffer;    // 回调函数中的buffer就是想要的buffer
+</code></pre>
+<p><strong>播放音乐</strong>  </p>
+<blockquote>
+<p>（方法）start：开始播放音频</p>
+</blockquote>
+<p>这个时候调用start方法：</p>
+<pre><code>bs.start(0);
+</code></pre>
+<p>打开页面，音乐开始播放。</p>
+<p><strong>音量控制</strong></p>
+<blockquote>
+<p>（节点）GainNode：改变音频音量的对象，会改变通过它的音频数据所有的sample frame的信号强度。</p>
+<p>（方法）createGain()：创建GainNode对象。</p>
+<p>（属性）value：可以改变音频信号的强弱，默认为1，最小值为0。</p>
+</blockquote>
+<p>音乐播放还不行，要添加一个音量控制控件，音量控制用GainNode节点：</p>
+<pre><code>var gainNode = accreateGain();    // 创建GainNode对象
+gainNode.connect(ac.destination);    // 将gainNode连接到AudioDestinationNode节点
+</code></pre>
+<p>这样就有了一个音量控制的对象。</p>
+<pre><code>gainNode.gain.value= ... ;
+</code></pre>
+<p>gain.value用于控制输入信号的强弱，也就是音量的大小。HTML中用type为range的input，把值传递给对象，就可以实时控制音量了。  </p>
+<p><strong>得到音频解析数据</strong></p>
+<blockquote>
+<p>（节点）AnalyserNode：音频分析对象，他能实时的分析音频资源的频域和时域信息，但不会对音频流做任何处理。</p>
+<p>（方法）createAnalyser()：创建AnalyserNode对象。</p>
+</blockquote>
+<blockquote>
+<p>（属性）fftsize：设置FFT（是离散傅里叶变换的快速算法，用于将一个信号变换到频域）值的大小，用于分析得到频域，为32 ~ 2048之间2的整数次倍，默认为2048，实时得到的音频频域的数据个数为fftSize的一半。</p>
+<p>（属性）frequencyBinCount，FFT值的一半，即实时得到的音频频域的数据个数</p>
+</blockquote>
+<blockquote>
+<p>（方法）getByteFrequencyData(Uint8Array)，复制音频当前的频域数据（数量是frequencyBinCount）到Uint8Array（8位无符号整型类型化数组）中。</p>
+</blockquote>
+<p>先创建AnalyserNode对象，然后设置fftsize的值。FFT用于数字信号的处理，会把音频文件流输入的信号变换到频域，用getByteFrequencyData()方法得到经系统处理之后的频域数据。</p>
+<pre><code>var analyser = ac.createAnalyser();    // 实例化对象
+analyser.fftSize = 32;                 // 设置fftsize
+var arr = new Uint8Array(analyser.frequencyBinCount);    // getByteFrequencyData()方法要求参数为8位无符号整型类型化数组
+analyser.getByteFrequencyData(arr);    //    arr为所需频域数据
+</code></pre>
+<p>这样得到的数组arr就是用于可视化效果绘制的数据。</p>
+<blockquote>
+<p>（方法）window.requestAnimationFrame()：告诉浏览器您希望执行动画，并请求浏览器调用指定的函数在下一次重绘之前更新动画。该方法将在重绘之前调用的回调作为参数。</p>
+</blockquote>
+<p>一次解析只能得到一组数据，所以需要requestAnimationFrame不断解析，不断得到arr。</p>
+<p><strong>前端界面绘制</strong></p>
+<p>前端界面使用canvas绘制，实现音乐可视化的效果。</p>
+<pre><code>var box = document.getElementById(&quot;right&quot;);    // 获取right区域的dom
+box.appendChild(canvas);                       // 创建canvas节点
+var ctx = canvas.getContext(&quot;2d&quot;);             // 实例化canvas画笔
+</code></pre>
+<p>接下来就是使用for循环和ctx画矩形、圆圈，填充渐变的操作了。（留坑吧，估计不填了）  </p>
+<p>案例用到web Audio API的关系：</p>
+<img src="201705141494773947635812.png" />
+
+<p>虚线是可以跳过的节点，直接播放音频文件。好吧有错。</p>
+</div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1"></script><script defer src="/js/highlight.min.js?v=v1"></script><script defer src="/js/main.js?v=v1"></script><script defer src="/js/lightbox.js?v=v1"></script><script defer src="/js/bootstrap.min.js?v=v1"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-5JRBZ6P1W3"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-5JRBZ6P1W3');</script></html>
