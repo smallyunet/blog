@@ -1,5 +1,5 @@
 ---
-title: JAVA中的几种设计模式
+title: JAVA 中的几种设计模式
 date: 2017-02-11 00:00:00
 tags:
   - JAVA
