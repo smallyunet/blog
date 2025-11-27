@@ -96,5 +96,36 @@ make test-advanced
 
 当然全部测试是通过的。但是目前仍然无法执行以太坊主网的第 10000000 个区块，意味着缺少的 opcode 不属于 solidity 的基本语法特性，可能是别的什么。
 
+<br>
 
+### v0.0.6（2025.11.27）
 
+这个 [小版本](https://github.com/smallyunet/echoevm/releases/tag/v0.0.6) 新增了两个命令，`debug` 命令可以用于展示字节码的执行过程：
+
+```bash
+~/work/github/echoevm > ./bin/echoevm run --debug 60016002
+PC    OP              GAS        STACK (Top)         
+------------------------------------------------------------
+0002  PUSH1           0          0x1
+0004  PUSH1           0          0x2
+Return: 0x
+```
+
+`repl` 命令 就像比特币的 `btcdeb` 一样，可以交互式地输入字节码并执行：
+
+```bash
+~/work/github/echoevm > ./bin/echoevm repl                
+EchoEVM REPL
+Type opcodes (e.g., 'PUSH1 01 ADD') or hex (e.g., '600101'). Type 'exit' to quit.
+>  PUSH1 10
+Stack [1]:
+  0000: 0x10
+> PUSH1 20
+Stack [2]:
+  0001: 0x20
+  0000: 0x10
+> ADD
+Stack [1]:
+  0000: 0x30
+> exit
+```
