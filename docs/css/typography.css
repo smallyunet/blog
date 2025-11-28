@@ -61,6 +61,17 @@
   --color-code-bg: #f6f6f6;
   --color-code-border: #e2e2e2;
 
+  /* UI Colors */
+  --color-hover-bg: #f6f9ff;
+  --color-notice: #AA4433;
+  --color-tag-link: #77b3e0;
+  --color-tag-link-hover: #559bce;
+  
+  /* Shadows */
+  --shadow-card: 0 1px 6px rgba(30,41,59,0.05);
+  --shadow-image: 0 1px 4px rgba(0,0,0,0.08);
+  --shadow-image-hover: 0 4px 18px rgba(0,0,0,0.12);
+
   /* Heading */
   --heading-color: #333;
   --heading-underline: #e6e6e6;
@@ -595,6 +606,16 @@ details details summary { font-weight: 500; }
     --heading-underline: #2a2f37;
     --heading-underline-accent: var(--link-color);
     --text-muted: #9aa4b2; /* dark secondary text */
+
+    /* UI Colors Dark */
+    --color-hover-bg: rgba(138,180,248,0.08);
+    --color-tag-link: var(--link-color);
+    --color-tag-link-hover: var(--link-hover);
+    
+    /* Shadows Dark */
+    --shadow-card: 0 1px 6px rgba(0,0,0,0.18);
+    --shadow-image: 0 1px 3px rgba(0,0,0,0.5);
+    --shadow-image-hover: 0 4px 18px rgba(0,0,0,0.5);
   }
 }
 

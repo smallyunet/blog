@@ -118,18 +118,18 @@ img {
   height: auto;
   margin: 16px auto; /* comfortable vertical rhythm */
   background: #fff;  /* keep transparent PNGs readable on gray backgrounds */
-  border: 1px solid #e9e9e9;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-image);
   transition: box-shadow .18s ease, transform .16s ease;
 }
 
 /* Elevate slightly when the image is a link */
 a img {
-  border-color: #e6e6e6;
+  border-color: var(--border-color);
 }
 a:hover img {
-  box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+  box-shadow: var(--shadow-image-hover);
   transform: translateY(-1px);
 }
 
@@ -189,7 +189,7 @@ div.inner .box { border: 0; }
 /* hr styling unified in typography.css */
 
 p.notice {
-  color: #AA4433;
+  color: var(--color-notice);
   font-size: 14px;
 }
 
@@ -489,7 +489,7 @@ details > *:not(summary) { margin-top: 0.5em; }
   img:not(.no-shadow) {
     background: #0f1115;
     border-color: #2a2f37;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    box-shadow: var(--shadow-image);
   }
   /* Article container cards */
   div.inner,
@@ -512,7 +512,7 @@ details > *:not(summary) { margin-top: 0.5em; }
 
 /* Manual override via data-theme */
 html[data-theme="dark"] img:not(.no-shadow),
-body[data-theme="dark"] img:not(.no-shadow) { background: #0f1115; border-color: #2a2f37; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+body[data-theme="dark"] img:not(.no-shadow) { background: #0f1115; border-color: #2a2f37; box-shadow: var(--shadow-image); }
 html[data-theme="dark"] div.inner,
 html[data-theme="dark"] div.inner-narrow,
 html[data-theme="dark"] .box,

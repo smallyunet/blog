@@ -20,10 +20,10 @@ table { font-size: 100%; }
 
 /* Hover background in light theme only */
 @media (prefers-color-scheme: light) {
-    li.title:hover { background-color: #f6f9ff; box-shadow: none; }
+    li.title:hover { background-color: var(--color-hover-bg); box-shadow: none; }
 }
 html[data-theme="light"] li.title:hover,
-body[data-theme="light"] li.title:hover { background-color: #f6f9ff; }
+body[data-theme="light"] li.title:hover { background-color: var(--color-hover-bg); }
 
 /* Larger hit area + keyboard focus for accessibility */
 /* Desktop: three-column grid → [date | title | count] */
@@ -136,7 +136,7 @@ ul.list-group > li.list-group-item.title:hover { border-radius: 10px; }
     border: 1px solid rgba(148, 163, 184, 0.26); /* softer border */
     -webkit-backdrop-filter: saturate(140%) blur(6px);
     backdrop-filter: saturate(140%) blur(6px); /* reduce blur to 6px */
-    box-shadow: 0 1px 6px rgba(30, 41, 59, 0.05); /* drop heavy outer shadow */
+    box-shadow: var(--shadow-card); /* drop heavy outer shadow */
     border-radius: 12px;
     text-decoration: none;
 }
@@ -599,12 +599,12 @@ ul.tags li span {
 }
 
 ul.tags li a {
-    color: #77b3e0;
+    color: var(--color-tag-link);
     text-decoration: none;
 }
 
 ul.tags li a:hover {
-    color: #559bce;
+    color: var(--color-tag-link-hover);
 }
 
 /* In article rows, place tags in the right grid column instead of floating */
@@ -747,7 +747,7 @@ div.inner hr {
 }
 
 div.inner p.notice {
-    color: #AA4433;
+    color: var(--color-notice);
     font-size: 14px;
 }
 
@@ -1022,7 +1022,7 @@ div.inner div.title-margin {
         border: 1px solid rgba(148, 163, 184, 0.20);
         -webkit-backdrop-filter: saturate(140%) blur(6px);
         backdrop-filter: saturate(140%) blur(6px);
-        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.18);
+        box-shadow: var(--shadow-card);
     }
 
     /* tags */
@@ -1082,7 +1082,7 @@ body[data-theme="dark"] .navbar-default .navbar-nav > .active > a:hover {
     border: 1px solid rgba(148, 163, 184, 0.20);
     -webkit-backdrop-filter: saturate(140%) blur(6px);
     backdrop-filter: saturate(140%) blur(6px);
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.18);
+    box-shadow: var(--shadow-card);
 }
 html[data-theme="dark"] ul.tags li span,
 body[data-theme="dark"] ul.tags li span { color: #8b8f98; }
