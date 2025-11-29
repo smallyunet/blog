@@ -506,7 +506,8 @@ div.word-count {
         box-shadow: 0 8px 22px rgba(0,0,0,0.10);
         /* align drawer to the right with breathing room, fixed width for consistent alignment */
         margin: 6px 0px 6px auto; /* top/right/bottom, push left auto */
-        width: var(--drawer-width);               /* fixed width for centered text */
+        width: fit-content;
+        min-width: var(--drawer-width);
         max-width: calc(100% - (var(--drawer-gutter) * 2));/* prevent overflow on small screens */
         padding: 0px 4px; /* unified padding to avoid height jumps */
     }
@@ -532,6 +533,7 @@ div.word-count {
         text-align: center !important; /* keep text centered */
         width: 100%;                   /* fill container width */
         box-sizing: border-box;        /* include padding in width */
+        white-space: nowrap;
     }
     /* Keep same spacing when fully expanded (explicit for clarity) */
     .navbar-collapse.in .navbar-nav > li > a {
