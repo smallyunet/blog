@@ -763,6 +763,59 @@
   </entry>
   
   <entry>
+    <title>鼓吹 Cursor 的人技术能力都差</title>
+    <link href="https://smallyu.net/2025/04/12/%E9%BC%93%E5%90%B9Cursor%E7%9A%84%E4%BA%BA%E6%8A%80%E6%9C%AF%E8%83%BD%E5%8A%9B%E9%83%BD%E5%B7%AE/"/>
+    <id>https://smallyu.net/2025/04/12/%E9%BC%93%E5%90%B9Cursor%E7%9A%84%E4%BA%BA%E6%8A%80%E6%9C%AF%E8%83%BD%E5%8A%9B%E9%83%BD%E5%B7%AE/</id>
+    <published>2025-04-12T12:33:38.000Z</published>
+    <updated>2025-12-04T10:51:53.972Z</updated>
+    
+    <content type="html"><![CDATA[<p>有点标题党，不要太介意。我想表达的是不应该过于关注使用的工具。很简单的逻辑，只有自己工程能力不如 Cursor，才会觉得 Cursor 厉害，干什么都行。当然这句话属于比较空的废话。</p><p>事实上，Cursor 的代码补全能力没有比 GitHub Copilot 好多少，底层使用的模型是一样的，不是 Claude 就是GPT。而在工程化调教方面，Cursor 和 Copilot 都是在把一些文件作为 context，继续后面的对话。</p><p>Cursor 比 Copilot 好一点的地方在于，会自己去当前工程目录下，搜索和参考其他文件的写法，这一点确实有用，你不需要告诉他具体引用那哪些文件，他自己会不断的尝试，Copilot 这种插件是不具备这种能力的，这确实是好的一面，如果项目下存在大量可复用的代码，Cursor 可以比较好的发挥出它的能力。</p><p>但有时候又会觉得 Cursor 过度智能，它甚至会自己在你的工程下面创建新文件，而不需要经过你同意，这就导致在用 Cursor 的时候需要时刻关注，他是否改变了你预期之外的代码文件。相比之下，（GoLand 下的）Copilot 只是插件的形式，只会给出代码片段，用不用是你自己的事情。VS Code 下的 Copilot 现在和 Cursor 倒是有类似的体验了，会给你一个接受或不接受更改的选项。</p><p>所以相比来说， Cursor 和 Copilot 使用了一样的大语言模型（不会有人觉得 Cursor 自己训练了个模型出来吧），然后 Cursor 拥有更大的、项目级别的控制力，而 Copilot 像他的名字一样，只是辅助级别的能力，这是它们最大的区别。</p><p>回到模型本身，o1 是迄今为止最厉害的模型，在日常工作中深有体会，我经常用 o1 来精准定位编程中遇到的 bug，而对于相同的问题，其他模型往往给出错误或者不准确的解释，包括 o3-mini-high 和 4o。</p><p>比如，在调用智能合约的时候，原本的命令是</p><pre><code>cast call requestPrice(string) &quot;BTC&quot; —-rpc-url=http://eth:8545</code></pre><p>现在需要调用另一个函数，比原本的函数多了一个入参，我就直接复制代码写成</p><pre><code>cast call requestPrice(string) &quot;BTC&quot; &quot;USD&quot; —-rpc-url=http://eth:8545</code></pre><p>不知道你有没有第一时间看出问题？其实 4o 倒是给出了正确的分析，只是没有特别精准，给出了 3 种有可能的错误原因，而 o1 直接就说对了。</p><p>当然大模型之间的差异不会体现在这么微小的问题上，只是正好有印象就随便提一下，我想表达的是，从日常体验来看，o1 是最好用的模型。</p><p>我严重怀疑鼓吹 Cursor 的人，都是之前没有使用过 AI、体会过 AI 强大能力的人，在用到 Cursor 之后，才明白原来现在的生成式 AI 已经这么强大了，欣喜若狂。而当需要使用生成式 AI 的时候，他们的第一反应不是打开 ChatGPT 的聊天框或者 Gotk3 的界面，而是打开了 Cursor 的代码框，开始去聊天。</p><p>所以鼓吹 Cursor 的人，实际上是把生成式 AI 的能力，误以为是 Cursor 的能力，才因此觉得 Cursor 异常强大。</p><p>我在工作中就不止一次被强烈推荐使用 Cursor ，让我别再用 GoLand，还说出 “GoLand 就是垃圾” 这种话，Cursor 最好用什么的。</p><p>首先我一直觉得喜欢用什么编辑器是个人的选择，管这个干啥。其次如果觉得使用什么编辑器会给使用者带来鄙视链和优越感，未免有点小儿科。最后就是我喜欢用 GoLand 的理由，只有两点：1.箭头非常直观的表达了接口的实现关系。2.前进后退快捷键很好用。基于这两点，我才可以比较快速的读懂和理解代码。</p><p>也因此带来一个差异是，使用 GoLand 的人，往往更加关注代码逻辑，比如在寻找代码位置的时候，喜欢通过代码之间的跳转，例如接口的实现关系等。而使用 Cursor（VS Code）的人，更加关注项目的目录结构、文件名、文件的位置，因为 Cursor 没有提供很好的代码跳转功能，所以不得不更加依赖通过项目结构来梳理代码功能。</p><p>代码的自动补全方面，GoLand+Copilot 插件能应付日常场景，需要补全的往往是打日志之类的内容，简单用用就可以，我不太敢用 AI 写侧重逻辑的代码。</p><p>给我推荐使用 Cursor 可能还有一种心理就是，觉得我不知道怎么使用 AI，或者觉得我不知道怎么使用 Cursor (?)，也挺奇怪的。我在 2023 年（ChatGPT 开始大火的那段时间）就试用了 ChatGPT，还写了《<a href="/2023/03/30/%E4%B8%8D%E8%A6%81%E5%B0%8F%E7%9E%A7-ChatGPT/">不要小瞧 ChatGPT</a>》，而现在不论是日常工作还是生活，都在高频率使用 ChatGPT。</p><p>总的来说，我的意思是，你可以喜欢 Cursor，也可以使用 Cursor，但最好不要鼓吹 Cursor。</p>]]></content>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;有点标题党，不要太介意。我想表达的是不应该过于关注使用的工具。很简单的逻辑，只有自己工程能力不如 Cursor，才会觉得 Cursor 厉害，干什么都行。当然这句话属于比较空的废话。&lt;/p&gt;
+&lt;p&gt;事实上，Cursor 的代码补全能力没有比 GitHub Copilot</summary>
+        
+      
+    
+    
+    
+    
+    <category term="AI" scheme="https://smallyu.net/tags/AI/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>关于 Code Review 的礼节</title>
+    <link href="https://smallyu.net/2025/03/25/%E5%85%B3%E4%BA%8E-Code-Review-%E7%9A%84%E7%A4%BC%E8%8A%82/"/>
+    <id>https://smallyu.net/2025/03/25/%E5%85%B3%E4%BA%8E-Code-Review-%E7%9A%84%E7%A4%BC%E8%8A%82/</id>
+    <published>2025-03-25T13:45:43.000Z</published>
+    <updated>2025-12-04T10:53:35.398Z</updated>
+    
+    <content type="html"><![CDATA[<p>前情提要，推荐王垠的两篇博客文章：</p><ul><li>《<a href="https://www.yinwang.org/blog-cn/2015/03/03/how-to-respect-a-programmer">怎样尊重一个程序员</a>》</li><li>《<a href="https://www.yinwang.org/blog-cn/2015/03/11/git-etiquette">关于Git的礼节</a>》</li></ul><p>由于过往不规范的工作经历，我之前是缺少对 Code Review 的理解的。最近因为同事对这个问题情绪化的表达，我开始关注到关于 Code Review 的问题。</p><h3 id="基本礼仪：不要用-FYI"><a href="#基本礼仪：不要用-FYI" class="headerlink" title="基本礼仪：不要用 FYI"></a>基本礼仪：不要用 FYI</h3><p>谷歌公开出来的 Code Review 规范 《<a href="https://google.github.io/eng-practices/review/reviewer/standard.html">The Standard of Code Review</a>》已经非常具有指导意义，内容很全面，包括我现在实际遇到的流程问题，也完全可以依照这个规范来消化解决。当然前提是所有团队成员事先对这个规范的内容已经达成一致，而不是假设公司的员工已经知道并且开始遵循这个规范。</p><p>关于规范（TSCR）中已经提到的流程问题、礼貌问题，这里是不需要赘述的。我关注到的是其中一个小章节《<a href="https://google.github.io/eng-practices/review/reviewer/comments.html#label-comment-severity">Label comment severity</a>》，也就是对 Code Review 之后的 comment 进行重要程度的区分，并且加上前缀，让 author 可以明确知道哪些留言是必须要改的，哪些是无关紧要的。</p><p>除去必须要改的 comment 不加前缀，谷歌的规范中提到有三类前缀，这些都是指站在 Reviewer 的立场，如何去写 comment，本质上这三类前缀都不影响代码的 approve 和合并：</p><ul><li><code>Nit</code> (Nitpick): 你应该改，但是不改我也能接受。</li><li><code>Optional</code>：只是建议，你自由选择改还是不改。</li><li><code>FYI</code> (For Your Information)：这个 PR 中完全不需要因此有改动，但我觉得这是一个有意思的点，后续你可以关注下。</li></ul><p>其中第三个前缀 FYI，每当看到 For Your Information 这个短语的时候，我总是下意识的会把这个短语翻译为中国传统社会普遍流行的一句古话： “为了你好”。</p><p>相信在中国本土长大的华人，即使没有遭受过严苛古怪的家庭教育，也都能深刻理解到 “为了你好” 的威力。</p><p>为了你好，你要好好学习<br>为了你好，你不能打游戏<br>为了你好，你要考公务员<br>为了你好，你要早点结婚<br>为了你好，你必须生孩子<br>……</p><p>一些情况下，父母的 “为了你好” 只是他们满足自己变态控制欲望的借口，另一些情况下，有些父母发自真心的 “为了你好”，然后由于自身有限的眼光给出了不正确的建议。</p><p>总的来说，中文语境下的 “为了你好” 绝不是什么好词，如果把这种话语带到工作中，就更匪夷所思了。虽然 For Your Information 并不能直译为 “为了你好”，但是为了避免歧义，还是建议大家不要使用这样的话术。</p><p>所以，Code Review 的基本礼仪就是，不要用 FYI。</p><h3 id="为什么-“为了你好”-往往是错的"><a href="#为什么-“为了你好”-往往是错的" class="headerlink" title="为什么 “为了你好” 往往是错的"></a>为什么 “为了你好” 往往是错的</h3><h4 id="先说结论"><a href="#先说结论" class="headerlink" title="先说结论"></a>先说结论</h4><p>因为没有人可以在实际上了解另一个人。</p><p>父母真的了解自己的孩子吗？结婚多年的夫妻，真的知道对方的心思吗？审查犯人的警察，足够了解自己在调查的罪犯了吗？心理学的专家，能猜到自己女朋友早上为什么生气吗？对于每一个人，你真的了解自己吗？</p><p>所以其实可以得到这样一个和技术无关的结论，出于礼貌，我们应该尽量避免对别人说 “为了你好”。</p><h4 id="具体事例"><a href="#具体事例" class="headerlink" title="具体事例"></a>具体事例</h4><p>最近的工作中，我提交的代码包含一个简单的事件总线（Event bus）的实现，其中事件的 Publish 和 Subcribe 都用了 RW 锁来保证 map 读写的线程安全：</p><pre><code class="Go">func (eb *EventBus) Publish(event Event) &#123;    eb.mu.RLock()    defer eb.mu.RUnlock()    if ch, exists := eb.channels[event]; exists &#123;        ch &lt;- event    &#125;&#125;</code></pre><p>而我得到的 CR 建议是用 Sync map 改写为：</p><pre><code class="Go">func (eb *EventBus) Publish(event Event) &#123;    if ch, ok := eb.channels.Load(event); ok &#123;        // 注：这里需要类型断言        ch.(chan Event) &lt;- event    &#125;&#125;</code></pre><p>这实际上最多是一个 Nit 级别的 comment，我是不太在意的，这个事情的处理起来也非常简单。</p><p>而事实上问题在于，我听到了类似于 “为了你好” 的话，大致意思是，为了你好，你要了解清楚 RW 锁、互斥锁、Sync map 的区别，然后选择在 Event bus 场景下最正确的实现方式，并且能够条理清晰地去说服别人。</p><p>如果说我从自身技术发展的角度，是不太在乎这种问题的。这个问题本质上是我们平时面试时候说的八股文，随着最近几年面试风向的转变，也越来越多的人开始逐渐达成一致、反感八股文一类的东西了。</p><p>当然追求这一类底层问题到极致的人，肯定是有技术追求的人，这并不是什么坏事，我们应该尊重任何努力以及对技术较真的人。只是技术也分很多种方面。</p><h4 id="我的兴趣"><a href="#我的兴趣" class="headerlink" title="我的兴趣"></a>我的兴趣</h4><p>我算不算有技术追求的人呢？也许有时候算吧。无论是技术还是别的东西，其实我们所有人都愿意追求有趣的东西。</p><p>从过往经历来看，我关心的技术话题并且乐于出自兴趣去学习、思考的，比如：</p><ul><li><p>PoW 和 PoS 的本质区别是什么，PoW 好还是 PoS 好</p><ul><li>《<a href="/2024/04/14/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%B4PoW%E6%AF%94PoS%E6%9B%B4%E5%8A%A0%E5%8E%BB%E4%B8%AD%E5%BF%83%E5%8C%96/">为什么说 PoW 比 PoS 更加去中心化</a>》</li></ul></li><li><p>以太坊的 PoS 和 Cardano 的 PoS 有什么区别</p><ul><li>为什么说 Cardano 的 PoS 是比较纯粹的 PoS，又为什么以太坊的 PoS 更加去中心化</li></ul></li><li><p>PBFT 的优缺点是什么，PBFT 有哪些优化的空间</p><ul><li>《<a href="/2025/01/05/%E6%89%80%E6%9C%89-BFT-%E5%85%B1%E8%AF%86%E7%9A%84%E5%8C%BA%E5%9D%97%E9%93%BE%E9%83%BD%E6%98%AF%E4%B8%AD%E5%BF%83%E5%8C%96%E7%9A%84/">所有 BFT 共识的区块链都是中心化的</a>》</li><li>《<a href="/2024/06/09/Ethereum-Casper-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81-EIP-7251/">Ethereum Casper 为什么需要 EIP-7251</a>》</li><li>《<a href="/2024/06/03/%E5%8C%BA%E5%9D%97%E9%93%BE%E4%B8%AD%E7%9A%84PBFT%E4%B8%8D%E9%9C%80%E8%A6%81%E7%AC%AC%E4%BA%8C%E6%AC%A1%E6%8A%95%E7%A5%A8/">区块链中的 PBFT 不需要第二次投票</a>》</li></ul></li><li><p>不同类型的区块链是如何处理分叉的</p><ul><li>《<a href="/2023/07/01/%E5%AF%B9%E5%8C%BA%E5%9D%97%E9%93%BE%E5%85%B1%E8%AF%86%E6%9C%BA%E5%88%B6%E7%9A%84%E7%90%86%E8%A7%A3/">对区块链共识机制的理解</a>》</li><li>《<a href="/2024/08/22/PoS%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%8C%BA%E5%9D%97%E9%93%BE%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%88%86%E5%8F%89/">PoS 类型的区块链如何处理分叉</a>》</li></ul></li><li><p>区块链可能有哪些有趣的应用场景</p><ul><li>《<a href="/2023/05/18/Pebbling-Game-%E9%B9%85%E5%8D%B5%E7%9F%B3%E6%B8%B8%E6%88%8F/">Pebbling Game 鹅卵石游戏</a>》</li><li>《<a href="/2023/02/22/%E4%B8%80%E7%A7%8D%E5%9C%A8%E5%8C%BA%E5%9D%97%E9%93%BE%E4%B8%8A%E7%94%9F%E6%88%90%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%9A%84%E6%9C%BA%E5%88%B6/">一种在区块链上生成随机数的机制</a>》</li><li>《<a href="/2022/12/27/%E2%80%9C%E7%8C%9C%E5%9D%87%E5%80%BC%E7%9A%842-3%E2%80%9DdApp-%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1/">“猜均值的2&#x2F;3” dApp 游戏设计</a>》</li></ul></li></ul><p>知道这些东西有用吗？没什么用，面试的时候几乎不会有人问，工作中更是用不到，就仅仅只是出于兴趣爱好去探索这些技术问题。这些问题的答案，从来也都不是现成的，网络上是搜索不到的，ChatGPT 也是没办法精准回答的，只有经过一段时间的学习，加上查阅论文资料，结合自己的亲身经历和理解，才可以形成技术观点，无论观点本身是对还是错。</p><p>因此可能出于某种思维上的惯性，我很少关心太过基础的编程类问题。这种事情因人而异，不能强求，自然也不能强迫别人因为 FYI 就去关心某些问题。</p><h4 id="FYI：成为好的-writer"><a href="#FYI：成为好的-writer" class="headerlink" title="FYI：成为好的 writer"></a>FYI：成为好的 writer</h4><p>（刚说完不要 FYI，我这里就在 FYI）</p><p>《<a href="https://www.joecotellese.com/posts/rework-book-summary/">Rework</a>》 这本书里有一个章节印象挺深，标题是 “Hire great writers”，书中的观点是，不是因为工作中需要发表什么文章、写什么报告，而是好的 writer 往往具备逻辑清晰表达问题的能力，可以帮助到工作。</p><p>回到技术问题上，现在各种形式的技术文章也都非常普遍，比如对锁的使用场景比较有心得的话，完全可以落实到文字上，输出成果形成一篇文章，分门别类的介绍锁的种类、最佳的使用场景，然后发表到各种平台上，获得成千上万人的关注，再然后如果对其他技术细节也有心得，内容逐渐丰富，直到写出了一本书，甚至有出版社看上，或者公开到网络上作为电子书开源……FYI……何必跟我较真呢。</p>]]></content>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;前情提要，推荐王垠的两篇博客文章：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;《&lt;a</summary>
+        
+      
+    
+    
+    
+    
+    <category term="程序员" scheme="https://smallyu.net/tags/%E7%A8%8B%E5%BA%8F%E5%91%98/"/>
+    
+  </entry>
+  
+  <entry>
     <title>假如启动一个新的以太坊 PoS 网络</title>
     <link href="https://smallyu.net/2025/01/28/%E5%81%87%E5%A6%82%E5%90%AF%E5%8A%A8%E4%B8%80%E4%B8%AA%E5%8F%AB-Oiia-Network-%E7%9A%84%E4%BB%A5%E5%A4%AA%E5%9D%8A-PoS-%E7%BD%91%E7%BB%9C/"/>
     <id>https://smallyu.net/2025/01/28/%E5%81%87%E5%A6%82%E5%90%AF%E5%8A%A8%E4%B8%80%E4%B8%AA%E5%8F%AB-Oiia-Network-%E7%9A%84%E4%BB%A5%E5%A4%AA%E5%9D%8A-PoS-%E7%BD%91%E7%BB%9C/</id>
