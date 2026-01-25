@@ -1,0 +1,29 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>硬件钱包与资产安全</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://smallyu.net/2026/01/25/硬件钱包与资产安全/"><meta property="og:title" content="硬件钱包与资产安全"><meta property="og:type" content="article"><meta property="og:url" content="https://smallyu.net/2026/01/25/硬件钱包与资产安全/"><meta property="og:site_name" content="smallyu的博客"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1.1"><link rel="stylesheet" href="/css/post.css?v=v1.1"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1.1"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>硬件钱包与资产安全</h1><div class="time">2026-01-25</div><div class="title-margin"></div><p>加密货币的资金管理，从最安全到最不安全的方式排名是：</p>
+<ol>
+<li>家族信托</li>
+<li>硬件钱包</li>
+<li>MPC钱包</li>
+<li>交易所托管</li>
+<li>热钱包</li>
+</ol>
+<p>如果你不在乔布斯排行榜上，家族信托就跟你没关系。对于个人而言，硬件钱包是目前最安全的方案。</p>
+<p>这里没有提多签钱包、助记词+Passphrase 之类的方案，因为那些方案在技术手段上复杂到你都用不明白，复杂的方案是无法长期留存的，反而会增加遗忘的风险，更不可靠。</p>
+<p>那么有几个需要更正的对于硬件钱包的认识：</p>
+<ol>
+<li>硬件钱包是钥匙，不是保险柜</li>
+<li>钱是存在助记词上，不是硬件钱包上</li>
+<li>硬件钱包输错密码会直接清空数据</li>
+<li>助记词不是打开保险柜的备用钥匙，助记词是保险柜本身</li>
+</ol>
+<p>而助记词安全也有几个有意思边界：</p>
+<ol>
+<li>你无法验证助记词是否已经泄露</li>
+<li>如果你不把助记词拿出来，就无法验证助记词是否正确</li>
+<li>你把助记词拿出来的行为本身，就增加了助记词暴露的风险</li>
+</ol>
+<p>所以去中心化资产在给你带来控制权的同时，也要求你自己承担资产安全的风险。</p>
+</div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.1"></script><script defer src="/js/highlight.min.js?v=v1.1"></script><script defer src="/js/main.js?v=v1.1"></script><script defer src="/js/lightbox.js?v=v1.1"></script><script defer src="/js/bootstrap.min.js?v=v1.1"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-5JRBZ6P1W3"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-5JRBZ6P1W3');</script></html>

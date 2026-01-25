@@ -6,7 +6,7 @@
   <link href="https://smallyu.net/atom.xml" rel="self"/>
   <link href="https://pubsubhubbub.appspot.com/" rel="hub"/>
   <link href="https://smallyu.net/"/>
-  <updated>2026-01-15T00:45:39.118Z</updated>
+  <updated>2026-01-25T08:05:22.061Z</updated>
   <id>https://smallyu.net/</id>
   
   <author>
@@ -15,6 +15,39 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>硬件钱包与资产安全</title>
+    <link href="https://smallyu.net/2026/01/25/%E7%A1%AC%E4%BB%B6%E9%92%B1%E5%8C%85%E4%B8%8E%E8%B5%84%E4%BA%A7%E5%AE%89%E5%85%A8/"/>
+    <id>https://smallyu.net/2026/01/25/%E7%A1%AC%E4%BB%B6%E9%92%B1%E5%8C%85%E4%B8%8E%E8%B5%84%E4%BA%A7%E5%AE%89%E5%85%A8/</id>
+    <published>2026-01-25T08:04:40.000Z</published>
+    <updated>2026-01-25T08:05:22.061Z</updated>
+    
+    <content type="html"><![CDATA[<p>加密货币的资金管理，从最安全到最不安全的方式排名是：</p><ol><li>家族信托</li><li>硬件钱包</li><li>MPC钱包</li><li>交易所托管</li><li>热钱包</li></ol><p>如果你不在乔布斯排行榜上，家族信托就跟你没关系。对于个人而言，硬件钱包是目前最安全的方案。</p><p>这里没有提多签钱包、助记词+Passphrase 之类的方案，因为那些方案在技术手段上复杂到你都用不明白，复杂的方案是无法长期留存的，反而会增加遗忘的风险，更不可靠。</p><p>那么有几个需要更正的对于硬件钱包的认识：</p><ol><li>硬件钱包是钥匙，不是保险柜</li><li>钱是存在助记词上，不是硬件钱包上</li><li>硬件钱包输错密码会直接清空数据</li><li>助记词不是打开保险柜的备用钥匙，助记词是保险柜本身</li></ol><p>而助记词安全也有几个有意思边界：</p><ol><li>你无法验证助记词是否已经泄露</li><li>如果你不把助记词拿出来，就无法验证助记词是否正确</li><li>你把助记词拿出来的行为本身，就增加了助记词暴露的风险</li></ol><p>所以去中心化资产在给你带来控制权的同时，也要求你自己承担资产安全的风险。</p>]]></content>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;加密货币的资金管理，从最安全到最不安全的方式排名是：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;家族信托&lt;/li&gt;
+&lt;li&gt;硬件钱包&lt;/li&gt;
+&lt;li&gt;MPC钱包&lt;/li&gt;
+&lt;li&gt;交易所托管&lt;/li&gt;
+&lt;li&gt;热钱包&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;如果你不在乔布斯排行榜上，家族信托就跟你没</summary>
+        
+      
+    
+    
+    
+    
+    <category term="钱包" scheme="https://smallyu.net/tags/%E9%92%B1%E5%8C%85/"/>
+    
+  </entry>
   
   <entry>
     <title>预测市场比币圈更赌场</title>
