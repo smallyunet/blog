@@ -6,7 +6,7 @@
   <link href="https://smallyu.net/atom.xml" rel="self"/>
   <link href="https://pubsubhubbub.appspot.com/" rel="hub"/>
   <link href="https://smallyu.net/"/>
-  <updated>2026-01-25T08:05:22.061Z</updated>
+  <updated>2026-02-01T12:42:21.495Z</updated>
   <id>https://smallyu.net/</id>
   
   <author>
@@ -15,6 +15,36 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>打工人</title>
+    <link href="https://smallyu.net/2026/02/01/%E6%89%93%E5%B7%A5%E4%BA%BA/"/>
+    <id>https://smallyu.net/2026/02/01/%E6%89%93%E5%B7%A5%E4%BA%BA/</id>
+    <published>2026-02-01T12:32:41.000Z</published>
+    <updated>2026-02-01T12:42:21.495Z</updated>
+    
+    <content type="html"><![CDATA[<p>随着年龄、工作经验、技术能力的增长，我发现：</p><ol><li>比如我现在在做某一份工作</li><li>我无法同时做另外的工作，因为时间不允许，即使我有能力完成其他工作</li><li>也就是说，我的时间同一时间只能出售一份</li><li>我的技能无法落实为书籍或者课程，因为很多工作问题其实并不通用、没有技术含量、很多领域内问题。工作并不是因为你特有的技能，而是因为你花时间精力把事情给做了。</li><li>所以对于个人来说，在有能力的情况下，同时只能做一份工作是一种损失，但是工作本身的性质决定了无法复利。</li><li>简称机会成本、沉没成本</li><li>另一方面，对于大多数人来说，工作是唯一的收入来源</li><li>在没有工作或者哪怕工作有空闲时间的情况下，是无法产生收入的</li></ol><p>非要再补充两条道貌岸然的道理的话：</p><ol start="9"><li>年龄越大，精力越少，但是挣钱的欲望和生活上实际的对钱需求越大。也就是说，打工人的收益天然是负增长。</li><li>AI 技术的发展首先取代的，就是花费时间但内在逻辑不需要顶尖的打工人的工作。</li></ol>]]></content>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;随着年龄、工作经验、技术能力的增长，我发现：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;比如我现在在做某一份工作&lt;/li&gt;
+&lt;li&gt;我无法同时做另外的工作，因为时间不允许，即使我有能力完成其他工作&lt;/li&gt;
+&lt;li&gt;也就是说，我的时间同一时间只能出售一份&lt;/li&gt;
+&lt;li&gt;我的技能无法落实</summary>
+        
+      
+    
+    
+    
+    
+    <category term="工作" scheme="https://smallyu.net/tags/%E5%B7%A5%E4%BD%9C/"/>
+    
+  </entry>
   
   <entry>
     <title>硬件钱包与资产安全</title>
