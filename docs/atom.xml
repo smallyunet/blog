@@ -6,7 +6,7 @@
   <link href="https://smallyu.net/atom.xml" rel="self"/>
   <link href="https://pubsubhubbub.appspot.com/" rel="hub"/>
   <link href="https://smallyu.net/"/>
-  <updated>2026-02-01T12:42:21.495Z</updated>
+  <updated>2026-02-03T07:20:39.538Z</updated>
   <id>https://smallyu.net/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>默认参数引起的以太坊节点运行错误</title>
+    <link href="https://smallyu.net/2026/02/03/%E9%BB%98%E8%AE%A4%E5%8F%82%E6%95%B0%E5%BC%95%E8%B5%B7%E7%9A%84%E4%BB%A5%E5%A4%AA%E5%9D%8A%E8%8A%82%E7%82%B9%E8%BF%90%E8%A1%8C%E9%94%99%E8%AF%AF/"/>
+    <id>https://smallyu.net/2026/02/03/%E9%BB%98%E8%AE%A4%E5%8F%82%E6%95%B0%E5%BC%95%E8%B5%B7%E7%9A%84%E4%BB%A5%E5%A4%AA%E5%9D%8A%E8%8A%82%E7%82%B9%E8%BF%90%E8%A1%8C%E9%94%99%E8%AF%AF/</id>
+    <published>2026-02-03T07:19:01.000Z</published>
+    <updated>2026-02-03T07:20:39.538Z</updated>
+    
+    <content type="html"><![CDATA[<p>大概是两年前的事情了。在工作中，我们用以太坊节点搭建了一条网络，上线后发现网络中不能新增 Validator，也就是质押者的 32 ETH 没有生效。</p><p>原因是我们用了多种共识层客户端，包括 Prysm 和 Lighthouse 等。为什么会突然出问题呢？因为 Prysm 有一个叫 <code>--contract-deployment-block</code> 的命令行参数，其他客户端比如 Lighthouse 和 Teku，这个参数的默认值都是 <code>0</code>（参数名字在不同客户端可能不同，但是含义类似），而 Prysm 的这个参数默认值是 <code>11184524</code>，这个数字是以太坊从 PoW 转向 PoS 后质押机制开始生效的区块高度。</p><p>这个参数在干什么呢？它会从这个参数配置的区块高度开始，去扫描 Deposit Contract（主网是 <a href="https://etherscan.io/address/0x00000000219ab540356cbb839cbe05303d7705fa"><code>0x00000000219ab540356cbb839cbe05303d7705fa</code></a> ）上质押者的存款记录。我们平时说的质押 32 ETH，就是质押到这个合约里了，或者说就是把 32 ETH 转账给这个合约。这个合约在收到你的 ETH 之后，Consensus Client 比如 Prysm，就能根据合约的记录知道某一个地址确实给合约转了 32 ETH，因此认可这个人成为出块节点。</p><p>以太坊整个网络可能有几千个节点，每一个节点都在执行同样的操作，就是从 Deposit Contract 上扫描质押者列表、然后维护到自己本地的数据库状态中。直到轮到自己出块的时候，就把这个一直在维护的质押者列表的数据，计算一个总数 Deposit Count 和哈希根 Deposit Root，作为 <code>eth1_data</code> 字段的值，提交到区块数据中：</p><img src="./1.png" width="100%" /><p>这个截图来自以太坊主网的区块 <a href="https://beaconcha.in/block/24374562">24374562</a>，意味着当前以太坊一共有 204 万个质押者。要注意质押者不等于物理服务器上运行的节点数量，一个节点可以运行几千个质押者（Staker &#x2F; Validator），所以推测以太坊实际上的物理节点数量大概在几千个左右。</p><p>回到 Prysm 配置的问题，如果不配置 <code>--contract-deployment-block</code> 参数，默认值是 <code>11184524</code>，那么对于一条新启动的链来说（Chain ID 不是 1 那种），Prysm 就不去扫描 Deposit Contract 合约在块高度 <code>11184524</code> 之前的质押记录了，本地数据库里没有质押者的数据，在出块的时候自然也不会带上 <code>eth1_data</code> 的字段数据。</p><p>以太坊的 <a href="https://github.com/ethereum/consensus-specs/blob/c94138e73e0e70eb4b27f9be4d4e9325fa1aebf7/specs/phase0/beacon-chain.md#eth1-data">协议设计</a> 中要求，<code>eth1_data</code> 的数据必须要超过半数节点一致才可以生效。（注意这里的比例是 1&#x2F;2，和其他地方用到的魔法比例 2&#x2F;3 不一样）。</p><img src="./2.png" width="80%" /><p>所以如果你新启动的网络中有超过一半的节点用了 Prysm，同时这些 Prysm 节点没有可以设置 <code>--contract-deployment-block</code> 参数，网络就会异常、不能正确处理新加入的质押节点。</p><p>我们一般认为软件的默认参数是相对安全可靠的，如果刻意设置才表示我们有特殊需求。而在以太坊 Prysm 客户端的这种语境下，不刻意设置默认值反而是危险的。</p>]]></content>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;大概是两年前的事情了。在工作中，我们用以太坊节点搭建了一条网络，上线后发现网络中不能新增 Validator，也就是质押者的 32 ETH 没有生效。&lt;/p&gt;
+&lt;p&gt;原因是我们用了多种共识层客户端，包括 Prysm 和 Lighthouse 等。为什么会突然出问题呢？因为</summary>
+        
+      
+    
+    
+    
+    
+    <category term="以太坊" scheme="https://smallyu.net/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/"/>
+    
+  </entry>
   
   <entry>
     <title>打工人</title>
