@@ -1,0 +1,33 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>LayerZero 从来不挑战比特币的地位</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://smallyu.net/2026/02/12/LayerZero从来不挑战比特币的地位/"><meta property="og:title" content="LayerZero 从来不挑战比特币的地位"><meta property="og:type" content="article"><meta property="og:url" content="https://smallyu.net/2026/02/12/LayerZero从来不挑战比特币的地位/"><meta property="og:site_name" content="smallyu的博客"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1.1"><link rel="stylesheet" href="/css/post.css?v=v1.1"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1.1"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>LayerZero 从来不挑战比特币的地位</h1><div class="time">2026-02-12</div><div class="title-margin"></div><h3 id="Zero-网络"><a href="#Zero-网络" class="headerlink" title="Zero 网络"></a>Zero 网络</h3><p>2月10日，LayerZero 公布了 Layer 1 网络 <a href="https://layerzero.network/zero">Zero</a> 的技术方案。有意思的指标有两个：</p>
+<ol>
+<li>兼容 EVM</li>
+<li>TPS 达到 200万&#x2F;秒</li>
+</ol>
+<p>没错，号称每秒钟处理高达 200万笔交易，是并行 EVM 链 Monad 的 200 倍，是 Solana 的 30 倍，是以太坊主网的 10万倍，是比特币的 20 万倍。</p>
+<p>LayerZero 的魔法在于优化了 <a href="https://jolt.a16zcrypto.com/intro.html">Jolt</a>，一个基于 RISC-V 指令集的 zkEVM，而且运行在 GPU 集群上，生成 ZK 证明的速度非常快。也就是说，当用户把大量交易提交给 Zero 网络的 Block Producers 之后，基于 GPU 集群的算力， Zero 网络可以非常快生成区块数据的证明。</p>
+<p>Zero 网络出块的硬件要求大概是 96 核 GPU，768 GB RAM，这显然是算力中心级别的要求。那么整个网络岂不是非常中心化、被控制在少数华尔街头部公司的手里了？</p>
+<p>由于 ZK 技术的特性，Zero 网络提供了另一个特性：验证 ZK 证明只需要非常轻量级的设备，家用电脑就可以完成对区块数据的验证。</p>
+<p>这是一个有意思的点，为了提高 TPS，Zero 网络把出块的权力中心化，同时把验证区块的权力极度去中心化。那么 Zero 网络到底是中心化的，还是去中心化的？</p>
+<h3 id="比特币网络"><a href="#比特币网络" class="headerlink" title="比特币网络"></a>比特币网络</h3><p>去中心化网络唯一的标杆是比特币网络。虽然比特币在协议上是去中心化的，所有节点都是全节点，但事实上出块的算力基本被几大矿池垄断，比特币网络还算是去中心化的吗？</p>
+<p>如果单从这个出块权力的集中程度分析，还真是有点难分伯仲，这也是 Zero 网络的诞生让人迷惑的点。</p>
+<p>我们信任比特币的去中心化，是因为每一个节点都有全量账本数据，由于区块链逐个区块哈希的设计，我们可以重放所有交易历史，以此判断新产生的区块数据是否合法。PoW 共识则是所谓一 CPU 一票，哈希碰撞难但是验算简单，以此来验证出块权。所以总体来说，对于比特币，我们相信的是加密算法。</p>
+<p>而对于 Zero 网络，其实我们相信的也是 ZK 加密算法。我们应该相信 Block Producers 会按照电路来生成证明，然后所有的成千上万的 Verifer 都可以去验证区块数据是否合法，这整个过程也完全是加密算法来保障的。</p>
+<p>如果说 Zero 的源代码分发也许会有风险，比如生成 ZK 证明的电路逻辑出现 bug，或者验证 ZK 证明的逻辑有漏洞，给攻击者可乘之机。那么所有的区块链都面临源代码不安全的风险，包括比特币，你并不能保障比特币的源码就是绝对安全的。所以从这个角度无法区分 Zero 网络的优劣。</p>
+<p>回到去中心化的角度，比特币网络交易重放可以保障区块数据可靠，而 Zero 网络虽然出块权被少数节点掌握，但是验证区块的权力借助 ZK 技术，能够轻易下放到任何轻量级设备上，这是比特币都无法比拟的 “去中心化”。假如 Zero 网络的 Block Producers 作恶，所有用户都可以知道，并且反馈给结算层，如果众多 Verifier 不同意，Block Producers 的出块权会被取消……</p>
+<p>从这几个角度去对比，是不是恍惚间发现 Zero 网络竟然可以和比特币同台竞技，甚至 ZK 技术的出现给了 Zero 超越比特币的可能性？</p>
+<h3 id="共识"><a href="#共识" class="headerlink" title="共识"></a>共识</h3><p>当然，刚才刻意弱化了核心问题所在。面对这种区块链架构上的疑惑，如果一时间没有思路，可以回到区块链技术的圣经 —— <a href="https://bitcoin.org/bitcoin.pdf">比特币白皮书</a> 找灵感。</p>
+<p>比特币白皮书在摘要里就提到了比特币要解决的核心问题 —— 双花（double-spending）。</p>
+<p>Zero 网络引入 ZK 技术确实解决了区块链数据不可篡改这个问题，但是如何解决双花问题？答案是 Zero 网络用了 PoS 共识，引入了 Validator 的概念。别管他到底是哪种 PoS，反正都是 PoS。</p>
+<p>参考以太坊的架构去理解，以太坊有两层，执行层和共识层，执行层负责执行交易，共识层负责验证节点出块的权力。</p>
+<p>Zero 网络的架构和以太坊有点类似，分为出块层和结算层，出块层就是用大规模 GPU 执行区块和产生 ZK 证明的那一层，而结算层，则是 PoS 质押、验证节点是否有出块权力的一层。</p>
+<p>你也许没跟上，不是说解决双花问题吗，怎么又在讨论节点出块权力的问题了。因为假如节点出块的权力被控制，或者可以做恶，那么恶意节点就可以允许区块数据，也就是交易历史被改写，上一秒看到交易成功了，下一秒发现交易回滚了。所以节点出块的权力得到保障，双花问题也可以得到解决。</p>
+<p>那么这下就清晰了，Zero 引入了 ZK 技术把 TPS 提高了两个数量级，确实有很大的进步。但是在共识方面，依然用了 PoS。对于一些比特币的原宗旨教徒来说，PoS 共识甚至都是不入流、不能抗审查的。那么 ZK 再牛自然也就没有意义了。</p>
+<h3 id="EVM"><a href="#EVM" class="headerlink" title="EVM"></a>EVM</h3><p>所以，Zero 网络从一开始的竞争对手就不是比特币，根本不会动摇比特币的地位。回到 Zero 网络的 <a href="https://layerzero.network/blog/zero-the-decentralized-multi-core-world-computer">Manifesto</a>。从标题 “Multi-Core World Computer” 就能看出是奔着以太坊去的，在 Manifesto 中也直接对比了以太坊、Solana 的性能问题。当然是不可能出现比特币的。</p>
+<p>而实际上，Zero 网络连以太坊主网的地位都不会动摇，以太坊的去中心化程度是仅次于比特币的，全节点运行在民用级设备一直是 Vitalik 的愿景 —— “如果基金会不在了，以太坊还会存在吗？”</p>
+<p>更进一步，Zero 网络连 Solana 的地位也不会动摇，因为 Solana 独特的生态，和一些名人以及政治叙事，轻易不会被取代。</p>
+<p>总的来说，Zero 网络仅仅只能在 EVM 的生态里做竞争，可能会直接动摇发布不久的并行 EVM 网络 Monad 的前景。其他的更大的野心，明显还做不到。</p>
+</div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.1"></script><script defer src="/js/highlight.min.js?v=v1.1"></script><script defer src="/js/main.js?v=v1.1"></script><script defer src="/js/lightbox.js?v=v1.1"></script><script defer src="/js/bootstrap.min.js?v=v1.1"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-5JRBZ6P1W3"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-5JRBZ6P1W3');</script></html>
