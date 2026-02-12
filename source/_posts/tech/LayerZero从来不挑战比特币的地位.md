@@ -13,7 +13,7 @@ draft_date: 2026-02-12 21:16:49
 1. 兼容 EVM
 2. TPS 达到 200万/秒
 
-没错，号称每秒钟处理高达 200万笔交易，是并行 EVM 链 Monad 的 200 倍，是 Solana 的 30 倍，是以太坊主网的 10万倍，是比特币的 20 万倍。
+没错，号称每秒钟处理高达 200 万笔交易，是并行 EVM 链 Monad 的 200 倍，是 Solana 的 30 倍，是以太坊主网的 10 万倍，是比特币的 20 万倍。
 
 LayerZero 的魔法在于优化了 [Jolt](https://jolt.a16zcrypto.com/intro.html)，一个基于 RISC-V 指令集的 zkEVM，而且运行在 GPU 集群上，生成 ZK 证明的速度非常快。也就是说，当用户把大量交易提交给 Zero 网络的 Block Producers 之后，基于 GPU 集群的算力， Zero 网络可以非常快生成区块数据的证明。
 
