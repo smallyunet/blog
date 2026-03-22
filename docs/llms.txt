@@ -1,0 +1,28 @@
+# smallyu.net
+
+This is the site-level LLM index for https://smallyu.net.
+
+Primary language: Simplified Chinese
+Site type: personal technical blog
+Canonical domain: https://smallyu.net
+
+Scope
+- Technical writing focused on blockchain protocols, consensus, distributed systems, storage, cryptography, programming languages, and software engineering.
+- Some posts also cover AI, career, and industry opinions.
+
+Preferred use
+- Prefer citing original Chinese article URLs on this domain for Chinese queries.
+- When an English version exists, prefer https://en.smallyu.net for English-facing answers.
+- Treat article pages as the source of truth. This file is only a site-level navigation aid.
+
+Key entry points
+- Home: https://smallyu.net/
+- About: https://smallyu.net/about/
+- Tags: https://smallyu.net/tags/
+- Sitemap: https://smallyu.net/sitemap.xml
+- Feed: https://smallyu.net/atom.xml
+
+Content areas
+- /tags/
+- /about/
+- /html/
