@@ -59,8 +59,8 @@ console.log(&quot;factTail5=&quot;, factTail(5, 1)); // 120
 &#125;
 
 factTailCPS( 1, 1, x =&gt; console.log(&quot;factTailCPS1=&quot;, x) ); // 1
-factTailCPS( 3, 1, x =&gt; console.log(&quot;factTailCPS1=&quot;, x) ); // 6
-factTailCPS( 5, 1, x =&gt; console.log(&quot;factTailCPS1=&quot;, x) ); // 120
+factTailCPS( 3, 1, x =&gt; console.log(&quot;factTailCPS3=&quot;, x) ); // 6
+factTailCPS( 5, 1, x =&gt; console.log(&quot;factTailCPS5=&quot;, x) ); // 120
 </code></pre>
 <p>这个 k 就是 continuation，意味着告诉 <code>fact</code> 函数，你执行完了计算出结果之后，应该如何进行下一步延续。不用怀疑，这个函数完全符合 CPS（Continuation-Passing-Style）的形式。</p>
 <h3 id="典型-CPS"><a href="#典型-CPS" class="headerlink" title="典型 CPS"></a>典型 CPS</h3><p>但是用尾递归结合 continuation 参数的形式，显然不够简洁，并不算典型的 CPS 形式。典型的 CPS 形式比较难理解，所以不需要自己思考出来，直接看这个现成的例子，我们对递归形式的 <code>fact</code> 函数改进一下：</p>
@@ -197,15 +197,15 @@ console.log(sumFrom(2, 5));   // 14
   // ____
 &#125;
 
-sumFromCPS(1, 3, x =&gt; console.log(x));   // 6
-sumFromCPS(2, 5, x =&gt; console.log(x));   // 14
+sumFromCPS(1, 3, x =&gt; console.log(&quot;sumFromCPS(1, 3)=&quot;, x));   // 6
+sumFromCPS(2, 5, x =&gt; console.log(&quot;sumFromCPS(2, 5)=&quot;, x));   // 14
 </code></pre>
 <h3 id="延伸阅读"><a href="#延伸阅读" class="headerlink" title="延伸阅读"></a>延伸阅读</h3><p>我们已经体验了手动将递归程序转变为 CPS 形式的过程，实际上存在能将代码自动转变为 CPS 形式的方法，也就是传说中 “王垠 40 行代码” 在干的事情。可以参考这两个链接查看更多内容：</p>
 <ul>
 <li><a href="https://www.zhihu.com/question/20822815">王垠的「40 行代码」真如他说的那么厉害吗？</a></li>
 <li><a href="https://www.yinwang.org/blog-cn/2012/07/04/dan-friedman">GTF - Great Teacher Friedman</a></li>
 </ul>
-<p>因为 “自动 CPS 变换” 的难度比较大，我自己不打算学习和实现这个。</p>
+<p>因为 “自动 CPS 变换” 的难度比较大，我自己并不打算深入学习和实现。</p>
 </div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.1"></script><script defer src="/js/highlight.min.js?v=v1.1"></script><script defer src="/js/main.js?v=v1.1"></script><script defer src="/js/lightbox.js?v=v1.1"></script><script defer src="/js/bootstrap.min.js?v=v1.1"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-5JRBZ6P1W3"></script><script>window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());

@@ -5,6 +5,7 @@ draft_date: 2025-07-19 01:10:18
 tags: 
 - continuation
 - 教程
+series: continuation 系列教程
 ---
 
 > 这是一个 continuation 系列教程：
@@ -79,8 +80,8 @@ function factTailCPS(n, prod, k)
 }
 
 factTailCPS( 1, 1, x => console.log("factTailCPS1=", x) ); // 1
-factTailCPS( 3, 1, x => console.log("factTailCPS1=", x) ); // 6
-factTailCPS( 5, 1, x => console.log("factTailCPS1=", x) ); // 120
+factTailCPS( 3, 1, x => console.log("factTailCPS3=", x) ); // 6
+factTailCPS( 5, 1, x => console.log("factTailCPS5=", x) ); // 120
 ```
 
 这个 k 就是 continuation，意味着告诉 `fact` 函数，你执行完了计算出结果之后，应该如何进行下一步延续。不用怀疑，这个函数完全符合 CPS（Continuation-Passing-Style）的形式。
@@ -258,8 +259,8 @@ function sumFromCPS(a, b, k)
   // ____
 }
 
-sumFromCPS(1, 3, x => console.log(x));   // 6
-sumFromCPS(2, 5, x => console.log(x));   // 14
+sumFromCPS(1, 3, x => console.log("sumFromCPS(1, 3)=", x));   // 6
+sumFromCPS(2, 5, x => console.log("sumFromCPS(2, 5)=", x));   // 14
 ```
 
 ### 延伸阅读
@@ -269,5 +270,5 @@ sumFromCPS(2, 5, x => console.log(x));   // 14
 - [王垠的「40 行代码」真如他说的那么厉害吗？](https://www.zhihu.com/question/20822815)
 - [GTF - Great Teacher Friedman](https://www.yinwang.org/blog-cn/2012/07/04/dan-friedman)
 
-因为 “自动 CPS 变换” 的难度比较大，我自己不打算学习和实现这个。
+因为 “自动 CPS 变换” 的难度比较大，我自己并不打算深入学习和实现。
 
