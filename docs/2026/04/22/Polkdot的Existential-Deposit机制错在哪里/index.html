@@ -1,0 +1,37 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>Polkadot 的 Existential Deposit 机制错在哪里</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://smallyu.net/2026/04/22/Polkdot的Existential-Deposit机制错在哪里/"><meta property="og:title" content="Polkadot 的 Existential Deposit 机制错在哪里"><meta property="og:type" content="article"><meta property="og:url" content="https://smallyu.net/2026/04/22/Polkdot的Existential-Deposit机制错在哪里/"><meta property="og:site_name" content="smallyu的博客"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1.1"><link rel="stylesheet" href="/css/post.css?v=v1.1"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1.1"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>Polkadot 的 Existential Deposit 机制错在哪里</h1><div class="time">2026-04-22</div><div class="title-margin"></div><p>Polkadot 有一个叫 <a href="https://support.polkadot.network/support/solutions/articles/65000168651-what-is-the-existential-deposit-">Existential Deposit (ED)</a> 的机制，含义是如果你的账户余额小于 1 DOT，区块链网络会直接删除你的账户以及余额。删除的意思是指，你的地址信息将不存在于链上，其他地址无法转账小于 1 DOT 给你，你的余额以及 Nonce 值会被直接抹除，整个网络的代币总供应量也会因此减少。</p>
+<h3 id="问题背景"><a href="#问题背景" class="headerlink" title="问题背景"></a>问题背景</h3><p>我们先来理解一下为什么 ED 这样的设计会存在。Vitalik 要说代码和工程水平可能远不及他拥有的名气，Gavin Wood 是以太坊的实际开发者。Gavin 因为实际设计了以太坊的节点，所以很清楚以太坊存在状态数据会无限膨胀的问题。</p>
+<p>以太坊节点会把整条链上所有有过交易记录的地址信息，都维护到世界状态中，用的是一种叫 MPT 的树结构，每个地址信息都是树上的一个叶子节点。那么就存在一个问题，我们平时使用以太坊钱包也会有体会，如果地址里有 0.00001 ETH 的余额，这种非常小额的余额，是永远无法被转出的，因为以太坊对于普通转账交易，固定要求 21000 Gas，无论 Gas Price 多低，以太坊账户的余额都不可能彻底清零。这种非常小的余额被称为粉尘余额，对于强迫症来说会是一种灾难。</p>
+<p>对于以太坊节点来说，这些地址以及余额，就不仅只是视觉上强迫症的问题，而是意味着，节点需要维护的状态数据，永远都会只增加、不减少。每多一个新的地址有余额，服务器上的节点就需要多储存一份地址的键值对信息，哪怕对内存的占用量很小，也会持续累积和增加，给服务器持续带来压力。这种设计在工程上是很暴力、不负责也不合理的。</p>
+<p>针对粉尘余额，存在两个问题，我们分别来对比：</p>
+<ol>
+<li>用户视角的粉尘余额是否可以消除、让余额彻底清零</li>
+<li>节点视角的粉尘余额是否会持续给服务器增加压力</li>
+</ol>
+<h4 id="用户视角"><a href="#用户视角" class="headerlink" title="用户视角"></a>用户视角</h4><p>比特币是如何解决粉尘余额问题的？假如有一个 UTXO 地址里的余额非常小只有 1 sats，那么自己发起转账肯定是不行的，因为 1 sats 不够付矿工费。但是比特币的交易允许有多个 input，只要把小额的 UTXO 作为其中一个 input，再让其他有大额余额的 UTXO 作为另外的 input 来支付矿工费，整笔交易就可以成功，拥有 1 sats 的 UTXO 余额也会清零。所以是 UTXO 账户模型让比特币天然没有粉尘余额的问题。</p>
+<p>以太坊是粉尘余额的起源地，所以目前始终无法解决。</p>
+<p>Polkadot 为了解决粉尘余额的问题，把 Existential Deposit 作为 Day Zero 的核心设计写到了协议里。余额小于 1 DOT 就会被自动清除，自然不存在粉尘余额的问题。这种清除余额并不是指余额会转给矿工或者转给黑洞地址，而是凭空消失一样地清除。</p>
+<h4 id="节点视角"><a href="#节点视角" class="headerlink" title="节点视角"></a>节点视角</h4><p>比特币节点也是需要 chainstate 的，会把所有有余额信息的地址信息都维护在节点的内存中。不过相比以太坊，由于比特币地址的粉尘余额是可以被清零的，而节点方面对于余额是 0 的地址不需要维护一份状态数据，如果一个地址的余额是 0，节点就可以把地址从状态数据中删掉，内存占用就可以减少一点点。所以对于比特币节点来说，状态数据并不会只增不减，而是可以根据实际情况有增有减。</p>
+<p>以太坊节点呢，一方面因为用户余额本身就无法清零，余额再小节点也得维护状态。另一方面在于，以太坊其实有清理状态数据的机制，只是地址可以被清理的要求很苛刻，需要余额为 0，并且 Nonce 值为 0。Nonce 值这个东西，也是比特币没有的概念，以太坊为了账户-余额模型加的。也就是说，哪怕余额为 0 了，只要发出过交易，Nonce 值就不可能是 0。两方面原因叠加下来，以太坊的状态数据会只增不减，持续膨胀。</p>
+<p>Polkadot 呢，同样是利用 Existential Deposit 的设计，会直接清理掉小于阈值的地址以及相关信息，相应的，链上节点维护状态数据的压力就会变小。</p>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>所以 Polkadot 利用 Existential Deposit 这种机制，同时解决了粉尘余额对于用户以及对于节点的影响，在工程上是一种比较纯粹和现代化的设计。</p>
+<h3 id="错在哪里"><a href="#错在哪里" class="headerlink" title="错在哪里"></a>错在哪里</h3><p>回到标题，Polkadot 的这种设计有错吗？</p>
+<ol>
+<li>太过纯粹的工程思维</li>
+</ol>
+<p>程序员群体在解决现实问题的时候，往往会偏好工程化的解决方式，而忽略现实用户的体验。Polkadot 给人的感觉就是，小钱不是钱，我没钱就不配用。</p>
+<p>加密货币作为一种资产，一种货币，一种钱，链上节点像是在回收垃圾一样，把我的余额给回收掉。是不是等同于在说，小的金额就是垃圾？用编程语言的垃圾回收机制，来针对加密资产做回收，这是比较错配的行为。内存中的无效资源、悬空对象可以是垃圾，但是用户的资金不是。在比特币网络，哪怕只有 1 sats，也会安安静静躺在那里。</p>
+<ol start="2">
+<li>违背了加密货币的原则</li>
+</ol>
+<p>Polkadot 的 Existential Deposit，直接违背了加密货币的根本原则：只有持有私钥的人，才有资产的控制权。</p>
+<p>我们常说 “Not your keys, not your coins”，但是到了 Polkadot 这里，只有你自己持有私钥对吧，但是链上的节点可以直接抹掉你的余额，在没有私钥的情况下让地址内的余额发生了变化。这是一种非常违背原则的做法。</p>
+<p>在区块链中，唯一有效的、对余额产生影响的，应该来自于账本数据，以太坊尚且没有做得这么过分，但是 Polkadot 做了，直接改了状态数据里的余额，在没有交易行为的情况下，引入了节点层面的收割机制。</p>
+<ol start="3">
+<li>账户模型的原罪</li>
+</ol>
+<p>如果说 <a href="/2025/10/24/%E4%BB%A5%E5%A4%AA%E5%9D%8AAA%E9%92%B1%E5%8C%85%E7%9A%84%E8%87%B4%E5%91%BD%E9%97%AE%E9%A2%98%E6%98%AF%E4%BB%80%E4%B9%88/">AA 钱包</a> 是以太坊为了解决账户模型而打出的一个补丁，那么 Existential Deposit 就是 Polkadot 为了填补账户模型打出的另外一个补丁，试图在以太坊的基础上向前多走一步，而做出的激进设计。</p>
+</div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.1"></script><script defer src="/js/highlight.min.js?v=v1.1"></script><script defer src="/js/main.js?v=v1.1"></script><script defer src="/js/lightbox.js?v=v1.1"></script><script defer src="/js/bootstrap.min.js?v=v1.1"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-5JRBZ6P1W3"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-5JRBZ6P1W3');</script></html>
