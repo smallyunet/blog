@@ -6,7 +6,7 @@
   <link href="https://smallyu.net/atom.xml" rel="self"/>
   <link href="https://pubsubhubbub.appspot.com/" rel="hub"/>
   <link href="https://smallyu.net/"/>
-  <updated>2026-04-22T09:55:32.176Z</updated>
+  <updated>2026-04-24T12:41:19.686Z</updated>
   <id>https://smallyu.net/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>RISC-V 虚拟机无法代替 EVM 虚拟机</title>
+    <link href="https://smallyu.net/2026/04/24/RISC-V%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%97%A0%E6%B3%95%E4%BB%A3%E6%9B%BFEVM%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
+    <id>https://smallyu.net/2026/04/24/RISC-V%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%97%A0%E6%B3%95%E4%BB%A3%E6%9B%BFEVM%E8%99%9A%E6%8B%9F%E6%9C%BA/</id>
+    <published>2026-04-24T12:34:05.000Z</published>
+    <updated>2026-04-24T12:41:19.686Z</updated>
+    
+    <content type="html"><![CDATA[<ol><li>RISC-V 太复杂，非常依赖于虚拟机沙盒环境的标准化，但是现在还没有统一的规范</li><li>EVM 经过多年百亿级别金融生态的磨练，从开发到审计已经比较成熟，切换到 RISC-V 的成本很高</li><li>RISC-V 虚拟机的冯诺伊曼税更高、确定性更脆弱</li></ol><p>Gavin Wood 当年在设计 EVM 的时候，会面临两个问题：基于栈还是基于寄存器？显然实际上的 EVM 是基于栈的，也许是出于上线迭代等外部因素影响，也许是出于 Gavin 当时的历史局限性。后来 Gavin 离开了以太坊、创建了 Polkadot 之后，一开始把 Polkadot 的虚拟机设计为 基于 WASM 虚拟机，最近又转向了基于 RISC-V 指令集的、用于实现通用计算的虚拟机。也就是说，Gavin 抛弃了基于栈的 EVM 的老路，最终转向寄存器结构的 RISC-V。</p><p>EVM 底层是 256 位的无符号数字，每一条指令、每一个数据，都会拆解为 256 位的数字来表示。至于为什么是 256 位，可能因为以太坊是从比特币演变来的，而哈希算法 Keccak-256 和签名算法 secp256k1 等都沿用了比特币的设计，它们的输出都是 256 位，为了无缝适配这些加密算法，就采用了 256 位的字长。</p><p>我们平时使用的电脑 CPU，大都是 64 位的。CPU 经历过 32 位的时代，但是由于在地址寻址的方式下，32 位最多表示 2^32 Byte &#x3D; 4 GB 的内存大小，已经跟不上使用需求，所以现在的 CPU 已经都是 64 位的。</p><p>这里有两个数字，EVM 是 256 位的，CPU 是 64 位的。这也就意味着，每一个 EVM 的指令操作，到了 CPU 上都至少需要 10 个指令来完成，模拟一个栈内存、计算低位、计算高位、把结果推回栈等，这一套动作下来，256 位的 EVM 指令在执行效率上，比使用 64 位 CPU 指令，慢大概 10 倍到 100 倍。</p><p>RISC-V 是一个精简的指令集架构标准，包含有 64 位的 RISC-V 虚拟机指令标准。这就意味着，通过 JIT 编译，RISC-V 的指令几乎可以 1:1 映射到现代 64 位的 CPU 上，执行效率接近于 CPU 本身的效率。</p><p>Arbitrum 有过一次叫 Stylus 的 <a href="https://chronicle.castlecapital.vc/p/state-arbitrum">版本升级</a>，内容是用运行于 WASM 的虚拟机性能与 EVM 虚拟机的性能进行对比，官方的宣传口径是，一个简单的加法 <code>ADD</code> 运算，在 WASM 上的 Gas 消耗比在 EVM 上少 150 倍，而这 150 倍就是指令集转换带来的额外开销。WASM 的性能比 RISC-V 差，因为 WASM 从设计之初是在浏览器环境运行一个多编程语言的虚拟机，所以合理推测，基于 RISC-V 的指令，性能上也要好过 EVM 至少 100 倍。</p><p>从指令执行的效率方面来看，RISC-V 绝对要好过 EVM 太多。</p><p>另一方面，RISC-V 非常适合做通用计算，比如 <a href="https://cartesi.io/">cartesi</a> 这个项目，相当于直接在每一个链上节点本地，运行一个小型的 Linux 系统，这个系统内能运行的，就不只是智能合约，而可以包括各种各样进程级别的程序，这能释放很大的想象空间。</p><p>很多 zkVM 也都是基于 RISC-V 在做，毕竟要给一个 256 位的虚拟机以及各种复杂的指令集开发 ZK 电路，心智负担太大了，而 RISC-V 是一个精简指令集，只有比较底层的指令，比 zkEVM 实现起来要更加容易并且通用。</p><p>至于 EVM 方面，也有在性能方面做出卓越突破的链比如 <a href="https://www.monad.xyz/">Monad</a>，实现了真正的并行 EVM。只不过 Monad 提高性能的方式并不是从比较底层的指令集层面去做，而是乐观执行、有冲突再回滚的方式，以及实现了专用的数据库而不是通用的 KV 数据库来提高磁盘 IO 效率，整体结合下来，让 EVM 的执行速度有了显著提升。</p><p>那么至此可以看到的是，基于 RISC-V 指令集的虚拟机、智能合约语言，有着种种性能上的优点。</p><p>是不是意味着 RISC-V 是替代 EVM 的最佳趋势呢？显然也不是。</p><p>生态方面的护城河当然很重要，RISC-V 属于彻底抛弃了 EVM 体系、自成一套，支持各种编译型的编程语言。那也就意味着，包括开发者和审计公司，在 EVM 上踩过的坑，需要推倒重来。这是谁都不愿意看到的事情。EVM 的简单带来了性能上的劣势，也让安全风险和执行逻辑上的排查更加可控，因为是栈结构，Solidity 语言里连指针操作都没有，确定性非常高。而 RISC-V 的寄存器模式，合约的 ABI 不再是字节码而是 ecall ABI，里面涉及到内存分配、有堆内存、有垃圾回收，复杂度非常高。</p><p>而为了解决确定性的问题，一般的做法是在 RISC-V 支持的编程语言上，再阉割一层，用一个沙盒环境来执行合约逻辑，并且禁用一些语言特性，从沙盒外部能够看到一个确定性的结果。这当然就会牵扯到，每一个项目都在定义自己的沙盒标准，没有业界统一的方案。</p><p>再就是很多项目方宣传口径上的问题，放大了 RISC-V 的性能优势，刻意在忽略 RISC-V 模式带来的冯诺伊曼税的问题。在 EVM 上，修改余额就是一个 SSTORE 指令，EVM 天然知道什么是账户、什么是余额，要去数据库的什么位置寻找数据。而 RISC-V 过于通用，如果要修改余额，可能需要先分配内存、处理语言运行时的边界检查、写入数据、释放内存等，虽然单个指令的执行效率高了，但是反而在业务逻辑上消耗了更多的 CPU 周期。</p><p>总的来说，RISC-V 虚拟机还无法代替 EVM 虚拟机。</p>]]></content>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;ol&gt;
+&lt;li&gt;RISC-V 太复杂，非常依赖于虚拟机沙盒环境的标准化，但是现在还没有统一的规范&lt;/li&gt;
+&lt;li&gt;EVM 经过多年百亿级别金融生态的磨练，从开发到审计已经比较成熟，切换到 RISC-V 的成本很高&lt;/li&gt;
+&lt;li&gt;RISC-V</summary>
+        
+      
+    
+    
+    
+    
+    <category term="区块链" scheme="https://smallyu.net/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
+    
+  </entry>
   
   <entry>
     <title>Polkadot 的 Existential Deposit 机制错在哪里</title>
