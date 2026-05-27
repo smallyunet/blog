@@ -6,7 +6,7 @@
   <link href="https://smallyu.net/atom.xml" rel="self"/>
   <link href="https://pubsubhubbub.appspot.com/" rel="hub"/>
   <link href="https://smallyu.net/"/>
-  <updated>2026-05-18T08:32:57.121Z</updated>
+  <updated>2026-05-27T09:04:59.982Z</updated>
   <id>https://smallyu.net/</id>
   
   <author>
@@ -15,6 +15,36 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>最近大半年的工作</title>
+    <link href="https://smallyu.net/2026/05/27/%E6%9C%80%E8%BF%91%E5%A4%A7%E5%8D%8A%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C/"/>
+    <id>https://smallyu.net/2026/05/27/%E6%9C%80%E8%BF%91%E5%A4%A7%E5%8D%8A%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C/</id>
+    <published>2026-05-27T09:00:16.000Z</published>
+    <updated>2026-05-27T09:04:59.982Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>前几年关于工作内容方面的回顾：</p><ul><li>2025 年：《<a href="/2025/10/18/%E6%9C%80%E8%BF%91%E4%B8%80%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/">最近一年的工作回顾</a>》</li><li>2024 年：《<a href="/2024/02/17/%E6%9C%80%E8%BF%91%E5%8D%8A%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C/">最近半年的工作</a>》</li><li>2023 年：《<a href="/2023/05/06/%E5%8D%8A%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/">半年的工作回顾</a>》</li><li>2022 年：《<a href="/2022/08/27/%E4%B8%80%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/">一年的工作回顾</a>》</li></ul></blockquote><h3 id="一个-friend-tech-仿盘项目"><a href="#一个-friend-tech-仿盘项目" class="headerlink" title="一个 friend.tech 仿盘项目"></a>一个 friend.tech 仿盘项目</h3><p>大概开发了两个月，MVP 功能基本完成，公开内测之后运营效果比较差，就直接搁置了。我承担包括合约开发、后端逻辑开发、前端界面开发。</p><p>这个项目在产品形态上做成了 friend.tech + 分答（知乎）+ NGL 模式的混合体。</p><p>项目的核心逻辑是，creator 为主体，可以创建 card（key），card 的价格可以被炒作。其他人可以向 creator 提问问题，creator 回答问题的时候，可以选择公开或者不公开。对于不公开的回答，其他人可以花费 1 USD 来解锁答案。同时，creator 接受匿名提问（NGL 模式）。</p><p>还有一些运营方面的功能，可以根据 X 账号给别人创建 card、一键把 X 账号的信息同步到网站上之类。</p><h3 id="一个内部的加密货币交易和控盘工具"><a href="#一个内部的加密货币交易和控盘工具" class="headerlink" title="一个内部的加密货币交易和控盘工具"></a>一个内部的加密货币交易和控盘工具</h3><p>开发了大概两个月，核心逻辑基本可用，虽然还有 bug。我承担包括后端和前端逻辑的开发。</p><p>这个 Trading Bot 的核心功能包括：批量生成钱包、从 Binance、BitMart、MEXC 批量提现、集成了 Aerodrome 和 Uniswap 交易、支持 V2 和 Slipstream 交易池，功能模块上可以一键导入代币、管理交易对、管理 project，支持一键批量 warm up 钱包的交易、在某一个价格范围内的 range trading 交易。有 K 线图、一键 simulation 交易数据、根据 simulation 数据创建 task、交易结果 analysis 等。还有余额情况的 snapshot、trends 图、gas fee 图等。还有对某一个代币持仓情况分布的监控、对某一个地址行为的监控等。</p><h3 id="一个预测市场的-TG-小程序"><a href="#一个预测市场的-TG-小程序" class="headerlink" title="一个预测市场的 TG 小程序"></a>一个预测市场的 TG 小程序</h3><p>两周时间出 MVP，当时在考虑做预测市场周边的项目，但是不确定做什么，所以这个小程序类似一个 Polymarket 平台的 paper trading 游戏，只是比交易更简单，在 PM 已经结束的 markets 中，单纯选择 yes 和 no，然后和真实的事件结果对比。用户有积分榜、连胜榜等统计。</p><h3 id="一个预测市场的-Dex-Screener"><a href="#一个预测市场的-Dex-Screener" class="headerlink" title="一个预测市场的 Dex Screener"></a>一个预测市场的 Dex Screener</h3><p>可能做了不到一个月，说实话做的很糟糕。项目本意是做预测事件的跨平台对比，我们索引了 DefiLlama 上排名靠前的六七个预测市场的数据，包括 Polymarket、Kalshi、Limitless Exchange 等，然后试图把数据整合为一种事件数据对比的工具界面。</p><p>但是遇到不少问题，这种预测市场本质上是中心化的交易平台，对标 Binance、OKX 这种交易所，而不是去中心化的数据。预测市场基本上都是链下撮合、链上交易的模式，所以索引数据本身就是个问题，很大程序上受到平台方 API 的 rate limit 限制。</p><p>其次是数据分析比较重，哪怕通过 Subgraph 之类索引到全部的数据，也需要稍微高配的数据库和硬件做分析，需要不小的硬件成本。</p><p>最后是盈利模式的问题，除非数据分析的非常好非常准，然后以订阅制也就是 BaaS 的运作模式收费，否则普通用户看到了跨平台的数据、甚至看到套利机会，然后呢，去对应的平台交易了。所以这个方向比较吃力不讨好。</p><h3 id="一个预测市场语义搜索入口"><a href="#一个预测市场语义搜索入口" class="headerlink" title="一个预测市场语义搜索入口"></a>一个预测市场语义搜索入口</h3><p>做了可能不到半个月。基于做 Screener 索引到的大量数据，就发现市场上存在一个缺口，就是把新闻一类的信息，和真实的预测市场的交易盘之间，如何关联起来？</p><p>所以我们做的事情是把预测市场摘要文本生成 embedding 数据存起来，用户可以输入任意文本，无论是长文本还是短文本，然后返回与搜索文本相匹配的 markets 数据，包括 Polymarket、Kalshi 等。</p><p>这个功能的本意是，假如用户看到一个突发新闻，想要去 Polymarket 上下注，但是又不知道有哪些可以下注的 markets。</p><h3 id="一个预测市场的交易终端"><a href="#一个预测市场的交易终端" class="headerlink" title="一个预测市场的交易终端"></a>一个预测市场的交易终端</h3><p>这是现在仍然在进行的项目，已经开发了三四个月，参考了 Polymarket Builder 榜单上的主流项目，现在 Web Terminal 和 TG Copy Trading 两个方向在同时推进。</p><p>这个项目主要就是通过预测市场平台的 API 进行套壳交易，已经支持了 Polymarket 和 Predict.fun 两个平台，也支持了针对 Polymarket 交易的 Copy Trading。当然也在试图集成一些概念，比如 AI 分析、AI Skills、托管自动交易等。</p><br><h3 id="工作之外"><a href="#工作之外" class="headerlink" title="工作之外"></a>工作之外</h3><p>现在，AI Coding 已经成为事实上在发生的事情，会带来深刻的变革。关于程序员的身份认同、价值体现、差异性来源等问题，我发现两句有意思的话，并且附带来源：</p><blockquote><p>Computer science can be probably called applied logic because it originated from logicians.</p></blockquote><p>来源：《<a href="https://www.yinwang.org/resources/gucs-sample-chapter3.pdf">Ground-Up Computer Science</a> 》第 3 章</p><blockquote><p>Programming is just another name for the lost art of thinking.</p></blockquote><p>来源：《<a href="https://www.yinwang.org/resources/gucs-sample-chapter7.pdf">Ground-Up Computer Science</a> 》第 7 章</p>]]></content>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;前几年关于工作内容方面的回顾：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;2025 年：《&lt;a</summary>
+        
+      
+    
+    
+    
+    
+    <category term="工作" scheme="https://smallyu.net/tags/%E5%B7%A5%E4%BD%9C/"/>
+    
+    <category term="工作回顾" scheme="https://smallyu.net/tags/%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/"/>
+    
+  </entry>
   
   <entry>
     <title>为什么买的加密货币一定要去中心化</title>
@@ -366,6 +396,36 @@
     
     
     <category term="区块链" scheme="https://smallyu.net/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>最近一年的工作回顾</title>
+    <link href="https://smallyu.net/2025/10/18/%E6%9C%80%E8%BF%91%E4%B8%80%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/"/>
+    <id>https://smallyu.net/2025/10/18/%E6%9C%80%E8%BF%91%E4%B8%80%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/</id>
+    <published>2025-10-18T11:17:40.000Z</published>
+    <updated>2026-05-27T09:04:59.974Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>前几年写过的关于工作内容方面的回顾：</p><ul><li>2024 年：《<a href="/2024/02/17/%E6%9C%80%E8%BF%91%E5%8D%8A%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C/">最近半年的工作</a>》</li><li>2023 年：《<a href="/2023/05/06/%E5%8D%8A%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/">半年的工作回顾</a>》</li><li>2022 年：《<a href="/2022/08/27/%E4%B8%80%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/">一年的工作回顾</a>》</li></ul></blockquote><p>这些事情只涵盖已经结束的工作，不包括正在进行的工作：</p><h3 id="以太坊-PoS-网络的质押生态建设"><a href="#以太坊-PoS-网络的质押生态建设" class="headerlink" title="以太坊 PoS 网络的质押生态建设"></a>以太坊 PoS 网络的质押生态建设</h3><p>不是以太坊主网，是自己发行的网络，因为用了以太坊 PoS 的共识模式，所以涉及到 32 ETH 质押的流程。这件事情也简单也不简单，简单之处在于，不就是以太坊节点的使用么？不简单的地方在于，以太坊一共有 5 种执行层客户端和 5 种共识层客户端，虽然都支持标准的 EIP 协议，但是节点关于 key 的导入、管理、发起请求的方式各不相同，节点的启动参数方面也有一些隐藏的坑。</p><p>写文档教程、在社区里引导用户、一对一 “辅导” 用户如何自己搭建 Solo Staker 节点，从前端页面发起质押交易，到后端节点拿着质押凭证启动 Validator 等，主要就这些事情。期间还尝试了用 Flashbots 搭建 MEV 节点、给以太坊客户端提交小的功能性 PR、测试不同客户端 EVM 执行效率的 Benchmark 等。</p><h3 id="Hyperlane-跨链"><a href="#Hyperlane-跨链" class="headerlink" title="Hyperlane 跨链"></a>Hyperlane 跨链</h3><p>Hyperlane 是一个去中心化的跨链协议，用 Relayer 和 Validator 两种链下角色，来保证跨链消息的有效和正确。当时做的事情是把 USDC 跨链到自己的网络上，印象最深的一个坑是那个时候 Hyperlane 还处于 heavy development 阶段，Relayer 节点直接把黑名单的变量名赋值给白名单来用，就上下两段逻辑，变量名复制错那种，用起来非常迷惑。然后还给他们提了 PR。</p><p>最后虽然自己搞明白了 Hyperlane 的原理，有能力搭建起一整套跨链环境，但仍然是以官方合作的形式，由他们的团队来维护一些链下节点，相当于给我们链开白名单、增加对我们链的支持。期间他们还有个对接的人离职了，说明团队成员的变动也大。</p><h3 id="ZetaChain-的二次开发"><a href="#ZetaChain-的二次开发" class="headerlink" title="ZetaChain 的二次开发"></a>ZetaChain 的二次开发</h3><p>ZetaChain 是一条 Cosmos 的链，提供了一种去中心化的资产跨链的方案。我们的项目主要做 Restaking，涉及到多链之间质押状态的同步，所以基于 ZetaChain 的机制做二次开发。</p><p>这件事情的难点在于当然得首先搞懂 ZetaChain 的代码逻辑，才能做二次开发。再一个是需要搞懂 Restaking 的业务逻辑，大意好理解，具体的细节不少。然后是 Cosmos 节点的开发和运维，链的部署、升级、回滚等。还有需要参考 CometBFT、Cosmos SDK 的源码结构以及代码流程，开发用于 Restaking 的 AVS 框架什么的。也就这些。</p><h3 id="钱包后端开发"><a href="#钱包后端开发" class="headerlink" title="钱包后端开发"></a>钱包后端开发</h3><p>主要指非托管式钱包的服务端程序，给客户端提供数据来源，构建交易请求、返回余额、交易记录等，包括比特币和以太坊两个网络。还体验了一下用 Swift 写一个 iOS APP 的 Demo 界面，来演示给比特币交易签名的过程。</p>]]></content>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;前几年写过的关于工作内容方面的回顾：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;2024 年：《&lt;a</summary>
+        
+      
+    
+    
+    
+    
+    <category term="工作" scheme="https://smallyu.net/tags/%E5%B7%A5%E4%BD%9C/"/>
+    
+    <category term="工作回顾" scheme="https://smallyu.net/tags/%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/"/>
     
   </entry>
   
@@ -1350,6 +1410,36 @@
   </entry>
   
   <entry>
+    <title>最近半年的工作</title>
+    <link href="https://smallyu.net/2024/02/17/%E6%9C%80%E8%BF%91%E5%8D%8A%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C/"/>
+    <id>https://smallyu.net/2024/02/17/%E6%9C%80%E8%BF%91%E5%8D%8A%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C/</id>
+    <published>2024-02-17T02:49:03.000Z</published>
+    <updated>2026-05-27T09:04:59.980Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>前几年关于工作内容方面的回顾：</p><ul><li>2023 年：《<a href="/2023/05/06/%E5%8D%8A%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/">半年的工作回顾</a>》</li><li>2022 年：《<a href="/2022/08/27/%E4%B8%80%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/">一年的工作回顾</a>》</li></ul></blockquote><p>最近半年的工作主要是三件事。</p><h4 id="Abstract-Account-ERC-4337-项目的搭建"><a href="#Abstract-Account-ERC-4337-项目的搭建" class="headerlink" title="Abstract Account (ERC-4337) 项目的搭建"></a>Abstract Account (ERC-4337) 项目的搭建</h4><p>AA 账户实际上是一个智能合约，借助额外的 bundler 和 paymaster 实现零手续费、社交恢复等功能。ERC-4337 定义了一套规范，规范包括作为账户的合约支持哪些接口、bundler 如何与合约交互、paymaster 如何发挥作用等，目前各部分组件都有大概三到五种具体的项目实现，细节上有差异，但都是遵循了 ERC-4337 标准。</p><p>去年有一段时间抽象账户的概念挺火热，猜测是因为 Vitalik 提到过 Soulbound，项目方把 AA 账户作为灵魂绑定的解决方案来炒作了。像 ERC-4337 这种规范类的创新，一般来说不会带来太长远的影响，因为技术没变，只是使用方法变了，定义了一系列标准化的使用方法。短时间内用一用、解决燃眉之急也没什么不好。</p><h4 id="Op-Stack-的使用"><a href="#Op-Stack-的使用" class="headerlink" title="Op Stack 的使用"></a>Op Stack 的使用</h4><p>自从 Optimism 开源了 Op Stack 的一整套工具包，发行 Optimismtic 的 Layer 2 就变得容易起来，也就是去年挺火热的一键发链，Base、opBNB 等都是短时间就上线了。虽然 Optimism 的 Fault Proof 还不够完善，但哪怕是中心化一点，项目也是足够稳的，基于 Op Stack 完全能发行自己的网络。</p><p>我们把 AA 账户运行在 Layer 2 网络上，实际支撑了一场小型的游戏活动，虽然过程中遇到一些坎坷，但也算是积累了很有用的经验。从时间上，想非常深入这两种项目当然是不可能的，每个方向都能是一个细分领域。现在只是一个将将能用的状态。</p><p>不过有没有注意到一点，像 AA 账户、一键发链这些概念，都是阶段性的，去年火了今年就没人提了，今年更多提到的是比特币的 Layer 2、铭文、ERC-404 之类，热点总是在不断变化。</p><h4 id="搭建以太坊-PoS-网络"><a href="#搭建以太坊-PoS-网络" class="headerlink" title="搭建以太坊 PoS 网络"></a>搭建以太坊 PoS 网络</h4><p>自从 The Merge 以后，以太坊网络的搭建似乎更复杂了，虽然节省了挖矿的算力消耗，但是需要引入一堆复杂的 Validator 治理机制，来确保出块的有条不紊，PoS 就必然会涉及到如何成为验证者、哪些验证者有效等问题。原先的节点也拆分为两种类型，分成了执行层和共识层。相当于 PoS 解决了 PoW 出块不体面的问题，代价是需要另外一套复杂规则来完成这件事情。</p><p>以太坊是目前生态最丰富的链，执行层和共识层各有五、六种客户端，都实现了标准接口，但具体的体验不完全一样，尤其是性能方面，所以也花了不少时间试用每一种客户端。</p><p>以太坊最出色的应该是 EVM 而不是 PoS，能适配 EVM 已经是各种链的噱头之一。PoS 并不是以太坊的发明，Cardano 从一开始就使用了 PoS 而且保留了 UTXO 模型，所以偶尔会看到有人说 Bitcoin 和 Cardano 才是未来，与以太坊相比，单从共识机制上，Cardano 更像是 Bitcoin 的平替而不是以太坊。</p><p>比特币和以太坊属于两大阵营，比特币执着于加密货币，而以太坊重点探索加密货币在货币之外的应用价值。在每一个阵营下面，又有许许多多的 Altcoin 处于活跃状态。</p>]]></content>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;前几年关于工作内容方面的回顾：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;2023 年：《&lt;a</summary>
+        
+      
+    
+    
+    
+    
+    <category term="工作" scheme="https://smallyu.net/tags/%E5%B7%A5%E4%BD%9C/"/>
+    
+    <category term="工作回顾" scheme="https://smallyu.net/tags/%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/"/>
+    
+  </entry>
+  
+  <entry>
     <title>如何健康地远程工作</title>
     <link href="https://smallyu.net/2023/10/10/%E5%A6%82%E4%BD%95%E5%81%A5%E5%BA%B7%E5%9C%B0%E8%BF%9C%E7%A8%8B%E5%B7%A5%E4%BD%9C/"/>
     <id>https://smallyu.net/2023/10/10/%E5%A6%82%E4%BD%95%E5%81%A5%E5%BA%B7%E5%9C%B0%E8%BF%9C%E7%A8%8B%E5%B7%A5%E4%BD%9C/</id>
@@ -1590,6 +1680,36 @@
     
     
     <category term="文件证明" scheme="https://smallyu.net/tags/%E6%96%87%E4%BB%B6%E8%AF%81%E6%98%8E/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>半年的工作回顾</title>
+    <link href="https://smallyu.net/2023/05/06/%E5%8D%8A%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/"/>
+    <id>https://smallyu.net/2023/05/06/%E5%8D%8A%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/</id>
+    <published>2023-05-06T11:24:50.000Z</published>
+    <updated>2026-05-27T09:05:03.849Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>前几年关于工作内容方面的回顾：</p><ul><li>2022 年：《<a href="/2022/08/27/%E4%B8%80%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/">一年的工作回顾</a>》</li></ul></blockquote><p>回顾一下最近半年的工作。从半年前开始，我就迷茫了，因为知道 Filecoin 在做 EVM 的适配，存储赛道已经倒向计算赛道的一边。我们又无法超越 Filecoin。</p><p>不过我还是有收获的，主要集中在对文件证明的进一步理解，以及对项目中代码细节的进一步熟悉，这一块是我之前没了解的。</p><h3 id="扇区证明"><a href="#扇区证明" class="headerlink" title="扇区证明"></a>扇区证明</h3><p>扇区证明一直存在个问题，就是证明会失败。一开始认为是合约进行证明检查的时候，根本没有带上文件列表的信息，导致过期文件没有被删掉。后来发现不止这一个问题，因为在修复代码后，如果文件只存到一个存储节点，是正常的，如果有多个存储节点，证明仍然会失败。</p><p>最后查到的原因是，当一个文件被存到多个节点，其他节点提交证明到合约，如果发现文件过期了，就会在合约里删掉节点对应的文件信息，同时广播给其他节点，要删掉这个文件。而其他节点收到通知后，只删除了本地的问题，没有删除合约里的文件信息，就导致本地的文件经常会少于合约里记录的文件，证明就失败了。</p><p>这个问题解决的过程中，相当于把证明相关的代码看了一遍。</p><h3 id="EVM-合约"><a href="#EVM-合约" class="headerlink" title="EVM 合约"></a>EVM 合约</h3><p>在去年 <a href="/2022/08/27/%E4%B8%80%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/">一年的工作回顾</a> 中提到，我在做一件把 Go 语言合约用 Solidity 重写的事情，也就是把原有的合约移植到以太坊上运行。</p><p>其中让项目支持以太坊账户的事情早就完成了，存储节点可以顺利地使用以太坊节点，通过以太坊的智能合约实现文件的上传下载。但是合约对文件的证明一直空着，因为项目使用了 Bulletproof 的零知识证明，用 Solidity 写一遍 Bulletproof 的证明太费力了。</p><p>现在的做法是 POA 的方式，在合约里本该进行证明的地方，换成提交证明参数，把证明参数记录到合约中。然后验证节点从合约里把证明参数拿下来，在本地进行零知识证明的验证，再把证明结果提交回合约里。</p><p>因为把证明相关的代码看了一遍，所以现在能够完成 EVM 合约中，证明相关的这一部分。</p><h3 id="为什么忽略-Layer2"><a href="#为什么忽略-Layer2" class="headerlink" title="为什么忽略 Layer2"></a>为什么忽略 Layer2</h3><p>之前有一个想法是，把证明放到 Layer2 的节点上做。我在这个方向上没什么进度，有两个原因：</p><ol><li>Layer2 的定位是 EVM 完备，本身不具备额外的功能</li><li>Layer2 也很难进行验证</li></ol><p>第一点的意思是，对于用户或者开发者来说，Layer2 存在的意义是降低手续费，如果能在使用效果上和 Layer1 一模一样，那就了不得了。给 Layer2 增加一些额外的功能，是不是 Layer2 这种项目的本意呢？</p><p>第二点的意思是，Layer2 的项目也是拿着 Layer1 的节点改了改区块的头信息之类。想要实现文件的验证，需要在虚拟机的字节码层面，识别出一笔交易是调用了某个合约的某个函数，然后把这个函数要操作的变量拿出来，对参数进行一次零知识证明的验证，再把验证结果在字节码层面写入回变量中。这样做的难度很大。不过要真的能搞成，相当于搞了一个业务专用的 EVM 虚拟机，技术门槛挺高，挺能用来炫耀的。</p><p>与之相比，相对简单的做法就是，用一个客户端对证明参数做验证，再把结果提交回去。如果是这样，那就无所谓客户端在 Layer2 的节点上还是其他什么节点上了。 我就选择了这种简单的方式去做，虽然不够酷，但是有生之年能完成，能看到结果，现在确实完成了。</p><h3 id="Solidity-合约"><a href="#Solidity-合约" class="headerlink" title="Solidity 合约"></a>Solidity 合约</h3><p>稍微总结一下 Go 合约迁移到 Solidity 合约遇到的问题。</p><p>合约大小不能超过 24 KB，否则会编译失败。对于业务型的合约，24 KB 是不够用的，需要拆分为两个甚至多个合约，合约之间再通过调用完成相应的功能。拆起来也不难，就是注意在功能上拆明白，哪些是对外的，哪些是内部的。</p><p>storage 的结构体不能包含列表，因为列表不是固定长度的。合约不好计算占用了多少空间。这就需要把原先结构体里面的列表拆出来，用的时候单独用。当然如果对业务逻辑熟悉，这一点不是什么问题，如果对业务逻辑不熟悉，看到一堆陌生的变量名称，还是挺烦的。我就因为当时偷懒，合约里没把逻辑写全，查了两天才查明白问题。</p><p>mapping 不能迭代。原先简单的写法，需要用 library 改为挺复杂的写法。</p><p>mapping 元素不存在会返回默认值。无法判断 mapping 是否包含某个 key，如果业务中类型的默认值有含义，可能会出现意想不到的情况。</p><p>这几点不算什么大问题，但可能会给写代码的过程带来一点麻烦，因为需要用不一样的写法，写出完全一样的逻辑。</p>]]></content>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;前几年关于工作内容方面的回顾：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;2022 年：《&lt;a</summary>
+        
+      
+    
+    
+    
+    
+    <category term="工作" scheme="https://smallyu.net/tags/%E5%B7%A5%E4%BD%9C/"/>
+    
+    <category term="工作回顾" scheme="https://smallyu.net/tags/%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/"/>
     
   </entry>
   
@@ -1931,6 +2051,33 @@ table {
     <category term="区块链" scheme="https://smallyu.net/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
     
     <category term="BFT" scheme="https://smallyu.net/tags/BFT/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>一年的工作回顾</title>
+    <link href="https://smallyu.net/2022/08/27/%E4%B8%80%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/"/>
+    <id>https://smallyu.net/2022/08/27/%E4%B8%80%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/</id>
+    <published>2022-08-27T03:17:16.000Z</published>
+    <updated>2026-05-27T09:05:07.361Z</updated>
+    
+    <content type="html"><![CDATA[<p>来到公司一年多了，想要简单做一点阶段性的回顾，因为平时会把大致的工作内容记录在内部的 Confluence 上，所以总结起来会有据可循。</p><p>一年的时间内发生了很多事情，我交到了一个很好的朋友，也因此在工作上不是那么专心，相比以前不管是工作效率还是用心程度都大打折扣。不过总的来看仍然有很大收获。</p><h3 id="State-channels"><a href="#State-channels" class="headerlink" title="State channels"></a>State channels</h3><p>来到公司的第一个月主要是熟悉项目，这个项目比之前公司的项目规模大很多很多，功能上相当于整合了 Filecoin、IPFS、Raiden Network、Ontology 等公链项目，还自己实现了类似于 libp2p 的网络模块和网络代理。一开始看起来还是有点吃力的，一方面因为代码体量大，另一方面因为确实不了解公链，虽然知道区块链本身的技术模块，但不知道什么是 Layer 2、IPFS、PoC。第一个月把项目搭建运行起来，了解了上传下载的基本流程，主要看了 p2p 网络在协议层面的交互实现，第一次知道了 DHT 是什么意思。</p><p>第二个月除了深入熟悉代码细节外，做了一件事情就是把 State channels 中的路由查找从 DFS 换成了 Dijkstra 算法。项目里有一个类似于 Raiden Network 的 Layer 2，用来解决文件下载过程中要对其他节点频繁支付的问题。改路由查找是因为这个部分相对独立，不会给整个项目带来麻烦，至于 Dijkstra 算法可以考虑路径长度做出选择而 DFS 不能，这点优化其实没有意义，因为我们 DNS 节点不会那么多，这个和 Raiden Network 完全 P2P 的模式是不一样的。</p><p>后来两个月也就是第三、四个月，主要做的事情是在 State channels 中增加手续费，在中转节点上扣掉一部分转账金额。那是一个痛苦的过程，因为我当时不懂 Layer 2 也不懂 State channels。好在用了两个月的时间还是把协议搞明白了，由于项目场景的限制不能由发起转账的节点直接验证交易，引起一些 channel 状态不稳定的情况，不过无伤大雅。</p><p>进入公司后我几乎没有请教同事关于项目的情况，不管是项目的整体架构还是具体的代码细节，全部是自己去看代码、查文档，尤其是要面对很多自己完全不了解的概念，这样做当然是有意而为之。全部自己折腾效率低是理所当然的事情，不过好处就是，在那个过程之后我可以有足够的信心，仅凭自己的实力就可以搞明白那样规模的项目，完成该做的事情。</p><p>因为我是第一次跳槽，我对自己的能力是疑惑的，不知道在之前公司的感觉是错觉还是事实，我觉得之前公司的项目不行、技术也不行，而且跳槽是有工资的增长，我多少有点心虚，想知道在进入一家新的公司后，我能不能够称职地独立应付起这样的项目，有没有实力对得起工资。请教同事是多么简单的事情！在之前的公司我也受到了很多关照，不过我希望自己有独当一面的能力，这正好是个机会，必须不依赖外部帮助去解决问题了。</p><h3 id="Solidity-合约"><a href="#Solidity-合约" class="headerlink" title="Solidity 合约"></a>Solidity 合约</h3><p>第五个月，我在纠结 Layer 2 该往什么方向优化，有点难以下手，正准备解决性能低下的问题，但也没有思路。后来得到一个需求是把项目里的原生合约用 Solidity 写一遍，因为后续有想支持 EVM 的计划。当时我不了解以太坊也不了解 Solidity，花了大概一周时间看 Solidity 文档。</p><p>第六个月也就是今年一月份，用 Solidity 重写合约，那其实是一段愉快的时间，因为不太需要思考做什么、怎么做，照着现成的写就行，产出的代码量还大。只是用不同的编程语言，你知道的，换编程语言没什么压力。</p><p>第七个月今年二月份，在节点的 SDK 中加入对以太坊 SDK 的支持。折腾了一下以太坊的测试网发现不太好用，最后还是先用节点的开发模式了。</p><p>Solidity 虽然语法容易理解，但是由于 EVM 的限制，也有很多需要注意的问题，以及很多语言上的细节需要时间不断熟悉，当时用一个月写完合约，后面却断断续续用了不少时间去修改完善。总之在那个过程里，那个需求上，我学会了写 Solidity 合约，熟悉了以太坊智能合约的开发，尽管对于生产级别的合约安全问题还缺少经验。</p><h3 id="文件夹上传下载"><a href="#文件夹上传下载" class="headerlink" title="文件夹上传下载"></a>文件夹上传下载</h3><p>今年三月份开始，做的一件事情是文件夹的上传下载。这个想法的起点是项目对 Git 的支持，想要支持 Git 协议，能够直接用 git 命令克隆 Git 仓库，结果发现普通文件夹的上传下载都没有，只有对文件的上传下载。</p><p>我们的项目用了一部分 IPFS 的 IPLD 协议，把文件转换成块进行传输，但是没有用 IPFS 的文件管理部分。IPFS 有一层针对文件系统操作的 API，可以统一处理文件和文件夹，数据结构之间还能方便地互相转化。我们是直接读取文件转化成块的，这也给文件夹上传下载的实现增加了难度。</p><p>这件事情一直断断续续持续至今，因为总是不断有各种各样的小问题出现，也感谢测试同事耐心的配合。文件夹的处理比单个文件复杂一点点，因为文件夹会存在无限的嵌套，文件夹内同时包含文件和文件夹，子文件夹内还会有文件和文件夹。以及其他问题像空文件夹、大文件的处理。</p><p>IPLD 节点储存在 Merkle DAG 的数据结构中，单个文件会生成一个 Merkle Tree，而文件夹需要做的是在上传的时候，把多个 Merkle Tree 组织起来成为同一个树，然后在下载的时候根据这个树反序列化成文件夹、把内容写入到磁盘上。</p><p>其实实现思路是简单的，这个树结构中有数据块 raw node 和用来做中间节点连接数据块的 proto node，只要把文件夹相关的额外信息写到 proto node 的 links 中，就可以把文件之间的关联信息储存传输到其他节点了。</p><p>不过在具体的实现过程中花了不少功夫，也绕了一些弯路，比如上传生成块的时候因为添加了额外的数据导致块数据验证不成功，不能生成完整的树结构，不得不深入到 IPLD 的代码里 debug；下载的时候对块数据的解析不熟悉，也没有意识到节点之间块数据的传输是没有顺序的，在功能不成功的时候一度怀疑整体思路出了问题。</p><p>由于块数据的传输是无序的，就需要在下载的时候自己整理块的顺序，排序过程中因为搞混了树的层序遍历和前序遍历，一开始深度优先生成顺序发现总是有几个块的位置错乱，debug 了好久才定位到问题改成广度优先。</p><p>这是一个无关紧要但是有意思的功能，在这个过程中加深了对文件的上传下载的了解。</p><h3 id="文件的非对称加密"><a href="#文件的非对称加密" class="headerlink" title="文件的非对称加密"></a>文件的非对称加密</h3><p>今年四五月份疫情严重，居家办公一个多月，做的事情是文件对非对称加密的支持，之前只支持 AES 的对称加密。</p><p>这个没太多可说的，就是要注意 ECDSA 是数字签名算法，没有加解密这回事，要用 ECIES 之类的混合模式，结合对称加密去实现对文件的非对称加解密。</p><h3 id="支持以太坊账户"><a href="#支持以太坊账户" class="headerlink" title="支持以太坊账户"></a>支持以太坊账户</h3><p>今年六七八月份，重点关注新 Layer 2 的方案，想要实现基于 Optimistic rollups 的 Layer 2。</p><p>Rollups 部分还没怎么动，目前停留在存储节点对以太坊账户的支持上。这一段不短的时间内，除了编译运行一下 Optimism 的项目、增加储存节点对多种网络模式的选项，还花了不少时间完善之前的 Solidity 合约、解决像合约大小超过限制需要拆分、节点真实运行过程中合约结果和预期不符等问题。</p><p>由于账户地址和公私钥都变成了另外一种格式，储存节点的协议消息也需要使用另外的签名方法，这些内容的改动都还在进行中。</p><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>其实没多少事情，但也没怎么闲着。不算太认真，但也收获很多。</p>]]></content>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;来到公司一年多了，想要简单做一点阶段性的回顾，因为平时会把大致的工作内容记录在内部的 Confluence</summary>
+        
+      
+    
+    
+    
+    
+    <category term="工作" scheme="https://smallyu.net/tags/%E5%B7%A5%E4%BD%9C/"/>
+    
+    <category term="工作回顾" scheme="https://smallyu.net/tags/%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/"/>
     
   </entry>
   

@@ -1,0 +1,41 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>最近大半年的工作</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://smallyu.net/2026/05/27/最近大半年的工作/"><meta property="og:title" content="最近大半年的工作"><meta property="og:type" content="article"><meta property="og:url" content="https://smallyu.net/2026/05/27/最近大半年的工作/"><meta property="og:site_name" content="smallyu的博客"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1.1"><link rel="stylesheet" href="/css/post.css?v=v1.1"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1.1"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>最近大半年的工作</h1><div class="time">2026-05-27</div><div class="title-margin"></div><blockquote>
+<p>前几年关于工作内容方面的回顾：</p>
+<ul>
+<li>2025 年：《<a href="/2025/10/18/%E6%9C%80%E8%BF%91%E4%B8%80%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/">最近一年的工作回顾</a>》</li>
+<li>2024 年：《<a href="/2024/02/17/%E6%9C%80%E8%BF%91%E5%8D%8A%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C/">最近半年的工作</a>》</li>
+<li>2023 年：《<a href="/2023/05/06/%E5%8D%8A%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/">半年的工作回顾</a>》</li>
+<li>2022 年：《<a href="/2022/08/27/%E4%B8%80%E5%B9%B4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%9B%9E%E9%A1%BE/">一年的工作回顾</a>》</li>
+</ul>
+</blockquote>
+<h3 id="一个-friend-tech-仿盘项目"><a href="#一个-friend-tech-仿盘项目" class="headerlink" title="一个 friend.tech 仿盘项目"></a>一个 friend.tech 仿盘项目</h3><p>大概开发了两个月，MVP 功能基本完成，公开内测之后运营效果比较差，就直接搁置了。我承担包括合约开发、后端逻辑开发、前端界面开发。</p>
+<p>这个项目在产品形态上做成了 friend.tech + 分答（知乎）+ NGL 模式的混合体。</p>
+<p>项目的核心逻辑是，creator 为主体，可以创建 card（key），card 的价格可以被炒作。其他人可以向 creator 提问问题，creator 回答问题的时候，可以选择公开或者不公开。对于不公开的回答，其他人可以花费 1 USD 来解锁答案。同时，creator 接受匿名提问（NGL 模式）。</p>
+<p>还有一些运营方面的功能，可以根据 X 账号给别人创建 card、一键把 X 账号的信息同步到网站上之类。</p>
+<h3 id="一个内部的加密货币交易和控盘工具"><a href="#一个内部的加密货币交易和控盘工具" class="headerlink" title="一个内部的加密货币交易和控盘工具"></a>一个内部的加密货币交易和控盘工具</h3><p>开发了大概两个月，核心逻辑基本可用，虽然还有 bug。我承担包括后端和前端逻辑的开发。</p>
+<p>这个 Trading Bot 的核心功能包括：批量生成钱包、从 Binance、BitMart、MEXC 批量提现、集成了 Aerodrome 和 Uniswap 交易、支持 V2 和 Slipstream 交易池，功能模块上可以一键导入代币、管理交易对、管理 project，支持一键批量 warm up 钱包的交易、在某一个价格范围内的 range trading 交易。有 K 线图、一键 simulation 交易数据、根据 simulation 数据创建 task、交易结果 analysis 等。还有余额情况的 snapshot、trends 图、gas fee 图等。还有对某一个代币持仓情况分布的监控、对某一个地址行为的监控等。</p>
+<h3 id="一个预测市场的-TG-小程序"><a href="#一个预测市场的-TG-小程序" class="headerlink" title="一个预测市场的 TG 小程序"></a>一个预测市场的 TG 小程序</h3><p>两周时间出 MVP，当时在考虑做预测市场周边的项目，但是不确定做什么，所以这个小程序类似一个 Polymarket 平台的 paper trading 游戏，只是比交易更简单，在 PM 已经结束的 markets 中，单纯选择 yes 和 no，然后和真实的事件结果对比。用户有积分榜、连胜榜等统计。</p>
+<h3 id="一个预测市场的-Dex-Screener"><a href="#一个预测市场的-Dex-Screener" class="headerlink" title="一个预测市场的 Dex Screener"></a>一个预测市场的 Dex Screener</h3><p>可能做了不到一个月，说实话做的很糟糕。项目本意是做预测事件的跨平台对比，我们索引了 DefiLlama 上排名靠前的六七个预测市场的数据，包括 Polymarket、Kalshi、Limitless Exchange 等，然后试图把数据整合为一种事件数据对比的工具界面。</p>
+<p>但是遇到不少问题，这种预测市场本质上是中心化的交易平台，对标 Binance、OKX 这种交易所，而不是去中心化的数据。预测市场基本上都是链下撮合、链上交易的模式，所以索引数据本身就是个问题，很大程序上受到平台方 API 的 rate limit 限制。</p>
+<p>其次是数据分析比较重，哪怕通过 Subgraph 之类索引到全部的数据，也需要稍微高配的数据库和硬件做分析，需要不小的硬件成本。</p>
+<p>最后是盈利模式的问题，除非数据分析的非常好非常准，然后以订阅制也就是 BaaS 的运作模式收费，否则普通用户看到了跨平台的数据、甚至看到套利机会，然后呢，去对应的平台交易了。所以这个方向比较吃力不讨好。</p>
+<h3 id="一个预测市场语义搜索入口"><a href="#一个预测市场语义搜索入口" class="headerlink" title="一个预测市场语义搜索入口"></a>一个预测市场语义搜索入口</h3><p>做了可能不到半个月。基于做 Screener 索引到的大量数据，就发现市场上存在一个缺口，就是把新闻一类的信息，和真实的预测市场的交易盘之间，如何关联起来？</p>
+<p>所以我们做的事情是把预测市场摘要文本生成 embedding 数据存起来，用户可以输入任意文本，无论是长文本还是短文本，然后返回与搜索文本相匹配的 markets 数据，包括 Polymarket、Kalshi 等。</p>
+<p>这个功能的本意是，假如用户看到一个突发新闻，想要去 Polymarket 上下注，但是又不知道有哪些可以下注的 markets。</p>
+<h3 id="一个预测市场的交易终端"><a href="#一个预测市场的交易终端" class="headerlink" title="一个预测市场的交易终端"></a>一个预测市场的交易终端</h3><p>这是现在仍然在进行的项目，已经开发了三四个月，参考了 Polymarket Builder 榜单上的主流项目，现在 Web Terminal 和 TG Copy Trading 两个方向在同时推进。</p>
+<p>这个项目主要就是通过预测市场平台的 API 进行套壳交易，已经支持了 Polymarket 和 Predict.fun 两个平台，也支持了针对 Polymarket 交易的 Copy Trading。当然也在试图集成一些概念，比如 AI 分析、AI Skills、托管自动交易等。</p>
+<br>
+
+<h3 id="工作之外"><a href="#工作之外" class="headerlink" title="工作之外"></a>工作之外</h3><p>现在，AI Coding 已经成为事实上在发生的事情，会带来深刻的变革。关于程序员的身份认同、价值体现、差异性来源等问题，我发现两句有意思的话，并且附带来源：</p>
+<blockquote>
+<p>Computer science can be probably called applied logic because it originated from logicians.</p>
+</blockquote>
+<p>来源：《<a href="https://www.yinwang.org/resources/gucs-sample-chapter3.pdf">Ground-Up Computer Science</a> 》第 3 章</p>
+<blockquote>
+<p>Programming is just another name for the lost art of thinking.</p>
+</blockquote>
+<p>来源：《<a href="https://www.yinwang.org/resources/gucs-sample-chapter7.pdf">Ground-Up Computer Science</a> 》第 7 章</p>
+</div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.1"></script><script defer src="/js/highlight.min.js?v=v1.1"></script><script defer src="/js/main.js?v=v1.1"></script><script defer src="/js/lightbox.js?v=v1.1"></script><script defer src="/js/bootstrap.min.js?v=v1.1"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-5JRBZ6P1W3"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-5JRBZ6P1W3');</script></html>
