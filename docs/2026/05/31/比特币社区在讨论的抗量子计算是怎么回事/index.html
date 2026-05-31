@@ -1,0 +1,134 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>比特币社区在讨论的抗量子计算是怎么回事</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://smallyu.net/2026/05/31/比特币社区在讨论的抗量子计算是怎么回事/"><meta property="og:title" content="比特币社区在讨论的抗量子计算是怎么回事"><meta property="og:type" content="article"><meta property="og:url" content="https://smallyu.net/2026/05/31/比特币社区在讨论的抗量子计算是怎么回事/"><meta property="og:site_name" content="smallyu的博客"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1.1"><link rel="stylesheet" href="/css/post.css?v=v1.1"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1.1"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>比特币社区在讨论的抗量子计算是怎么回事</h1><div class="time">2026-05-31</div><div class="title-margin"></div><p>引用框里的内容都是 Gemini 生成的。我也不太喜欢这种大量 AI 生成内容的文章，但是很多专业名词和数据又依赖于 AI 给出的数据。所以还是以分享和整理信息为主吧。</p>
+<h3 id="生成式-AI"><a href="#生成式-AI" class="headerlink" title="生成式 AI"></a>生成式 AI</h3><p>对于我们外行人来说，ChatGPT 3.5 似乎是一夜之间出现的，2023 年横空出世，一下子到达了能够通过图灵测试的地步。而实际上 GPT 已经连续多年发布有突破性的论文，让 GPT 模型不断演进：</p>
+<blockquote>
+<ul>
+<li><strong>2018年（GPT-1）</strong>： 发表论文 《Improving Language Understanding by Generative Pre-Training》，正式提出了“生成式预训练”的概念。</li>
+<li><strong>2019年（GPT-2）</strong>： 发表论文 《Language Models are Unsupervised Multitask Learners》，证明了网页大模型在不需要微调的情况下，就能做很多不同的任务</li>
+<li><strong>2020年（GPT-3）</strong>： 发表了里程碑式的论文 《Language Models are Few-Shot Learners》。这时候模型参数达到了 1750 亿，大家突然发现，大力出奇迹，模型开始展现出惊人的理解能力。</li>
+<li><strong>2022年 3月</strong>，OpenAI 发表了一篇极为重要的论文：《Training language models to follow instructions with human feedback》。在这篇论文中，他们引入了 RLHF（基于人类反馈的强化学习） 技术，训练出了 InstructGPT。</li>
+<li><strong>2022年 11月</strong>，ChatGPT （基于 GPT-3.5 架构）诞生，实际上就是 InstructGPT 的 “亲兄弟” 或直接衍生版。OpenAI 将这种 “听得懂指令” 的模型，套上了一个最符合人类习惯的聊天框界面（UI），并在 2022 年 11 月底作为研究预览版免费开放。</li>
+</ul>
+</blockquote>
+<h3 id="量子计算的现状"><a href="#量子计算的现状" class="headerlink" title="量子计算的现状"></a>量子计算的现状</h3><p>所以针对量子计算的担忧不是杞人忧天，那些我们未曾关注到的行业也许正在发生惊天动地的变化。</p>
+<blockquote>
+<p>如果把之前的量子计算比作 GPT-3 之前的“野生天才”，它空有庞大的计算潜力，但极度不稳定。目前（2026年），整个行业正在全力攻克量子计算的“InstructGPT 时刻”——<strong>量子纠错（QEC, Quantum Error Correction）</strong>。</p>
+<p>目前行业呈现出以下几个核心进展：</p>
+<ol>
+<li>从 “物理比特” 走向 “逻辑比特”</li>
+</ol>
+<ul>
+<li>以前媒体炒作 “IBM 达到 1000 个量子比特” 或 “谷歌实现量子霸权”，那些都是<strong>物理比特（Physical Qubits）</strong>。它们就像极其脆弱的肥皂泡，周围有一点温度波动、Wi-Fi 信号，甚至空气流动，就会发生 “退相干（Decoherence）”，导致计算崩溃。
+现在的行业共识是：数量不再是唯一标准，<strong>质量（纠错能力）</strong>才是。谷歌的 Willow 芯片和微软、IBM 的最新路线图都在证明一件事——通过把几十甚至上百个脆弱的 “物理比特” 绑定在一起，变成一个具有容错能力的 “逻辑比特（Logical Qubits）”。</li>
+</ul>
+<ol start="2">
+<li>多技术路线的“军阀混战”</li>
+</ol>
+<p>不同于大模型几乎全盘采用 Transformer 架构，量子计算目前还没有统一的硬件标准：</p>
+<ul>
+<li><strong>超导路线（IBM、谷歌）</strong>： 跑得最快，但需要接近绝对零度（0.015 Kelvin）的极低温冰箱，工程成本极高。</li>
+<li><strong>拓扑量子（微软 Majorana 1）</strong>： 走纯物理学底层突破，利用新型拓扑材料自带的抗噪特性，如果成功，能在一颗芯片上塞进 100 万个比特。</li>
+<li><strong>离子阱&#x2F;光子路线（Quantinuum、Xanadu）</strong>： 在常温或更高温度下表现更好，相干时间长。</li>
+</ul>
+</blockquote>
+<h3 id="击溃加密体系需要的算力"><a href="#击溃加密体系需要的算力" class="headerlink" title="击溃加密体系需要的算力"></a>击溃加密体系需要的算力</h3><blockquote>
+<p>要让现有的全球加密体系（如银行、政府通信、区块链使用的 RSA、ECC、DH 等非对称加密算法）彻底崩溃，传统的经典计算机和未来的量子计算机需要跨越的算力鸿沟完全不在一个维度。</p>
+<ol>
+<li><strong>经典计算机</strong>：需要“宇宙毁灭级”的算力</li>
+</ol>
+<p>目前互联网安全的基石（比如 RSA-2048 算法），其核心数学原理是“大整数质因数分解”。把两个很大的质数乘起来很容易，但要把乘积倒推拆解成这两个质数，极其困难。</p>
+<p>要用现有的超级计算机去暴力破解一个 RSA-2048 密钥，需要多大算力？</p>
+<ul>
+<li><strong>算力需求</strong>： 大约需要 $2^{112}$ 次运算。</li>
+<li><strong>时间成本</strong>： 即使动用全人类目前所有的超级计算机（包括最顶级的超级计算机集群）一起不吃不喝地算，也需要<strong>几千万年甚至上亿年</strong>。</li>
+<li><strong>能量成本</strong>： 破译一个密钥消耗的电能，可能需要抽干几个地球的能源。
+因此，在经典计算机的框架下，现有的主流加密体系在物理上是绝对安全的。</li>
+</ul>
+<ol start="2">
+<li><strong>量子计算机</strong>：只需要“数千个逻辑比特”的降维打击</li>
+</ol>
+<p>量子计算机之所以恐怖，是因为它拥有一个专属的数学武器——Shor 算法（秀尔算法）。</p>
+<p>Shor 算法在处理“大整数质因数分解”时，把计算复杂度的量级从经典计算机的指数级（Exponential）直接降到了多项式级（Polynomial）。</p>
+<p>在量子计算中，算力不再用“每秒运算多少次（FLOPS）”来衡量，而是看“容错逻辑比特（Logical Qubits）的数量”。</p>
+<p>根据目前的理论和工程推算，要在一夜之间攻破 RSA-2048，量子计算机需要达到以下指标：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>理论需求值</th>
+<th>为什么现在做不到？</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>逻辑比特数量</strong></td>
+<td><strong>大约 4000 个</strong>完美的、高质量容错逻辑比特</td>
+<td>目前人类最顶尖的实验室也只能勉强制造出<strong>几十个</strong>逻辑比特。</td>
+</tr>
+<tr>
+<td><strong>物理比特数量</strong></td>
+<td><strong>大约 2000 万个</strong>物理比特</td>
+<td>因为量子极易受到干扰，平均需要几千个脆弱的“物理比特”去纠错、合成 1 个“逻辑比特”。</td>
+</tr>
+<tr>
+<td><strong>破解时间</strong></td>
+<td><strong>大约几小时到几天</strong></td>
+<td>一旦硬件达标，量子计算机只需要喝一杯咖啡或睡一觉的时间，就能解开经典计算机算上亿年的题目。</td>
+</tr>
+</tbody></table>
+</blockquote>
+<h3 id="击溃比特币（ECC-椭圆曲线加密）需要的算力"><a href="#击溃比特币（ECC-椭圆曲线加密）需要的算力" class="headerlink" title="击溃比特币（ECC 椭圆曲线加密）需要的算力"></a>击溃比特币（ECC 椭圆曲线加密）需要的算力</h3><blockquote>
+<p>比特币使用的是 SECP256k1 椭圆曲线加密。相比于 RSA，椭圆曲线在面对量子攻击时更加脆弱。</p>
+<ul>
+<li>攻破比特币的公钥私钥对，理论上只需要 2000 到 3000 个逻辑比特。</li>
+<li>如果量子计算机拥有足够的比特数，它可以在 10 分钟内（比特币下一个区块打包出来之前）直接通过公钥反算出私钥，从而瞬间转移任何钱包里的资产。</li>
+</ul>
+<p>既然只需要 4000 个逻辑比特就能让世界瘫痪，那这一天离我们有多远？</p>
+<p>目前全球的顶尖量子机构（IBM、谷歌、微软、Quantinuum等）正处于从“几百个物理比特”向“数十万个物理比特”冲刺的阶段。按照目前的工程进度预测：</p>
+<ul>
+<li>2026 - 2030年（<strong>安全期</strong>）： 量子计算机的逻辑比特数预计突破三位数，能够用来模拟新材料、新药物，但依然无法撼动 RSA-2048。</li>
+<li>2030 - 2035年（<strong>高危期</strong>）： 如果量子纠错技术（QEC）发生突破，物理比特到逻辑比特的转化率大幅提升，千万级物理比特的计算机可能面世。这时候，现有的加密体系将进入真正的倒计时。</li>
+</ul>
+</blockquote>
+<h3 id="比特币社区的讨论"><a href="#比特币社区的讨论" class="headerlink" title="比特币社区的讨论"></a>比特币社区的讨论</h3><blockquote>
+<p>近期比特币社区（特别是核心开发者、Blockstream 等研究机构）关于量子计算的讨论确实骤然升温，甚至可以说是<strong>近年来争论最激烈的一次</strong>。</p>
+<p>引发这波热烈讨论的直接导火索是 <strong>2026 年 3 月底谷歌、以太坊基金会和斯坦福大学联合发布的一篇重磅论文</strong>。论文指出：攻破比特币底层加密算法（ECDSA）所需的物理比特数量，比之前预估的要<strong>整整低了 20 倍</strong>（大约只需要不到 50 万个物理比特），并且在极端算力下，最快可能在 <strong>9 分钟</strong>内反算出私钥。由于比特币出块时间是 10 分钟，这意味着量子计算机有可能在交易发出后、被打包进区块前的这短短几分钟里，进行“拦截偷地雷”。</p>
+<p>面对这个被大幅压缩的时间表，目前比特币社区主要在密集进行以下三件事：</p>
+<ul>
+<li>推进首个抗量子提案：BIP-360 (P2MR)。这是比特币历史上<strong>第一个正式写入路线图的抗量子改进提案</strong>（Bitcoin Improvement Proposal）。</li>
+<li>激烈争论：“直接搬用美国标准（NIST）” 还是 “用哈希签名”。NIST（美国国家标准局）推荐了 Dilithium 和 Falcon 等基于格（Lattice-based）的抗量子算法。但比特币核心开发者们发现：直接搬过来会要了比特币的命。</li>
+<li>排查“沉睡钱包”，商讨软分叉与“遗产冻结”政策。比特币网络中，真正面临迫切量子威胁的，其实是那些公开了公钥的旧地址。</li>
+</ul>
+</blockquote>
+<h3 id="哪些加密算法受到威胁"><a href="#哪些加密算法受到威胁" class="headerlink" title="哪些加密算法受到威胁"></a>哪些加密算法受到威胁</h3><p>那么我们来搞清楚，到底哪些加密算法会受到量子计算机的威胁，哪些不会：</p>
+<blockquote>
+<p>核心结论：</p>
+<ul>
+<li><strong>非对称加密（RSA&#x2F;ECC）</strong> 依靠的是“精妙的数学大厦”，量子计算机有“画好的图纸（Shor 算法）”，所以一拆就倒。</li>
+<li><strong>单向哈希（SHA&#x2F;Keccak</strong>） 依靠的是“无序的混沌黑盒”</li>
+</ul>
+</blockquote>
+<h3 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h3><p>我发现这样下去不太好，文章里全是复制粘贴 AI 生成的文本，所以干脆放一些后续的问题列表，能够把这个话题延续下去。只要把这些问题复制给任何 AI，都会得到比较好的解答：</p>
+<ul>
+<li>为什么 SHA-256 天生抗量子？</li>
+<li>那么 Merkle root 为什么可以代替用户的公钥来代表资产？</li>
+<li>为什么比特币现在的资产是在公钥里，而不是在 SHA-256(公钥) 里？</li>
+<li>你提到了 P2PK，比特币还有哪几种资产形式，分别都有没有套上 hash？</li>
+<li>现在的 P2TR 是为了干什么来着，或者说有什么特性和优势，相比 P2WPKH？</li>
+<li>以太坊社区推崇的 ZK 加密是在解决什么问题，ZK 加密抗量子计算吗？</li>
+<li>我还是没能太理解，Merkle tree 在选择路径去验证某几个节点的时候，是怎么去选择的？</li>
+<li>为什么全节点要打包给我 Hash(EFGH)？</li>
+<li>全节点知道 EFGH 的数据吗？</li>
+<li>在比特币的 Taproot 中，在最新的抗量子方案中，Merkle tree 是怎么发挥作用的？</li>
+<li>所以我的疑问在于，你刚才提到一句“提供一条到 Merkle Root 的路径证明”，我想知道这个路径是怎么来的？</li>
+<li>那么在 P2MR 的过程中，意思是我的资产是被锁在某个叶子节点上吗？</li>
+<li>我理解了，那么 A、B、C、D 其实分别都是一把钥匙，每次都使用不同的钥匙，用来抵抗量子计算的攻击？</li>
+<li>我还是不理解，这个 Merkle tree 默认有多少个节点？一个用户的私钥默认有多少个节点？</li>
+<li>Merkle tree 的节点数量一旦生成，是不是就不能改了，因为 root hash 是确定性的？</li>
+<li>我想想，P2MR 中，节点会知道我的 Merkle tree 上有几个节点吗？</li>
+<li>那么这个使用场景，和那种轻节点从全节点拿某一个 hash 值的场景，其实是不一样的？</li>
+</ul>
+<p>这个问题列表反映出另外一个有意思的点，我早期的 <a href="/2025/12/02/%E6%88%91%E5%AF%B9%E4%BA%8EAI%E6%97%B6%E4%BB%A3%E7%9A%84%E7%AD%94%E6%A1%88/">观点和结论</a> 在于，AI 时代，回答问题的能力已经不重要，而提问问题的能力更加重要。这个问题列表正是印证了这一点，答案不重要，任意一个顶级 AI 模型都可以解答。而提问问题的过程和思路是重要的。</p>
+</div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.1"></script><script defer src="/js/highlight.min.js?v=v1.1"></script><script defer src="/js/main.js?v=v1.1"></script><script defer src="/js/lightbox.js?v=v1.1"></script><script defer src="/js/bootstrap.min.js?v=v1.1"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-5JRBZ6P1W3"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-5JRBZ6P1W3');</script></html>
