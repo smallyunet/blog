@@ -1,0 +1,24 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>AI Agent 看板</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://smallyu.net/2026/06/18/AI-Agent看板/"><meta property="og:title" content="AI Agent 看板"><meta property="og:type" content="article"><meta property="og:url" content="https://smallyu.net/2026/06/18/AI-Agent看板/"><meta property="og:site_name" content="smallyu的博客"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1.1"><link rel="stylesheet" href="/css/post.css?v=v1.1"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1.1"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>AI Agent 看板</h1><div class="time">2026-06-18</div><div class="title-margin"></div><p>有一个给 AI Agent 设计的看板工具叫 Multica，理念是本地部署，本地运行的 AI 比如 Codex、Claude Code、Antigravity 等都以 Agent 形式接入看板，然后你就可以给 AI Agent 分配任务、管理项目进度等。</p>
+<p>看到这个产品后有感而发。</p>
+<p>对于这个产品本身，怎么理解这个事情呢，我觉得可以这样理解：</p>
+<p>首先看板工具是指类似 Jira、Linear、GitHub Project、Notion 这些知名的项目管理工具。</p>
+<p>然后先不说 AI，就说人，假如就是一些真实的人、真实的员工、真实的技术团队。有能力通过任务面板把技术团队管理明白的 leader，包括任务怎么分配、任务时长、任务难度的定义、结果怎么验收等等。对于能处理好任务、把项目进度安排的井井有条的 leader，这个 AI Agent 看板工具才有意义。</p>
+<p>也就是说，对于已经具备能力管理好 “人” 的 leader 型人，他才需要把员工换成 AI，然后在看板工具上给 AI 分配任务这种产品。</p>
+<p>AI 相对于人类，有优点也有弱点。优点就是效率高，你给它明确的任务，它能执行的很好。但是 AI 的弱点在于，不需要主动汇报工作、没有情绪，也不需要承担责任。如果 AI 把你的数据库删了，或者强硬汇报错误的内容、或者突然降智听不懂人话了，你能拿他怎么办呢？骂它？扣它工资？给它讲道理、画大饼让它内疚？</p>
+<p>所以当你作为一个能管理好员工或者下属的 leader，试图通过 AI 降本增效的时候，这个 AI Agent 看板工具才能发挥作用。而与此同时，这个 leader 也得好好掂量一下能不能用好 AI。</p>
+<p>下一个问题，AI 能提高效率是显而易见的，但是 AI 真的能降低成本吗？用 Codex 日常写代码一天三四个小时，需要开每个月 100 美元的套餐。如果更高强度使用，大概一天六七个小时运行时长的话，每个月 200 美元的套餐是必需的。</p>
+<p>同时考虑到 Codex 有周限额和日限额，200 美元的套餐跑满肯定不够，算作一个 AI Agent 300 美元吧。然后看板工具的意义当然在于，多个 Agent 同时运行。如果只需要一个，在 Codex 里用就行，没有必要看板。</p>
+<p>那么按照小型技术团队 3 个人的规模来算，AI Agent 的费用算作一个月 1000 美元吧。</p>
+<p>也就是说，原本也许 1 leader + 2 senior + 1 junior 配置的技术团队，可以精简为 1 leader + 2 Codex + 1 Antigravity。要只算订阅费的话，是不是真的节省了不少成本？</p>
+<p>不过还要考虑一个小问题，人类队伍中 leader 不需要独自承担责任，只需要验收就行。但是在 Agent 的配置形式下，leader 必然是更忙更累的，因为需要 review 所有 AI 的工作结果、手动打字（甚至不能语音和会议）来同步给 AI 工作任务、需要把任务边界和规则定义的非常清楚。相信做过技术的话就会理解，看似用 AI 代替了大量人力，但同时极大增加了 leader 的负荷。这种推演方式下 leader 一定是忙不过来的。</p>
+<p>所以可以退一步，改为 2 leader + 2 Codex + 2 Antigravity 的模式，也就是 (1 leader + 1 Codex + 1 Antigravity)*2 的模式。这样的话 leader（或者工程师）的工作负荷勉强合理、工作任务能够合理完成。这种模式下，成本变成了多少呢？</p>
+<p>继续下一个问题，刚才的讨论一直有一个前提，就是这个 leader 本身有能力管理好 “人”，在此基础上去使用 AI。那么如果本身这个 leader（工程师）不具备管理人类的能力呢？</p>
+<p>结合之前提到的 AI 的弱点，那么工作一定是一团糟糕的，毫无疑问。难道我们或者你，在过往的工作经历中没有遇到过管理能力糟糕的 leader 吗？设想他们管理一堆不需要承担责任的 AI Agent，真的能让工作或者项目完成的更好吗？</p>
+<p>总的来说，项目的任务看板工具实际上不是技术问题而是管理问题。有能力用好看板的人没那么需要 AI，没有能力用好看板的人也用不好 AI。</p>
+<p><br><br></p>
+<img src="summary.png" width="80%">
+</div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.1"></script><script defer src="/js/highlight.min.js?v=v1.1"></script><script defer src="/js/main.js?v=v1.1"></script><script defer src="/js/lightbox.js?v=v1.1"></script><script defer src="/js/bootstrap.min.js?v=v1.1"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-5JRBZ6P1W3"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-5JRBZ6P1W3');</script></html>
