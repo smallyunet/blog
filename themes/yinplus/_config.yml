@@ -1,7 +1,6 @@
 # Navigation bar without starting with a slash
 menu:
   博客: ''
-  微博: 'https://t.smallyu.net'
   联系: about
 
 # Recommended to enable when the page count is more than 1
