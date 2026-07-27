@@ -1,0 +1,171 @@
+{
+  "generated_at_unix": 1785169790,
+  "scanner_status": {
+    "chain": "main",
+    "start_height": 709632,
+    "next_height": 778978,
+    "target_height": 959701,
+    "last_block_hash": "00000000000000000002e5a775b8085fbcee81d5cef64dc5523d60958c048171",
+    "taproot_activation_height": 709632,
+    "reorg_retention_blocks": 144,
+    "oldest_reorg_safe_height": 778834,
+    "coverage_complete_from_genesis": false,
+    "scanned_blocks": 69346,
+    "scanned_transactions": 123535438,
+    "scanned_inputs": 390721386,
+    "scanned_outputs": 401897370,
+    "revealed_script_paths": 257747,
+    "weak_scripts": 9,
+    "analyzed_scripts": 257498,
+    "confirmed_weak_scripts": 0,
+    "candidate_weak_scripts": 9,
+    "no_proof_found_scripts": 257486,
+    "inconclusive_scripts": 3,
+    "invalid_script_scripts": 0,
+    "retained_evidence_scripts": 12,
+    "compacted_no_proof_scripts": 257486,
+    "current_p2tr_utxos": 724828,
+    "current_p2tr_balance_sats": 2371187754647
+  },
+  "risks": [
+    {
+      "severity": "candidate",
+      "output_key": "28821d1d43c8c10c257829ed3f22249e5e7dd97957b3fcac11716cd71c1108f0",
+      "current_balance_sats": 5800,
+      "utxo_count": 1,
+      "unspent_outpoints": [
+        "d7b516dfd587d88181df2b76c92f23cbeeef3c62c516cb0730ff73555b8fae90:0"
+      ],
+      "vulnerable_script": "510063036f7264510a746578742f706c61696e000c48656c6c6f20576f726c642168",
+      "vulnerability_class": "signatureless_satisfaction",
+      "proof_witness": [],
+      "proof_strategy": "boolean_exhaustive",
+      "execution_trace": [
+        {
+          "offset": 0,
+          "opcode": "OP_1",
+          "stack": [
+            "01"
+          ]
+        },
+        {
+          "offset": 1,
+          "opcode": "OP_0",
+          "stack": [
+            "01",
+            ""
+          ]
+        },
+        {
+          "offset": 2,
+          "opcode": "OP_IF",
+          "stack": [
+            "01"
+          ]
+        },
+        {
+          "offset": 3,
+          "opcode": "PUSHDATA",
+          "stack": [
+            "01"
+          ]
+        },
+        {
+          "offset": 7,
+          "opcode": "OP_1",
+          "stack": [
+            "01"
+          ]
+        },
+        {
+          "offset": 8,
+          "opcode": "PUSHDATA",
+          "stack": [
+            "01"
+          ]
+        },
+        {
+          "offset": 19,
+          "opcode": "OP_0",
+          "stack": [
+            "01"
+          ]
+        },
+        {
+          "offset": 20,
+          "opcode": "PUSHDATA",
+          "stack": [
+            "01"
+          ]
+        },
+        {
+          "offset": 33,
+          "opcode": "OP_ENDIF",
+          "stack": [
+            "01"
+          ]
+        }
+      ],
+      "first_revealed_txid": "d7b516dfd587d88181df2b76c92f23cbeeef3c62c516cb0730ff73555b8fae90",
+      "detection_status": "candidate_weak",
+      "consensus_status": "not_checked",
+      "policy_status": "not_checked",
+      "validator": "none",
+      "validation_details": "Candidate produced by the bounded analyzer; Bitcoin Core validation was not requested",
+      "confidence": "consensus_commitment_verified_candidate",
+      "limitations": [
+        "A signatureless path can be intentional; ownership and policy intent are not inferred"
+      ]
+    },
+    {
+      "severity": "candidate",
+      "output_key": "9f5e030b7111d8e1e757d31944df5bf0714c94368cc0b499bef0badacb67c2a8",
+      "current_balance_sats": 8256,
+      "utxo_count": 1,
+      "unspent_outpoints": [
+        "96990e4cbab03ec4abe9601680756486246c1b86f604dbc1f82be7bf8a44c6f7:0"
+      ],
+      "vulnerable_script": "935387",
+      "vulnerability_class": "signatureless_satisfaction",
+      "proof_witness": [
+        "03",
+        ""
+      ],
+      "proof_strategy": "small_numbers_and_script_constants",
+      "execution_trace": [
+        {
+          "offset": 0,
+          "opcode": "OP_93",
+          "stack": [
+            "03"
+          ]
+        },
+        {
+          "offset": 1,
+          "opcode": "OP_3",
+          "stack": [
+            "03",
+            "03"
+          ]
+        },
+        {
+          "offset": 2,
+          "opcode": "OP_EQUAL",
+          "stack": [
+            "01"
+          ]
+        }
+      ],
+      "first_revealed_txid": "01b1e3de61682c3c499fc7f212630ac44c09ffe3ff1524a57bae4ca98fe9ddb6",
+      "detection_status": "candidate_weak",
+      "consensus_status": "not_checked",
+      "policy_status": "not_checked",
+      "validator": "none",
+      "validation_details": "Candidate produced by the bounded analyzer; Bitcoin Core validation was not requested",
+      "confidence": "consensus_commitment_verified_candidate",
+      "limitations": [
+        "A signatureless path can be intentional; ownership and policy intent are not inferred"
+      ]
+    }
+  ]
+}
