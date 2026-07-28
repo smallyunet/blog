@@ -86,9 +86,9 @@ node outputs/taproot-script-path-demo.mjs \
 <li>如果程序发现了不需要签名的脚本、一定返回 <code>OP_SUCCESS80</code>的脚本，或者目前规范还没有定义的公钥类型，会记录到数据库</li>
 </ol>
 <h4 id="扫描结果"><a href="#扫描结果" class="headerlink" title="扫描结果"></a>扫描结果</h4><p>当然我会告诉你运行结果。如果你运行了这个开源程序，会得到和我一样的结果和结论。我的启动参数是从区块高度 <code>709632</code> 开始，这是比特币主网启用 Taproot 的高度，到 <code>959701</code> 高度结束，也就是最新的区块高度。</p>
-<p>一共扫描了 69440 个区块，扫描了 123754021 笔交易，扫描到 739668 个 Taproot 地址，其中 263776 个属于当前程序没识别出问题的脚本， 12 是有可能有漏洞的脚本。</p>
-<p>有可能有漏洞的脚本中，8 个属于不需要签名的弱脚本，1 个属于始终返回 <code>OP_SUCCESS80</code> 的非漏洞脚本，3 个属于包含扫描程序解释器不支持操作码的非漏洞脚本。</p>
-<h4 id="结果分析"><a href="#结果分析" class="headerlink" title="结果分析"></a>结果分析</h4><p>来逐个分析一下扫描到的有可能是 weak script 的交易。最终输出的、未经加工的结果数据在这个文件：<a href="./result_report.json">result_report.json</a>，可以还原出我先面提到的地址和交易、脚本。</p>
+<p>一共扫描了 71037 个区块，扫描了 127119410 笔交易，扫描到 1000061 个 Taproot 地址，其中 427378 个属于当前程序没识别出问题的脚本，12 是有可能有漏洞的弱脚本。</p>
+<p>在 12 个有可能有漏洞的脚本中，8 个属于不需要签名的弱脚本，1 个属于始终返回 <code>OP_SUCCESS80</code> 的非漏洞脚本，3 个属于包含扫描程序解释器不支持操作码的非漏洞脚本。</p>
+<h4 id="结果分析"><a href="#结果分析" class="headerlink" title="结果分析"></a>结果分析</h4><p>来逐个分析一下扫描到的有可能是 weak script 的交易。最终输出的、未经加工的结果数据在这个文件：<a href="./result_report.json">result_report.json</a>，可以还原出我下面提到的地址和交易、脚本。</p>
 <h5 id="1"><a href="#1" class="headerlink" title="1"></a>1</h5><p>首先扫描到的这个 taproot 地址出现在 758737 区块：<a href="https://mempool.space/address/bc1pnwu7l0wln4c2l5av9nhsz968yd4alyyr9futpr6h6yfe7pa2jxzshv2354"><code>bc1p...2354</code></a></p>
 <p>这个地址出现了 2 笔异常交易：</p>
 <ul>
