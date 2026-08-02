@@ -1,0 +1,76 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>PySonar2 如何帮助 AI 节省 Token</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://smallyu.net/2026/08/03/PySonar2如何帮助AI节省Token/"><meta property="og:title" content="PySonar2 如何帮助 AI 节省 Token"><meta property="og:type" content="article"><meta property="og:url" content="https://smallyu.net/2026/08/03/PySonar2如何帮助AI节省Token/"><meta property="og:site_name" content="smallyu的博客"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1.1"><link rel="stylesheet" href="/css/post.css?v=v1.1"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1.1"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>PySonar2 如何帮助 AI 节省 Token</h1><div class="time">2026-08-03</div><div class="title-margin"></div><h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>今天有一个 “重大” 发现想要分享：<a href="https://github.com/yinwang0/pysonar2">PySonar2</a> 可以大幅度降低 AI 在执行 Python 项目修改的时候的 Token 消耗。</p>
+<p>这是 ChatGPT 运行出来的 benchmark 结果：</p>
+<img src="1.png" width="80%">
+
+<p>补充一下这个 benchmark 任务的定义：</p>
+<img src="2.png" width="55%">
+
+<p>具体任务有 2 个：</p>
+<img src="3.png" width="100%">
+
+<p>概括来说，就是基于一个测试专用的大型 Python 项目，设定两个方向的任务，一个任务横跨多个目录和文件，另一个任务目标明确、不需要跨文件定义，然后分别用 skill 和不用 skill 执行。</p>
+<p>结果如你所见，使用了 skill 之后，速度略微有提高，token 消耗量则直接减少 30%！</p>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p>说明一下，刚才提到的 skill，是指基于 PySonar2 源码封装的、符合 AI Skills 规范的 skill，你可以直接告诉 ChatGPT：</p>
+<blockquote>
+<p>帮我安装这个 skill 到用户级目录：<a href="https://github.com/smallyunet/pysonar2">https://github.com/smallyunet/pysonar2</a></p>
+</blockquote>
+<p>就可以了。</p>
+<p>这个 PySonar2 的仓库是 fork 出来的，因为原版的 PySonar2 仓库是王垠 13 年前的项目，已经有一些工程和特性方面的 “过时”，所以做了一点点新的工程方面的包装。当然 PySonar2 最核心的词法分析、类型推断是没有过时的。</p>
+<p>除了这个 AI skill，我还把 PySonar2 以 VS Code 插件的形式发布了，安装后可以在 VS Code 上打开 Python 代码之后，鼠标 hover 上去看到 PySonar2 的类型推断：</p>
+<ul>
+<li>插件链接：<a href="https://marketplace.visualstudio.com/items?itemName=smallyu.pysonar2-code-intelligence">PySonar2 Code Intelligence</a></li>
+</ul>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>解释一下为什么 PySonar2 可以帮助 AI 节省。</p>
+<p>如果你是程序员并且经常让 AI 写代码，一定会看到 AI 会使用大量的 <code>rg</code>，每一次任务都会把各种代码文件看一遍，然后继续执行代码修改。而 PySonar2 可以提供一种基于代码语义的、基于 AST 结构分析出来的这种内容：</p>
+<pre><code class="json">&#123;
+  &quot;symbol&quot;: &quot;User&quot;,
+  &quot;definitions&quot;: [
+    &#123;&quot;file&quot;: &quot;models.py&quot;, &quot;startLine&quot;: 12&#125;
+  ],
+  &quot;references&quot;: [
+    &#123;&quot;file&quot;: &quot;service.py&quot;, &quot;startLine&quot;: 48&#125;,
+    &#123;&quot;file&quot;: &quot;tests/test_service.py&quot;, &quot;startLine&quot;: 31&#125;
+  ],
+  &quot;affectedFiles&quot;: [
+    &quot;models.py&quot;,
+    &quot;service.py&quot;,
+    &quot;tests/test_service.py&quot;
+  ]
+&#125;
+</code></pre>
+<p>直接在一个文件里把每个变量定义的来龙去脉、相关源码文件总结出来。相当于本地建立了一个索引，AI 直接看索引，而不需要每次看一遍全部代码。</p>
+<p>因为任何 AI 工具目前都有两方面限制：</p>
+<ol>
+<li>使用 AI 要花费 Token，Token 就是钱。省 Token 就是省钱</li>
+<li>所有基于 Transformer 架构的 AI 模型，都有上下文限制。这种建立索引的做法可以节省上下文空间</li>
+</ol>
+<h3 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h3><p>那么 PySonar2 现在是否还具有某些独特的价值呢？答案是有：</p>
+<img src="4.png" width="90%">
+
+<p>很多同类型的、号称节省 Token 的项目，都是基于关键词匹配、甚至 embedding 的匹配，与 PySonar2 的语义分析不在一个层面。</p>
+<p>不过毕竟已经过去了 13 年，PySonar2 已经 13 年没有在学术理论上继续更新，要说 PySonar2 仍然处于世界前沿是不可能的。但是 PySonar2 因为开源、代码轻量、逻辑清晰，在 Agent 适配方面也许会有独特的优势和潜力：</p>
+<img src="5.png" width="90%">
+
+<h3 id="启发"><a href="#启发" class="headerlink" title="启发"></a>启发</h3><h4 id="1-Python-语言只是开始"><a href="#1-Python-语言只是开始" class="headerlink" title="1. Python 语言只是开始"></a>1. Python 语言只是开始</h4><p>既然针对 Python 项目，PySonar2 可以帮助 AI 节省大量的 Token 消耗，那么其他语言的项目呢？JavaScript 是否可以借鉴同样的思路？以及更多脚本语言？同样的思路，已经不局限于 PySonar2 这个工具了。</p>
+<h4 id="2-帮助-AI-节省-Token"><a href="#2-帮助-AI-节省-Token" class="headerlink" title="2. 帮助 AI 节省 Token"></a>2. 帮助 AI 节省 Token</h4><p>比起让 PySonar2 这个古老的项目重新发挥价值，我更在意的事情是：在 AI 时代，还有哪些代码工具是有价值的？</p>
+<p>因为人已经不需要写代码了，甚至不需要看代码了。但是 PySonar2 在这个场景下发挥了巨大的作用，让我看到了不一样的希望：</p>
+<ol>
+<li>帮助 AI 节省 Token 是一个好的工具方向。</li>
+</ol>
+<p>（与此同时，我还在优化另外一个项目：EchoEVM。基于 EchoEVM 的 EVM 解释器底座，让 AI 能够在编写 Solidity 脚本的时候、有能力看到脚本文件字节码级别的执行过程。这种 debug 工具对人类没什么用，但是对于 AI 极其有用，因为人类看不懂字节码、AI 可以）</p>
+<ol start="2">
+<li>底层原理在 AI 时代不会过时。</li>
+</ol>
+<p>PySonar2 作为拥有学术级别原理的工具，在人类已经不需要写代码的今天，仍然能够发挥价值、让 AI 节省 Token、给使用者省钱，这是真正意义上的效率工具。</p>
+<h3 id="相关阅读"><a href="#相关阅读" class="headerlink" title="相关阅读"></a>相关阅读</h3><p>如果你不了解 PySonar2 的背景，分享几篇相关文章可以看一下：</p>
+<ul>
+<li>《<a href="https://smallyunet.github.io/yinwang-blog/blog-cn_2013_10_06_sourcegraph_20140513.html">PySonar 的第二个用户</a>》</li>
+<li>《<a href="https://smallyunet.github.io/yinwang-blog/blog-cn_2013_10_29_pysonar2_20161011.html">PySonar2 开源了</a>》</li>
+<li>《<a href="https://www.yinwang.org/posts/pysonar2-sg">PySonar2 与 Sourcegraph 集成完毕</a>》</li>
+<li>《<a href="https://smallyunet.github.io/yinwang-blog/blog-cn_2013_06_21_pysonar-slides_20130725.html">PySonar 的工作原理</a>》</li>
+</ul>
+</div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.1"></script><script defer src="/js/highlight.min.js?v=v1.1"></script><script defer src="/js/main.js?v=v1.1"></script><script defer src="/js/lightbox.js?v=v1.1"></script><script defer src="/js/bootstrap.min.js?v=v1.1"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-5JRBZ6P1W3"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-5JRBZ6P1W3');</script></html>
