@@ -127,7 +127,7 @@ bitcoin-cli -datadir=./ -regtest listunspent
 }
 ```
 
-然后生成一个找零地址，用来接收比特币余额，这里用了 legecy 格式的地址，这个不是强制的，用 SegWit 的地址也不影响：
+然后生成一个找零地址，用来接收比特币余额，这里用了 legacy 格式的地址，这个不是强制的，用 SegWit 的地址也不影响：
 
 ```bash
 bitcoin-cli -datadir=./ getrawchangeaddress legacy
@@ -288,7 +288,7 @@ bitcoin-cli -datadir=./ generatetoaddress 1 bcrt1q6c8d9vw62rdee72xcqx3d97w8qh8mf
 
 在 `Cargo.toml` 文件中导入依赖包：
 
-```rust
+```toml
 [dependencies]
 hex              = "0.4"
 bitcoin          = "0.31"          # Script & consensus decode
@@ -383,7 +383,5 @@ fn parse_op_return(tx_str: String)
 这样，我们就看到了期望的两个 Runes 动作，第一个是发行 Doge，第二个是对 Doge 进行转账。
 
 以上过程就是 Runes 协议比较核心的内容，剩下的只需要把链下程序扩充一下，记录 Runes 状态、根据 rune_id 关联 Rune 操作、储存和显示余额变更等信息就可以了。
-
-
 
 

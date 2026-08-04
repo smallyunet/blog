@@ -67,9 +67,8 @@ OIIA 与 pump.fun 发行的 memecoin，以及 $Trump 之类不同的地方在于
 
 
 #### 如何成为 Validator
-由于网络初始代币发行量特别少，Faucet 上又领不到足够多的 OIIA，所以可以在社区中申请成为 Validator，社区直接从 Faceut 地址转账 32 OIIA 到申请地址。
+由于网络初始代币发行量特别少，Faucet 上又领不到足够多的 OIIA，所以可以在社区中申请成为 Validator，社区直接从 Faucet 地址转账 32 OIIA 到申请地址。
 
 #### 网络启动进度
 
 由于没有任何商业目的，网络的启动进度会比较随心所欲。
-

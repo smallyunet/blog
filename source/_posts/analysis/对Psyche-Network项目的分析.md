@@ -14,7 +14,7 @@ Psyche Network 的项目背景在 [官方说明文章](https://nousresearch.com/
 
 当然 LLM 的训练和矿池的挖矿，从算法原理上完全是两码事，这里只是想类比说明便于理解。具体 DeMo 是怎么从算法角度把任务拆解和合并的，可以看 [官方的解释](https://blog.lambdaclass.com/introducing-demo-decoupled-momentum-optimization-for-efficient-distributed-llm-training/)，反正我没看懂，就是一堆向量、权重、loss function 什么的术语。关于怎么防止节点提交虚假数据之类，我认为也都在算法的设计范畴，后续就不多讨论算法本身的有效性了。
 
-DeMo 的 [论文](https://arxiv.org/pdf/2411.19870) 里用了 100 billion 的 tokens 做训练测试，得到了比较好的结果。100 B tokens 是什么概念呢，比如 [DeekSeek-V3](https://github.com/deepseek-ai/DeepSeek-V3?tab=readme-ov-file#4-evaluation-results) 的 tokens 数量是 15 TB，可见 DeMo 在实验阶段的 tokens 数量级，距离商用产品还差很多。可以对比一些其他模型的 tokens 数量：
+DeMo 的 [论文](https://arxiv.org/pdf/2411.19870) 里用了 100 billion 的 tokens 做训练测试，得到了比较好的结果。100 B tokens 是什么概念呢，比如 [DeepSeek-V3](https://github.com/deepseek-ai/DeepSeek-V3?tab=readme-ov-file#4-evaluation-results) 的 tokens 数量是 15 TB，可见 DeMo 在实验阶段的 tokens 数量级，距离商用产品还差很多。可以对比一些其他模型的 tokens 数量：
 
 | 模型 | 参数量| 预训练 tokens 数量 | 公开来源或泄露信息 |
 |------|----------------------|--------------------|--------------------|
@@ -44,7 +44,7 @@ Psyche Network 的 [代码仓库](https://github.com/PsycheFoundation/psyche/tre
 
 Psyche Network 目前只是测试网阶段，链上交易也都是在 Solana 的 Devnet 上进行，可以直接看合约文件里的 `declare_id!()` 语句，里面写的就是合约地址，比如 coordinator 的合约地址是 `HR8RN2TP9E9zsi2kjhvPbirJWA1R6L6ruf4xNNGpjU5Y`，能在 [区块链浏览器](https://solscan.io/account/HR8RN2TP9E9zsi2kjhvPbirJWA1R6L6ruf4xNNGpjU5Y?cluster=devnet) 上看到频繁的交易记录。
 
-至于奖励的计算，因为有 Coordinator 这个中心化角色的存在，所以事情比较简单，Coordinator 在收到 Client 地任务结果后进行验证，如果没问题，则发起一笔链上交易，给 Client 记分。具体代码是 [这两行](https://github.com/PsycheFoundation/psyche/blob/main/architectures/decentralized/solana-coordinator/programs/solana-coordinator/src/instance_state.rs#L146-L149)：
+至于奖励的计算，因为有 Coordinator 这个中心化角色的存在，所以事情比较简单，Coordinator 在收到 Client 的任务结果后进行验证，如果没问题，则发起一笔链上交易，给 Client 记分。具体代码是 [这两行](https://github.com/PsycheFoundation/psyche/blob/main/architectures/decentralized/solana-coordinator/programs/solana-coordinator/src/instance_state.rs#L146-L149)：
 
 <img src="3.png" width="80%">
 
@@ -57,6 +57,5 @@ Psyche Network 目前只是测试网阶段，链上交易也都是在 Solana 的
 所以整体来看，Psyche Network 是利用 Solana 区块链来记录任务 Meta 信息、计算任务奖励、分发奖励等。只要 Client 的加入是 permissonless 的，Psyche Network 就确实达到了和宣传一样的效果，让 LLM 模型训练的算力去中心化。
 
 而代币的分发和奖励虽然是区块链项目的常规操作，但是至少附加了公开透明等特性，而且不出意外的话，Psyche Network 最终会走到发币的一步，到时候任务奖励可能全用 Psyche Network 自己的代币进行，或者演变为 LLM 训练的任务平台，任何第三方都可以创建任务和分发奖励之类，像 Eigne Layer 那样。
-
 
 

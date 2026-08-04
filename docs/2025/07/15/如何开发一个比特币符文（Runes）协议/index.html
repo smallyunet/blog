@@ -84,7 +84,7 @@ impl TransferRune
   // ...
 &#125;
 </code></pre>
-<p>然后生成一个找零地址，用来接收比特币余额，这里用了 legecy 格式的地址，这个不是强制的，用 SegWit 的地址也不影响：</p>
+<p>然后生成一个找零地址，用来接收比特币余额，这里用了 legacy 格式的地址，这个不是强制的，用 SegWit 的地址也不影响：</p>
 <pre><code class="bash">bitcoin-cli -datadir=./ getrawchangeaddress legacy
 </code></pre>
 <p>我生成的地址是 <code>n4Ybvvzm9vRQepuMpXBnTWWbYuTgsPSZCV</code>，接下来可以用这个地址构建交易了：</p>
@@ -185,7 +185,7 @@ bitcoin-cli -datadir=./ generatetoaddress 1 bcrt1q6c8d9vw62rdee72xcqx3d97w8qh8mf
 <h3 id="4-解析-Runes-交易"><a href="#4-解析-Runes-交易" class="headerlink" title="4. 解析 Runes 交易"></a>4. 解析 Runes 交易</h3><p>你也许有点纳闷，这不就是发了两笔普通的比特币交易吗，只是放了两个 json 数据到交易上。Runes 就是这样，所有的操作，就在 <code>OP_RETURN</code> 允许的那 80 个字节的空间里完成。链上只记录 Runes 的操作，而不维护 Runes 的最终状态。包括有哪些代币、代币余额等信息，全部需要链下程序根据协议进行解析，状态也全部在链下程序维护。</p>
 <p>我们首先可以通过已知的交易哈希，获取到这两笔交易的全部详情数据。如果交易哈希不是已知，可以监听扫描全部区块的全部交易，然后按照协议约定解析就行了。这里简化一点。</p>
 <p>在 <code>Cargo.toml</code> 文件中导入依赖包：</p>
-<pre><code class="rust">[dependencies]
+<pre><code class="toml">[dependencies]
 hex              = &quot;0.4&quot;
 bitcoin          = &quot;0.31&quot;          # Script &amp; consensus decode
 bitcoincore-rpc  = &quot;0.18&quot;          # RPC client
