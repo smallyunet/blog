@@ -129,3 +129,11 @@ Stack [1]:
   0000: 0x30
 > exit
 ```
+
+<br>
+
+### v0.0.44（2026.08.09）
+
+仍然在尝试和优化中；目前的方向是帮助 AI 追踪和解析 Solidity 合约执行过程中具体的 opcode 变化，最新的 [benchmark 结果](https://github.com/smallyunet/echoevm/blob/main/benchmarks/trace-value-v2/README.md) 显示，相较于宽泛 opcode 分析，使用 EchoEVM 作为分析工具后，不但可以提升 20% 的准确率，AI 可以精准回答合约的执行过程、排查遇到的问题，而且还节省了接近 40% 的 Token 消耗。
+
+当然现在也有很大的局限性，比如还不支持以太坊的最新共识版本 Osaka 的完整语义、KZG 操作码等，AI 方面的应用场景也仅局限于复杂问题排查、修复问题阶段而不是开发阶段。所以 EchoEVM 还有很多不足，还在继续探索中……

@@ -112,3 +112,10 @@ PySonar2 作为拥有学术级别原理的工具，在人类已经不需要写�
 - 《[PySonar2 与 Sourcegraph 集成完毕](https://www.yinwang.org/posts/pysonar2-sg)》
 - 《[PySonar 的工作原理](https://smallyunet.github.io/yinwang-blog/blog-cn_2013_06_21_pysonar-slides_20130725.html)》
 
+### 更新（2026.08.09）
+
+要补充说明的是，原文中对于节省 40% 的 Token 消耗，仅限于某些特定的、大量跨文件、变量名重叠、语义不清晰的任务。经过后来更丰富的测试，最新的 [benchmark 结果](https://github.com/smallyunet/pysonar2/blob/main/docs/agent-skill-benchmark.md) 显示，很多通用任务中，如果强制使用 Pysonar2，消耗的 Token 和时长反而是增加的。不过由于 PySonar2 提供的精准语义分析能力，在 benchmark 中使用了 PySonar2 的准确率能达到 100%，给 AI 提供语义级别的事实证据是 Pysonar2 目前对于 AI 最明确的增强。
+
+至于 “先给代码建立语义索引、修改代码直接使用索引” 的方式是否能够提交效率、节省 Token，我后来创建了单独的项目 [code-engram](https://github.com/smallyunet/code-engram) 来进一步测试。目前 code-engram 主要支持 TypeScript 以及适配了 Pysonar2，唯一正向的 benchmark 数据是，在大型项目的 rename 任务中，Token 消耗节省 60%。但是对于小型项目或者其他通用任务，Token 消耗反而是增加的。这一点和 Pysonar2 单个仓库的结果类似。所以 code-engram 这个项目也仍然在继续探索中……
+
+
