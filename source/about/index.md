@@ -9,3 +9,4 @@ type: home
 如果你对任何话题感兴趣，欢迎联系我：
 
 - 邮箱：[hello@smallyu.net](mailto:hello@smallyu.net)
+- TG：[https://t.me/smallyutg](https://t.me/smallyutg)
