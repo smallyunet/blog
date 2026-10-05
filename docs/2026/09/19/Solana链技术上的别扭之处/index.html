@@ -1,0 +1,141 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>Solana 链技术上的别扭之处</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://smallyu.net/2026/09/19/Solana链技术上的别扭之处/"><meta property="og:title" content="Solana 链技术上的别扭之处"><meta property="og:type" content="article"><meta property="og:url" content="https://smallyu.net/2026/09/19/Solana链技术上的别扭之处/"><meta property="og:site_name" content="smallyu的博客"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1.2"><link rel="stylesheet" href="/css/post.css?v=v1.2"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1.2"><link rel="stylesheet" href="/css/ai-content.css?v=5"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>Solana 链技术上的别扭之处</h1><div class="time">2026-09-19</div><div class="title-margin"></div><div class="ai-content"><p>如果只看结果，Solana 很像区块链技术终于追上了互联网产品：出块快、手续费低、应用响应接近实时，链上交易体验甚至可以被包装成普通 App。</p>
+<p>但如果真正写过 Solana 程序、追过交易、跑过索引器，或者读过它的验证者实现，就会产生一种挥之不去的别扭感：<strong>Solana 当然是一条区块链，但它解决问题的方式，越来越不像人们传统理解中的区块链。</strong></p>
+<p>比特币把低性能视为去中心化的成本；以太坊把所有节点能够重复执行、验证状态转换当作底线。Solana 走了另一条路线：它先设定“单链也要有交易所级性能”这个目标，再把系统设计成一台由高配机器共同复制的、带密码学证明的实时数据库。</p>
+<p>于是，Solana 的高性能并不是免费出现的。它只是把复杂度从“链慢、交易贵”转移到了另外几个地方：验证者硬件、网络拓扑、leader 调度、账户模型、程序权限、交易构造、RPC 服务和链下索引。</p>
+<p>这篇文章不讨论 SOL 的价格，也不否认 Solana 已经形成庞大的应用生态。问题只有一个：<strong>当一条公链越来越像一套高性能交易基础设施时，它究竟是在改进区块链，还是在绕开区块链原本最难、也最重要的约束？</strong></p>
+<h2 id="一、PoH-听起来像共识，实际上只是给交易排队的时钟"><a href="#一、PoH-听起来像共识，实际上只是给交易排队的时钟" class="headerlink" title="一、PoH 听起来像共识，实际上只是给交易排队的时钟"></a>一、PoH 听起来像共识，实际上只是给交易排队的时钟</h2><p>Solana 最著名的概念是 Proof of History，历史证明。这个名字很容易让人误以为 PoH 像 PoW、PoS 一样，是一种决定哪条链有效的共识机制。</p>
+<p>其实不是。</p>
+<p>Solana 白皮书对 PoH 的定义非常明确：PoH 是一串只能顺序计算、但可以并行验证的哈希序列，用来证明事件的先后顺序和时间流逝；它需要与 PoS 等共识算法配合使用。真正处理分叉选择和验证者投票的是 Tower BFT 一类的 PoS 共识逻辑，PoH 主要负责提供一把全网可验证的密码学时钟。</p>
+<p>这项设计确实聪明，但它也暴露了 Solana 的第一层“非区块链感”：传统区块链让分散节点竞争或协商交易顺序，Solana 则先指定一个 leader，由 leader 在自己的 slot 内给交易排序、执行，再把结果广播给其他验证者复算和投票。</p>
+<p>Solana 白皮书甚至直白地描述：任意时刻由一个 leader 生成 PoH 序列；leader 对用户消息排序，在 RAM 中的当前状态上执行交易，然后把交易与最终状态签名发布给 verifier；其他节点重复执行并确认结果。<a href="https://solana.com/solana-whitepaper.pdf">Solana 白皮书</a></p>
+<p>这套结构的工程本质，不难概括：</p>
+<blockquote>
+<p>在每一个很短的时间窗口里，全网把排序权交给一台预先选出的服务器，其他服务器随后验证它。</p>
+</blockquote>
+<p>这仍然是拜占庭容错复制状态机，但产品形态已经非常接近“轮值主库 + 多副本确认”。Solana 的吞吐量优势，部分就来自它不要求每笔交易先在一个全网公共内存池中漫长竞争，而是尽可能把交易快速送往当前或即将上任的 leader。</p>
+<p>代价也随之出现：leader 是可预测的，交易流天然向少数即将出块的节点集中；低延迟路由、直连 leader、专业 RPC、区块引擎和私有订单流会变得越来越重要。链在协议层仍然开放，但优质的交易入口开始呈现交易所机房的特征——离撮合者更近的人，天然更快。</p>
+<h2 id="二、所谓并行执行，前提是开发者先把数据库读写集报上去"><a href="#二、所谓并行执行，前提是开发者先把数据库读写集报上去" class="headerlink" title="二、所谓并行执行，前提是开发者先把数据库读写集报上去"></a>二、所谓并行执行，前提是开发者先把数据库读写集报上去</h2><p>Solana 经常宣传 Sealevel 可以并行执行交易。它能并行的原因并不神秘：每笔交易必须预先列出将要读取和写入的账户，并标注哪些账户是 signer、哪些是 writable。调度器看到两笔交易的可写账户不冲突，才敢并行执行。</p>
+<p>换句话说，Solana 并不是让任意智能合约神奇地自动并行；它要求开发者在交易提交前，就把这次状态访问的“读集和写集”显式告诉运行时。</p>
+<p>这很像高性能数据库的并发控制，也很不像传统智能合约的调用体验。</p>
+<p>在 EVM 中，调用者通常给出目标合约、calldata 和 gas，合约在运行时自行读取需要的 storage。到了 Solana，调用者不仅要知道“调用哪个程序”，还必须知道“程序这一次会碰哪些账户”，并把这些账户按正确顺序塞进 instruction。跨程序调用也会受到同一套账户边界约束。</p>
+<p>这种设计把并行性的代价转嫁给了 SDK、前端和应用开发者：</p>
+<ul>
+<li>客户端需要理解合约内部的数据布局，而不只是 ABI；</li>
+<li>账户漏传、顺序错误、权限标记错误，都可能让交易在执行前后失败；</li>
+<li>PDA、ATA、mint、token account、vault、authority 等地址需要提前推导；</li>
+<li>一次复杂操作经常需要先查询链上状态，再组装账户列表，再模拟交易，最后才发送；</li>
+<li>协议升级一旦改变账户需求，旧客户端可能立即失效。</li>
+</ul>
+<p>这也是为什么 Anchor 几乎成了 Solana 开发的事实标准：它不只是提高效率，而是在替开发者遮蔽原生账户模型的摩擦。一个需要大型框架才能恢复正常开发体验的虚拟机，很难说底层抽象本身是自然的。</p>
+<p>更关键的是，并行并不会自动消灭热点。只要大量交易需要写同一个池子、同一个订单簿、同一个全局计数器或同一个状态账户，它们仍然必须串行。Solana 官方交易管线文档直接列出了 <code>AccountInUse</code>、<code>WouldExceedMaxAccountCostLimit</code> 和 <code>TooManyAccountLocks</code> 等调度错误。<a href="https://solana.com/docs/core/transactions/transaction-pipeline">Solana Transaction Pipeline</a></p>
+<p>所以 Solana 的真实能力不是“任何业务都能并行”，而是：<strong>只有被开发者提前拆成互不冲突状态分片的业务，才能并行。</strong></p>
+<p>区块链没有消灭数据库分片问题，只是把分片键改名叫 account，把分片设计交给合约开发者。</p>
+<h2 id="三、Solana-的“合约”其实是无状态程序，状态是散落的一堆账户"><a href="#三、Solana-的“合约”其实是无状态程序，状态是散落的一堆账户" class="headerlink" title="三、Solana 的“合约”其实是无状态程序，状态是散落的一堆账户"></a>三、Solana 的“合约”其实是无状态程序，状态是散落的一堆账户</h2><p>Solana 官方文档明确写道：Program 是存放 sBPF 字节码的可执行账户，本身无状态；所有可变状态都放在另外的数据账户中，并由 instruction 显式传入。<a href="https://solana.com/docs/core/programs">Solana Programs</a></p>
+<p>这与很多开发者对“智能合约”的直觉相反。在 EVM 中，一个合约地址通常同时代表代码、存储和身份；在 Solana 中，程序更像一个无状态处理函数，链上状态像一组由公钥寻址的外部记录。</p>
+<p>结果是，Solana 应用不是在“调用一个拥有状态的合约”，而是在做下面这件事：</p>
+<ol>
+<li>找到正确的程序；</li>
+<li>推导或查询一批数据账户；</li>
+<li>标明每个账户的读写权限；</li>
+<li>把账户和参数一起交给程序；</li>
+<li>由 runtime 检查程序是否有权修改这些账户。</li>
+</ol>
+<p>Program Derived Address（PDA）则进一步强化了这种数据库感。PDA 没有私钥，程序通过种子和 bump 推导地址，并在运行时获得对它的“签名”能力。它非常实用，却也意味着 Solana 开发大量围绕地址推导、账户所有权和序列化布局展开，而不是围绕业务状态本身展开。</p>
+<p>就连用户“持有某种代币”，底层也往往不是钱包地址下有一个余额字段，而是钱包拥有一个由 Token Program 管理的 token account；Associated Token Account 只是在 owner 与 mint 之间约定出一个标准派生地址。对应用开发者来说，这意味着创建账户、关闭账户、rent-exempt 余额、authority 和 delegate 都成为日常业务逻辑。</p>
+<p>Solana 官方账户文档显示，每个账户包含 lamports、data、owner、executable、rent_epoch 等字段；只有 owner program 可以修改其数据或扣减其 lamports，而且账户必须持有与数据大小相关的最低余额才能常驻链上。<a href="https://solana.com/docs/core/accounts">Solana Accounts</a></p>
+<p>这套模型不是错，甚至非常适合优化并行度。问题是，它把“智能合约平台”拆成了程序加载器、账户数据库、权限系统和客户端地址编排器。开发者面对的不是一个简洁的链上计算抽象，而是一套为了调度器服务的系统编程接口。</p>
+<h2 id="四、交易不是表达意图，而是在一个-1-232-字节盒子里装资源清单"><a href="#四、交易不是表达意图，而是在一个-1-232-字节盒子里装资源清单" class="headerlink" title="四、交易不是表达意图，而是在一个 1,232 字节盒子里装资源清单"></a>四、交易不是表达意图，而是在一个 1,232 字节盒子里装资源清单</h2><p>Solana 的 legacy 与 v0 交易长期受 1,232 字节上限约束。这个数字不是经济学参数，而是从 IPv6 最小 MTU 1,280 字节扣除网络头后得到的包大小。官方文档同时列出：旧格式最多锁定 64 个账户、每个 Ed25519 签名占 64 字节，recent blockhash 的有效期为 150 个 slot。<a href="https://solana.com/docs/core/transactions">Solana Transactions</a></p>
+<p>这很能体现 Solana 的设计气质：链上交易格式首先服从网络包和流水线吞吐，而不是服从开发者表达复杂操作的便利。</p>
+<p>于是开发者需要使用 Address Lookup Table，把 32 字节公钥压缩成查表索引；需要尽量减少 signer；需要把大操作拆成多笔交易；需要模拟 compute units；需要处理 blockhash 过期、重签名、重试和确认级别。新版交易格式在继续改进这些限制，但历史包袱并不会因此消失，反而会形成 legacy、v0 与新格式并存的兼容成本。</p>
+<p>计算同样被严格预算化。Solana 官方文档给出的默认值是每条非内置 instruction 20 万 CU、每笔交易最高 140 万 CU；sBPF 默认 heap 只有 32 KiB，可调整上限 256 KiB，传统 CPI 指令栈深度上限为 5。<a href="https://solana.com/docs/core/fees/compute-budget">Compute Budget</a> <a href="https://solana.com/docs/core/programs">Program Limits</a></p>
+<p>这些限制有助于保持确定性和高吞吐，但也说明 Solana 所谓“通用计算”是一个被严密切割的实时任务系统。你不是简单地为计算付费，而是在向一个高性能调度器申请有限的 CPU、内存、账户锁和包空间。</p>
+<p>更别扭的是，优先费按申请的 CU limit 而不是实际使用量计算；申请过高，就会为没有使用的计算预算付费。官方文档甚至直接提醒开发者不要为未使用的 CU 买单。<a href="https://solana.com/docs/core/fees/fee-structure">Solana Fee Structure</a></p>
+<p>这不像一个只关心状态转换是否有效的账本，更像一台要求调用者预先填写资源申请表的多租户服务器。</p>
+<h2 id="五、程序默认可升级：“代码即法律”被降级成“权限即法律”"><a href="#五、程序默认可升级：“代码即法律”被降级成“权限即法律”" class="headerlink" title="五、程序默认可升级：“代码即法律”被降级成“权限即法律”"></a>五、程序默认可升级：“代码即法律”被降级成“权限即法律”</h2><p>传统公链最有吸引力的叙事之一，是代码一旦部署便不可篡改。但 Solana 的 loader-v3 程序只要保留 upgrade authority，就可以被升级；只有主动撤销升级权限，程序才会永久不可变。升级时，新字节码先写入 buffer account，再替换 ProgramData account 中的内容。<a href="https://solana.com/docs/core/programs/program-deployment">Solana Program Deployment</a></p>
+<p>Solana 自己的 loader 接口文档甚至明确提醒：可升级程序允许 authority 在任何时候更新程序，这会破坏“代码一旦上链即不可变”的 code-is-law 约定，调用仍保留升级权限的程序应当谨慎。<a href="https://docs.rs/solana-loader-v3-interface/latest/solana_loader_v3_interface/">solana-loader-v3-interface</a></p>
+<p>当然，以太坊也大量使用代理合约，多签和治理升级早已是行业常态。差别在于，EVM 的可升级通常是应用层通过代理模式额外搭建出来的；Solana 则把可升级性做成了程序部署体系的一等能力。</p>
+<p>这使 Solana 更适合快速修复和迭代，却也把信任边界从公开代码转移到了 upgrade authority：</p>
+<ul>
+<li>authority 是单签、多签还是治理合约？</li>
+<li>是否设置 timelock？</li>
+<li>用户能否在升级前退出？</li>
+<li>前端展示的源码是否对应当前字节码？</li>
+<li>一次升级是否能立刻改变资产控制逻辑？</li>
+</ul>
+<p>用户以为自己在与不可变合约交互，实际可能只是在调用一个可以由少数密钥随时热更新的后端服务。链上执行没有消除 SaaS 式管理员权限，只是把管理员账号换成了 upgrade authority。</p>
+<h2 id="六、低费用没有消灭拥堵，只是把拥堵变成账户级竞价和交易入口竞争"><a href="#六、低费用没有消灭拥堵，只是把拥堵变成账户级竞价和交易入口竞争" class="headerlink" title="六、低费用没有消灭拥堵，只是把拥堵变成账户级竞价和交易入口竞争"></a>六、低费用没有消灭拥堵，只是把拥堵变成账户级竞价和交易入口竞争</h2><p>Solana 的手续费长期很低，这是真实优势。但低基础费不等于没有稀缺资源。</p>
+<p>在 Solana 中，稀缺资源包括：当前 leader 的入口带宽、区块计算预算、热点账户的可写锁、交易包空间和低延迟转发能力。于是，当所有人争抢同一个新币、同一个 AMM 池或同一个清算机会时，竞争不会消失，只会从“全局 gas price”变成：</p>
+<ul>
+<li>对目标 writable account 的局部竞争；</li>
+<li>priority fee 竞价；</li>
+<li>Jito tip 与区块引擎排序；</li>
+<li>更好的 RPC、私有线路和交易重发策略；</li>
+<li>更靠近 leader 的网络位置。</li>
+</ul>
+<p>这也是 Solana 上交易机器人为什么不像普通链上脚本，而越来越像高频交易基础设施。要抢到第一笔交易，仅仅会写合约远远不够，还要理解 slot、leader schedule、QUIC、stake-weighted QoS、block engine、bundle、账户锁和 fee estimation。</p>
+<p>Solana 将普通用户的单笔转账做得很便宜，却把高价值排序竞争推向了专业化。结果不是 MEV 消失，而是 MEV 的技术门槛更高、基础设施更集中、普通开发者更难看见完整订单流。</p>
+<h2 id="七、高性能节点不是普通人的节点，而是数据中心服务器"><a href="#七、高性能节点不是普通人的节点，而是数据中心服务器" class="headerlink" title="七、高性能节点不是普通人的节点，而是数据中心服务器"></a>七、高性能节点不是普通人的节点，而是数据中心服务器</h2><p>一条链是否去中心化，不能只数验证者数量，还要看一个普通参与者能否独立验证它。</p>
+<p>Agave 官方给出的验证者建议配置包括：至少 12 核 24 线程、256 GB 内存、分别用于 accounts 与 ledger 的高耐久 NVMe；质押节点至少需要 2 Gbit&#x2F;s 对称网络，推荐 10 Gbit&#x2F;s。RPC 节点建议 512 GB 内存。文档还明确表示，不建议在 Docker 中运行主网验证者，云环境也需要显著更高的运维能力。<a href="https://docs.anza.xyz/operations/requirements">Agave Validator Requirements</a></p>
+<p>这不是“家里放一台旧电脑也能验证”的网络。它要求专业硬件、专业网络和持续运维。</p>
+<p>Solana 支持者会说，硬件会越来越便宜，这是合理反驳。但区块链的历史并不只朝硬件降价一个方向前进：状态持续膨胀、吞吐持续提高、带宽持续增加，节点要求也会同步上升。摩尔定律未必能自动抵消链自身的野心。</p>
+<p>更深的问题是，Solana 把扩容建立在所有验证者都追赶最新硬件的假设上。性能越高，全节点越像数据中心；全节点越像数据中心，验证权越容易集中到专业运营商、托管服务商和少数高质网络区域。</p>
+<p>这是一条非常清晰的路线：<strong>不是让链适应普通节点，而是让节点升级到足以追上链。</strong></p>
+<h2 id="八、链上数据很多，但开发者仍然离不开商业-RPC-和链下索引"><a href="#八、链上数据很多，但开发者仍然离不开商业-RPC-和链下索引" class="headerlink" title="八、链上数据很多，但开发者仍然离不开商业 RPC 和链下索引"></a>八、链上数据很多，但开发者仍然离不开商业 RPC 和链下索引</h2><p>Solana 理论上是一套公开账本，实践中却很难只靠一个廉价公共 RPC 完成生产级应用。</p>
+<p>高吞吐意味着海量 slot、交易、账户变更和日志。应用如果需要历史事件、地址行为、代币持仓、程序日志或实时监听，通常必须依赖专业 RPC、Geyser 数据流、Yellowstone gRPC、自建数据库或第三方索引服务。</p>
+<p>Solana 官方对 RPC 节点的建议内存达到 512 GB，已经说明“读链”本身就是一项重型基础设施工作。与此同时，Solana 程序没有像传统数据库那样自动提供开发者想要的业务索引；程序日志也不是一套可靠、永久、可随意查询的事件数据库。开发者最终仍要把链上数据抽取到 PostgreSQL、ClickHouse、Kafka 或专用索引系统里。</p>
+<p>于是出现一个很反直觉的现实：Solana 把执行做得极快，却让“知道刚才到底发生了什么”变成一门独立生意。</p>
+<p>链负责快速写入，商业 RPC 和索引商负责可用地读取。对于普通团队而言，真正可用的 Solana 并不只是开放协议，还包括若干付费数据服务。所谓无需许可，常常只存在于交易验证层；到了产品层，开发者仍然被 API 套餐、速率限制、历史数据保留和供应商兼容性包围。</p>
+<h2 id="九、停机事故暴露的不是“Bug-太多”，而是系统余量太小"><a href="#九、停机事故暴露的不是“Bug-太多”，而是系统余量太小" class="headerlink" title="九、停机事故暴露的不是“Bug 太多”，而是系统余量太小"></a>九、停机事故暴露的不是“Bug 太多”，而是系统余量太小</h2><p>任何软件都会有 Bug，拿一次事故否定整个网络并不严谨。真正值得关注的是，Solana 的事故往往能沿着高耦合的数据路径扩散到整个集群。</p>
+<p>2023 年 2 月，异常大的区块与第三方 block-forwarding 服务共同触发重复数据传播，Turbine 的去重逻辑被压垮，网络进入 vote-only mode，最终由验证者人工重启并降级到稳定版本。Solana 官方事故报告记录，正常出块直到次日才恢复。<a href="https://solana.com/news/02-25-23-solana-mainnet-beta-outage-report">2023-02-25 Outage Report</a></p>
+<p>2024 年 2 月，程序缓存 <code>LoadedPrograms</code> 的实现缺陷导致主网停止 finalization。工程团队发布 v1.17.20，验证者共同选定恢复 slot、准备 snapshot 并重启集群，事故持续约五小时。<a href="https://solana.com/news/02-06-24-solana-mainnet-beta-outage-report">2024-02-06 Outage Report</a></p>
+<p>值得注意的不是“Solana 曾经停过”这句廉价结论，而是恢复方式：发布统一修复版本、协调验证者、选择共同认可的 slot、从 snapshot 重启。</p>
+<p>这在工程上完全务实，但它再次展现了 Solana 的组织形态。面对极端故障，它不像一条依靠缓慢、异构节点自然收敛的网络，更像一个由核心开发团队和专业运维商共同维护的全球集群。</p>
+<p>Solana 的速度建立在紧密协作、高度优化和较小安全余量之上。系统正常时，这些特征带来惊人的吞吐；系统异常时，同样的耦合会让局部问题迅速成为全网问题。</p>
+<h2 id="十、多客户端正在补课，但它恰好证明此前的风险真实存在"><a href="#十、多客户端正在补课，但它恰好证明此前的风险真实存在" class="headerlink" title="十、多客户端正在补课，但它恰好证明此前的风险真实存在"></a>十、多客户端正在补课，但它恰好证明此前的风险真实存在</h2><p>今天的 Solana 已经不再只有最初的 Solana Labs 客户端。原实现由 Anza 分叉并维护为 Agave，Firedancer 等独立客户端也在推进。这是 Solana 最重要的工程改进之一：不同团队、不同代码库可以降低单一实现 Bug 让全网同时失败的风险。</p>
+<p>但这件事也从侧面证明了问题：当协议复杂度高、性能路径极度优化、验证者长期运行高度相似的客户端时，“规范上的去中心化”并不能自动变成“故障上的独立性”。如果绝大多数节点执行同一份有缺陷的逻辑，再多节点也只是同一个 Bug 的复制品。</p>
+<p>多客户端会提高韧性，却不会取消 Solana 路线的根本约束。新的客户端仍然必须跟上同一条高吞吐链，兼容同一套账户锁、交易格式、PoH、Turbine 和状态增长。它降低的是实现集中风险，不是系统复杂度本身。</p>
+<h2 id="十一、Solana-真正的创新，也正是它最危险的赌注"><a href="#十一、Solana-真正的创新，也正是它最危险的赌注" class="headerlink" title="十一、Solana 真正的创新，也正是它最危险的赌注"></a>十一、Solana 真正的创新，也正是它最危险的赌注</h2><p>必须承认，Solana 的很多设计不是低级错误，而是非常连贯的工程选择：</p>
+<ul>
+<li>PoH 减少节点在时间与顺序上的通信开销；</li>
+<li>leader 流水线让交易可以持续输入和传播；</li>
+<li>显式账户列表为并行调度提供确定的读写集；</li>
+<li>无状态程序与独立数据账户方便运行时控制权限；</li>
+<li>sBPF、计算预算和资源上限保证执行可预测；</li>
+<li>高配验证者换取单链全局状态下的高吞吐；</li>
+<li>可升级程序让应用能快速修复漏洞。</li>
+</ul>
+<p>单独看，每一项都能自圆其说。真正令人不安的是，它们全部指向同一个方向：<strong>用更多中心化系统的工程方法，维持一条名义上无需许可的全球状态机。</strong></p>
+<p>Solana 没有解决“不可能三角”，它只是做了一个极其激进的下注：</p>
+<ol>
+<li>硬件进步永远能追上状态与流量增长；</li>
+<li>专业验证者仍然足够分散；</li>
+<li>leader 集中的瞬时排序权不会演变成长期基础设施权力；</li>
+<li>RPC、索引器、区块引擎和交易入口的商业集中不会侵蚀协议开放性；</li>
+<li>高度优化的复杂实现能够长期维持足够低的系统性故障率。</li>
+</ol>
+<p>只要这五个条件同时成立，Solana 就会显得比传统区块链先进一个时代。</p>
+<p>但只要其中任何一项失效，市场就会突然发现：大家以为自己购买的是一条更快的公链，实际依赖的是一套需要核心开发团队、数据中心级验证者、商业 RPC、专业索引器和低延迟交易通道共同维持的金融操作系统。</p>
+<h2 id="结语：Solana-不是不像区块链，它是在逼区块链承认自己想成为服务器"><a href="#结语：Solana-不是不像区块链，它是在逼区块链承认自己想成为服务器" class="headerlink" title="结语：Solana 不是不像区块链，它是在逼区块链承认自己想成为服务器"></a>结语：Solana 不是不像区块链，它是在逼区块链承认自己想成为服务器</h2><p>Solana 最大的技术成就，是证明一条公链可以获得接近互联网应用的响应速度。Solana 最大的技术疑问，也来自同一个地方：为了获得这种速度，它到底保留了多少区块链原本要保护的东西？</p>
+<p>当交易由可预测 leader 排序，当并行执行要求客户端预先申报读写账户，当合约是可热更新的无状态程序，当节点需要 256 GB 内存和数 Gbit&#x2F;s 网络，当历史数据查询依赖商业 RPC，当全网故障需要统一版本、快照和人工协调恢复——Solana 当然仍然满足区块链的技术定义，但它已经远离了“任何普通人都可以独立参与、低成本验证、无需信任中间基础设施”的原始想象。</p>
+<p>因此，Solana 技术路线最值得警惕的地方，不是某个 Bug，也不是某次停机，而是它成功得太有诱惑力：低费用和高 TPS 会让市场忽略这些性能究竟由谁提供、由什么硬件提供、通过哪些中心化入口提供，以及系统最终把信任重新交还给了谁。</p>
+<p><strong>Solana 看起来像区块链的未来，也可能只是中心化金融基础设施穿上区块链外衣之后，最成熟的一次工程实现。</strong></p>
+<hr>
+<p><em>说明：本文讨论的是技术路线与权衡，不构成对网络安全性的确定性结论，也不构成投资建议。文中限制与参数以 2026 年 9 月 19 日可访问的 Solana、Agave 官方文档为准；协议升级后可能变化。</em></p>
+<h2 id="主要资料"><a href="#主要资料" class="headerlink" title="主要资料"></a>主要资料</h2><ol>
+<li><a href="https://solana.com/solana-whitepaper.pdf">Solana Whitepaper</a></li>
+<li><a href="https://solana.com/docs/core/accounts">Solana Accounts</a></li>
+<li><a href="https://solana.com/docs/core/programs">Solana Programs</a></li>
+<li><a href="https://solana.com/docs/core/transactions">Solana Transactions</a></li>
+<li><a href="https://solana.com/docs/core/transactions/transaction-pipeline">Solana Transaction Pipeline</a></li>
+<li><a href="https://solana.com/docs/core/fees/compute-budget">Solana Compute Budget</a></li>
+<li><a href="https://solana.com/docs/core/fees/fee-structure">Solana Fee Structure</a></li>
+<li><a href="https://solana.com/docs/core/programs/program-deployment">Solana Program Deployment</a></li>
+<li><a href="https://docs.anza.xyz/operations/requirements">Agave Validator Requirements</a></li>
+<li><a href="https://solana.com/news/02-25-23-solana-mainnet-beta-outage-report">2023-02-25 Solana Mainnet Beta Outage Report</a></li>
+<li><a href="https://solana.com/news/02-06-24-solana-mainnet-beta-outage-report">2024-02-06 Solana Mainnet Beta Outage Report</a></li>
+</ol>
+</div></div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.2"></script><script defer src="/js/highlight.min.js?v=v1.2"></script><script defer src="/js/main.js?v=v1.2"></script><script defer src="/js/lightbox.js?v=v1.2"></script><script defer src="/js/bootstrap.min.js?v=v1.2"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-5JRBZ6P1W3"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-5JRBZ6P1W3');</script></html>

@@ -1,0 +1,939 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>以太坊有多难用</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://smallyu.net/2026/09/23/以太坊有多难用/"><meta property="og:title" content="以太坊有多难用"><meta property="og:type" content="article"><meta property="og:url" content="https://smallyu.net/2026/09/23/以太坊有多难用/"><meta property="og:site_name" content="smallyu的博客"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1.2"><link rel="stylesheet" href="/css/post.css?v=v1.2"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1.2"><link rel="stylesheet" href="/css/ai-content.css?v=5"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>以太坊有多难用</h1><div class="time">2026-09-23</div><div class="title-margin"></div><div class="ai-content"><p>很多人说 Ethereum 用户体验不好。</p>
+<p>这个说法太客气了。</p>
+<p>Ethereum 真正荒诞的地方不是“操作步骤有点多”，而是：</p>
+<p><strong>它要求一个只是想转账、买币、使用应用的人，理解本应该只有协议工程师才需要理解的东西。</strong></p>
+<p>Nonce。</p>
+<p>Gas Limit。</p>
+<p>Base Fee。</p>
+<p>Priority Fee。</p>
+<p>Allowance。</p>
+<p>Calldata。</p>
+<p>EOA。</p>
+<p>Contract Account。</p>
+<p>Signature。</p>
+<p>Typed Data。</p>
+<p>MEV。</p>
+<p>Slippage。</p>
+<p>RPC。</p>
+<p>Chain ID。</p>
+<p>Bridge。</p>
+<p>Finality。</p>
+<p>UserOperation。</p>
+<p>Bundler。</p>
+<p>Paymaster。</p>
+<p>你甚至不能简单地说：</p>
+<blockquote>
+<p>我有 ETH。</p>
+</blockquote>
+<p>因为接下来还可能有人问：</p>
+<blockquote>
+<p>Native ETH 还是 WETH？</p>
+</blockquote>
+<p>这已经不是学习曲线陡峭。</p>
+<p>这是一套基础设施把自己的内部实现细节全部吐到了用户脸上，然后告诉用户：</p>
+<p><strong>请自行学习。</strong></p>
+<p>更离谱的是，Crypto 用户用了几年以后，居然开始觉得这一切很正常。</p>
+<p>所以这一篇我不想再讨论“Ethereum Gas 很贵”这种已经被说烂的问题。</p>
+<p>我们讨论一些更荒唐的东西。</p>
+<hr>
+<h1 id="一、以太坊最荒诞的事实之一：ETH-甚至不是一个正常的-Ethereum-Token"><a href="#一、以太坊最荒诞的事实之一：ETH-甚至不是一个正常的-Ethereum-Token" class="headerlink" title="一、以太坊最荒诞的事实之一：ETH 甚至不是一个正常的 Ethereum Token"></a>一、以太坊最荒诞的事实之一：ETH 甚至不是一个正常的 Ethereum Token</h1><p>Ethereum 有一种最重要的 Token 标准：</p>
+<p>ERC-20。</p>
+<p>USDC 是 ERC-20。</p>
+<p>USDT 是 ERC-20。</p>
+<p>DAI 是 ERC-20。</p>
+<p>UNI 是 ERC-20。</p>
+<p>几乎整个 Ethereum DeFi 世界都围绕 ERC-20 工作。</p>
+<p>那么：</p>
+<p><strong>ETH 是不是 ERC-20？</strong></p>
+<p>不是。</p>
+<p>Ethereum 自己的原生货币，居然不符合 Ethereum 后来最重要的 Token Interface。</p>
+<p>原因也非常朴素：</p>
+<p><strong>ETH 出生得太早了。</strong></p>
+<p>官方文档自己承认，ETH 早于 ERC-20，因此并不符合 ERC-20 标准；为了让 ETH 能够像普通 ERC-20 一样被 DeFi 应用处理，人们后来创造了 WETH。</p>
+<p>于是 Ethereum 出现了一幅非常有时代特色的画面：</p>
+<pre><code class="text">Ethereum 原生货币：ETH
+
+Ethereum Token 标准：ERC-20
+
+问题：
+ETH 不符合 Ethereum Token 标准
+
+解决办法：
+写一个合约，把 ETH 存进去，
+再铸造一个代表 ETH 的 ERC-20 Token。
+
+名字：
+Wrapped ETH
+</code></pre>
+<p>也就是说：</p>
+<p><strong>Ethereum 为了让自己的原生货币能够正常进入自己的 Token 生态，需要先把自己的原生货币包装成一个“假的自己”。</strong></p>
+<p>这件事情已经存在太久，以至于大家甚至不觉得滑稽。</p>
+<p>你有 10 ETH。</p>
+<p>进入某些 DeFi 协议：</p>
+<blockquote>
+<p>请先 Wrap。</p>
+</blockquote>
+<p>于是：</p>
+<pre><code class="text">ETH
+ ↓
+WETH
+</code></pre>
+<p>用完：</p>
+<pre><code class="text">WETH
+ ↓
+ETH
+</code></pre>
+<p>最精彩的是：</p>
+<p>你可以拥有价值几万美元的 WETH，</p>
+<p>但是如果 Native ETH 恰好为 0，</p>
+<p>你仍然可能没法发送需要 Gas 的交易。</p>
+<p>Ethereum 官方甚至特意提醒：</p>
+<blockquote>
+<p>Wrap ETH 的时候记得留一些 Native ETH 支付 Gas。</p>
+</blockquote>
+<p>换句话说：</p>
+<p><strong>你有 ETH。</strong></p>
+<p>但不是那个能付 Gas 的 ETH。</p>
+<p>这种事情如果第一次接触 Crypto 的人觉得莫名其妙，不是因为他不懂区块链。</p>
+<p>而是因为它本来就莫名其妙。</p>
+<hr>
+<h1 id="二、Ethereum-有一种很神奇的“取消交易”方式：再发一笔交易"><a href="#二、Ethereum-有一种很神奇的“取消交易”方式：再发一笔交易" class="headerlink" title="二、Ethereum 有一种很神奇的“取消交易”方式：再发一笔交易"></a>二、Ethereum 有一种很神奇的“取消交易”方式：再发一笔交易</h1><p>接下来是我认为 Ethereum 用户体验史上最有喜剧效果的设计之一。</p>
+<p>假设你发了一笔交易。</p>
+<p>Gas 给低了。</p>
+<p>它卡在 mempool 里。</p>
+<p>你后悔了。</p>
+<p>你点击：</p>
+<blockquote>
+<p>Cancel Transaction</p>
+</blockquote>
+<p>一个正常人理解的“取消”是什么？</p>
+<p>把刚才那笔交易撤回来。</p>
+<p>Ethereum 的取消是什么？</p>
+<p><strong>再发一笔新的交易。</strong></p>
+<p>而且要：</p>
+<ul>
+<li>使用和原交易完全相同的 nonce；</li>
+<li>给更高的手续费；</li>
+<li>通常给自己发送 0 ETH；</li>
+<li>让新交易抢在旧交易之前被打包；</li>
+<li>依靠“同一个 nonce 只能执行一次”的规则，把旧交易挤掉。</li>
+</ul>
+<p>这不是段子。</p>
+<p>MetaMask 官方给高级用户的手动取消方法就是：</p>
+<p><strong>给自己发送一笔 0 ETH 交易，使用旧交易相同的 nonce，并提高 Gas。</strong></p>
+<p>所以 Ethereum 里的：</p>
+<pre><code class="text">Cancel
+</code></pre>
+<p>真正的语义其实是：</p>
+<pre><code class="text">用另一笔更贵的交易，
+和原来的交易争夺同一个序号，
+争取先把这个序号消耗掉。
+</code></pre>
+<p>甚至“取消”都不是协议里的真正操作。</p>
+<p>它是一场竞速。</p>
+<p>你的旧交易：</p>
+<blockquote>
+<p>我要执行。</p>
+</blockquote>
+<p>你的取消交易：</p>
+<blockquote>
+<p>不，你别执行，让我先执行。</p>
+</blockquote>
+<p>然后用户还要额外付钱，请验证者优先执行：</p>
+<p><strong>“请不要执行我刚才那笔交易。”</strong></p>
+<p>这已经不是 UX 不好。</p>
+<p>这是一个人在操作数据库事务日志。</p>
+<hr>
+<h1 id="三、最精彩的是：一笔交易卡住，可以把你后面的交易全部堵死"><a href="#三、最精彩的是：一笔交易卡住，可以把你后面的交易全部堵死" class="headerlink" title="三、最精彩的是：一笔交易卡住，可以把你后面的交易全部堵死"></a>三、最精彩的是：一笔交易卡住，可以把你后面的交易全部堵死</h1><p>为什么刚才那套骚操作有效？</p>
+<p>因为 Ethereum EOA 的 transaction nonce 是严格递增的。</p>
+<p>比如你的账户已经执行到：</p>
+<pre><code class="text">nonce = 100
+</code></pre>
+<p>接下来：</p>
+<pre><code class="text">101
+102
+103
+104
+</code></pre>
+<p>必须按照顺序。</p>
+<p>官方文档把 nonce 定义为账户发送交易时顺序递增的计数器，同一 nonce 不能执行两次。</p>
+<p>这意味着一个特别荒唐的用户体验：</p>
+<p>你发了 nonce 101。</p>
+<p>Gas 太低。</p>
+<p>101 卡住。</p>
+<p>然后你发：</p>
+<p>102。</p>
+<p>103。</p>
+<p>104。</p>
+<p>很可能全部一起在那里等。</p>
+<p>因为：</p>
+<p><strong>101 还没过去。</strong></p>
+<p>MetaMask 的官方排障文档甚至要求用户从最老的 pending nonce 开始处理，并明确说明不能先取消 nonce 10 而留下 nonce 9。</p>
+<p>想象一下一个银行系统：</p>
+<p>你上午发了一笔 10 元转账。</p>
+<p>它卡住了。</p>
+<p>于是下午你所有其他支付：</p>
+<p>咖啡。</p>
+<p>打车。</p>
+<p>午饭。</p>
+<p>网购。</p>
+<p>全部不许进行。</p>
+<p>银行告诉你：</p>
+<blockquote>
+<p>因为第 71 号支付指令尚未执行。</p>
+</blockquote>
+<blockquote>
+<p>请先处理第 71 号。</p>
+</blockquote>
+<p>你会觉得这个银行疯了。</p>
+<p>在 Ethereum：</p>
+<p>这叫 <strong>nonce management</strong>。</p>
+<p>甚至还有开发者专门写：</p>
+<pre><code class="text">Nonce Manager
+</code></pre>
+<p>来管理这件事情。</p>
+<p>一个只想转钱的人，最后需要理解分布式系统里的 ordered sequence number。</p>
+<p>然后大家说：</p>
+<blockquote>
+<p>Web3 需要用户教育。</p>
+</blockquote>
+<p>教育个鬼。</p>
+<p><strong>这是数据库内部细节跑出来要求用户手工维护。</strong></p>
+<hr>
+<h1 id="四、Ethereum-甚至把“加速交易”实现成了“重新发一次交易”"><a href="#四、Ethereum-甚至把“加速交易”实现成了“重新发一次交易”" class="headerlink" title="四、Ethereum 甚至把“加速交易”实现成了“重新发一次交易”"></a>四、Ethereum 甚至把“加速交易”实现成了“重新发一次交易”</h1><p>“Speed Up”也一样。</p>
+<p>你看到钱包里有个：</p>
+<blockquote>
+<p>Speed Up</p>
+</blockquote>
+<p>看起来像是修改了原交易。</p>
+<p>实际上通常是在干什么？</p>
+<p><strong>构造另一笔拥有相同 nonce、但出价更高的 replacement transaction。</strong></p>
+<p>MetaMask 明确说明，加速操作会重新提交交易，并复用原交易的 nonce，提高 Gas 使它更有机会先被打包。</p>
+<p>Ethereum 甚至曾经有人专门提交 EIP-2831 来标准化这种 transaction replacement 的通知，因为 replacement 机制会给 dapp 开发者带来追踪问题。</p>
+<p>所以 Ethereum 钱包里的两个按钮：</p>
+<pre><code class="text">Speed Up
+Cancel
+</code></pre>
+<p>背后的真实实现分别是：</p>
+<pre><code class="text">同 nonce，发另一笔更贵的相同交易
+</code></pre>
+<p>和：</p>
+<pre><code class="text">同 nonce，发另一笔更贵的空交易
+</code></pre>
+<p>如果一个普通用户必须知道这件事情，他会觉得整个系统像 1990 年代写出来的。</p>
+<p>我们只是用漂亮 UI 把它遮住了。</p>
+<hr>
+<h1 id="五、Ethereum-还发明了一种消费体验：东西没买到，钱照扣"><a href="#五、Ethereum-还发明了一种消费体验：东西没买到，钱照扣" class="headerlink" title="五、Ethereum 还发明了一种消费体验：东西没买到，钱照扣"></a>五、Ethereum 还发明了一种消费体验：东西没买到，钱照扣</h1><p>假设你去便利店买东西。</p>
+<p>付款失败。</p>
+<p>东西没拿到。</p>
+<p>收银员说：</p>
+<blockquote>
+<p>交易失败了。</p>
+</blockquote>
+<p>你：</p>
+<blockquote>
+<p>好。</p>
+</blockquote>
+<p>收银员：</p>
+<blockquote>
+<p>但是我们还是扣了你 20 块。</p>
+</blockquote>
+<p>你：</p>
+<blockquote>
+<p>为什么？</p>
+</blockquote>
+<p>收银员：</p>
+<blockquote>
+<p>因为我们刚才尝试处理你的付款，产生了计算成本。</p>
+</blockquote>
+<p>这就是 Ethereum。</p>
+<p>Smart Contract 执行一半：</p>
+<pre><code class="text">REVERT
+</code></pre>
+<p>状态修改回滚。</p>
+<p>Token 没交换。</p>
+<p>NFT 没买到。</p>
+<p>借款没借出来。</p>
+<p>但已经消耗的 Gas：</p>
+<p><strong>不给你退。</strong></p>
+<p>官方 Gas 文档明确说明：如果交易执行过程中耗尽 Gas，状态修改会回滚，但用于执行工作的 Gas 仍然被消耗；<code>REVERT</code> 虽然不会像早期失败机制那样烧掉全部剩余 Gas，但已经执行掉的计算成本仍然存在。</p>
+<p>工程上当然合理。</p>
+<p>CPU 已经算了。</p>
+<p>节点已经执行了。</p>
+<p>所以收钱。</p>
+<p>问题是：</p>
+<p><strong>用户为什么要承担应用执行路径预测失败的成本？</strong></p>
+<p>Web2 里服务器写了 Bug：</p>
+<p>公司付服务器费。</p>
+<p>Ethereum：</p>
+<p>智能合约写了 Bug，或者状态刚好变化导致交易 revert：</p>
+<p><strong>用户付服务器费。</strong></p>
+<p>这是 Crypto 特别伟大的商业模式：</p>
+<p>程序执行失败了，</p>
+<p>账单寄给调用程序的人。</p>
+<hr>
+<h1 id="六、Ethereum-的手续费不是“手续费”，而是一场实时计算资源竞价"><a href="#六、Ethereum-的手续费不是“手续费”，而是一场实时计算资源竞价" class="headerlink" title="六、Ethereum 的手续费不是“手续费”，而是一场实时计算资源竞价"></a>六、Ethereum 的手续费不是“手续费”，而是一场实时计算资源竞价</h1><p>再看 Gas。</p>
+<p>普通用户希望看到：</p>
+<pre><code class="text">手续费：$2
+</code></pre>
+<p>Ethereum 底层给他的东西是：</p>
+<pre><code class="text">gasLimit
+maxFeePerGas
+maxPriorityFeePerGas
+baseFeePerGas
+</code></pre>
+<p>EIP-1559 以后，一笔 Type-2 交易甚至明确包含：</p>
+<pre><code class="text">max_priority_fee_per_gas
+max_fee_per_gas
+</code></pre>
+<p>而 Base Fee 根据区块利用率动态变化。</p>
+<p>翻译成人话：</p>
+<p>你不是在支付一个手续费。</p>
+<p>你是在说：</p>
+<blockquote>
+<p>我最多愿意为一个计算单位支付多少钱；</p>
+</blockquote>
+<blockquote>
+<p>其中最多愿意拿多少钱给出块者当小费；</p>
+</blockquote>
+<blockquote>
+<p>协议还会按照当前拥堵程度产生一个动态基础价格；</p>
+</blockquote>
+<blockquote>
+<p>如果价格合适，请帮我执行这段程序。</p>
+</blockquote>
+<p>一个用户只是想：</p>
+<blockquote>
+<p>Swap 100 USDC。</p>
+</blockquote>
+<p>结果钱包底层实际上在帮他参与：</p>
+<p><strong>全球分布式计算资源的实时拍卖。</strong></p>
+<p>然后大家夸：</p>
+<blockquote>
+<p>钱包现在都会自动估 Gas，用户不用懂。</p>
+</blockquote>
+<p>很好。</p>
+<p>这句话本身就像在说：</p>
+<blockquote>
+<p>我们这辆车的发动机启动需要手工调节喷油比例，不过现在仪表盘已经帮用户自动调了，所以体验还不错。</p>
+</blockquote>
+<p>真正正常的 UX 是：</p>
+<p><strong>这个旋钮从一开始就不应该存在于用户的认知世界里。</strong></p>
+<hr>
+<h1 id="七、Approve-是一个堪称反人类的权限模型"><a href="#七、Approve-是一个堪称反人类的权限模型" class="headerlink" title="七、Approve 是一个堪称反人类的权限模型"></a>七、Approve 是一个堪称反人类的权限模型</h1><p>Ethereum DeFi 另一个经典设计：</p>
+<pre><code class="solidity">approve(spender, amount)
+</code></pre>
+<p>我要 Swap 100 USDC。</p>
+<p>正常人的语义：</p>
+<blockquote>
+<p>花掉我的 100 USDC。</p>
+</blockquote>
+<p>ERC-20 的经典语义却是：</p>
+<blockquote>
+<p>我授权这个地址，以后可以从我的账户里主动拉走最多 N USDC。</p>
+</blockquote>
+<p>这两个概念根本不是一回事。</p>
+<p>而早年为了避免每次使用都重新 Approve，大量应用干脆让用户：</p>
+<pre><code class="text">Approve Unlimited
+</code></pre>
+<p>于是：</p>
+<p>我只是想买一次东西。</p>
+<p>最终授权的是：</p>
+<blockquote>
+<p>这个智能合约未来可以持续动我的 Token。</p>
+</blockquote>
+<p>更加精彩的是，ERC-20 标准本身关于 <code>approve()</code> 的说明里就留下了一段历史伤疤：</p>
+<p>客户端在修改非零 allowance 时，应该考虑<strong>先把 allowance 设成 0，再设置新值</strong>，以降低已知的攻击向量；但标准又不能直接强制这样做，因为必须兼容已经部署的旧合约。</p>
+<p>仔细读这一段。</p>
+<p>这几乎是上一篇《Ethereum 技术有多脏》的用户版缩影：</p>
+<pre><code class="text">权限模型有问题。
+
+↓
+
+不能修改旧标准。
+
+↓
+
+让客户端 UI 帮忙规避。
+
+↓
+
+因为还得兼容以前的合约。
+</code></pre>
+<p>最后谁承担这个历史债？</p>
+<p>用户。</p>
+<p>所以你会看到有些 Token 修改 allowance 时：</p>
+<p>先：</p>
+<pre><code class="text">Approve 0
+</code></pre>
+<p>再：</p>
+<pre><code class="text">Approve 100
+</code></pre>
+<p>一项正常的“修改授权额度”，可能变成两笔链上状态修改。</p>
+<p>这不是金融创新。</p>
+<p><strong>这像是在操作一个从来没有完成过数据库 migration 的生产环境。</strong></p>
+<hr>
+<h1 id="八、最荒唐的安全建议之一：不要相信-Token-的名字，要核对-40-位十六进制地址"><a href="#八、最荒唐的安全建议之一：不要相信-Token-的名字，要核对-40-位十六进制地址" class="headerlink" title="八、最荒唐的安全建议之一：不要相信 Token 的名字，要核对 40 位十六进制地址"></a>八、最荒唐的安全建议之一：不要相信 Token 的名字，要核对 40 位十六进制地址</h1><p>普通金融系统识别一种资产：</p>
+<pre><code class="text">USD
+</code></pre>
+<p>Crypto：</p>
+<pre><code class="text">USDC
+</code></pre>
+<p>很好。</p>
+<p>然后发现任何人都能部署一个 Token：</p>
+<pre><code class="text">name = USD Coin
+symbol = USDC
+logo = 看起来也一样
+</code></pre>
+<p>怎么办？</p>
+<p>Crypto 老用户会非常认真地告诉新人：</p>
+<blockquote>
+<p>别看名字。</p>
+</blockquote>
+<blockquote>
+<p>一定要确认 Contract Address。</p>
+</blockquote>
+<p>于是识别一种“美元”，最终需要识别：</p>
+<pre><code class="text">0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48
+</code></pre>
+<p>这种字符串。</p>
+<p>我们甚至把：</p>
+<blockquote>
+<p>会检查 Contract Address</p>
+</blockquote>
+<p>当成了一种 Crypto 素养。</p>
+<p>不。</p>
+<p>这不是用户素养。</p>
+<p>这是<strong>命名系统基本不存在以后产生的生存技能。</strong></p>
+<p>正常系统面对：</p>
+<pre><code class="text">Microsoft.com
+</code></pre>
+<p>不会告诉用户：</p>
+<blockquote>
+<p>域名容易被骗，为安全起见请记住服务器的 IPv6 地址。</p>
+</blockquote>
+<p>Web3 差不多就是这么干的。</p>
+<hr>
+<h1 id="九、Ethereum-的“签名”可能是整个消费者互联网里最危险的确认按钮"><a href="#九、Ethereum-的“签名”可能是整个消费者互联网里最危险的确认按钮" class="headerlink" title="九、Ethereum 的“签名”可能是整个消费者互联网里最危险的确认按钮"></a>九、Ethereum 的“签名”可能是整个消费者互联网里最危险的确认按钮</h1><p>普通产品：</p>
+<pre><code class="text">Confirm
+</code></pre>
+<p>通常意味着：</p>
+<p>确认眼前这件事情。</p>
+<p>Ethereum 钱包：</p>
+<pre><code class="text">Sign
+</code></pre>
+<p>可能意味着：</p>
+<p>证明你控制这个地址。</p>
+<p>可能是登录。</p>
+<p>可能是订单。</p>
+<p>可能是 Permit。</p>
+<p>可能是授权。</p>
+<p>可能是 Typed Data。</p>
+<p>可能最终让另一个协议拥有某种资产操作权。</p>
+<p>用户看到的共同动作却都是：</p>
+<p><strong>签。</strong></p>
+<p>真正离谱的是：</p>
+<p>Ethereum 的安全模型建立在密码学签名非常可靠的基础上，</p>
+<p>但用户安全却经常建立在：</p>
+<blockquote>
+<p>希望用户能读懂自己到底在签什么。</p>
+</blockquote>
+<p>密码学可以证明：</p>
+<p><strong>确实是你签的。</strong></p>
+<p>密码学证明不了：</p>
+<p><strong>你知不知道自己签了什么。</strong></p>
+<p>这两件事之间，隔着整个 Crypto Scam 行业。</p>
+<hr>
+<h1 id="十、然后-EIP-7702-把这件事情推向了新的境界：一次授权，可以让-EOA-开始执行别人的代码"><a href="#十、然后-EIP-7702-把这件事情推向了新的境界：一次授权，可以让-EOA-开始执行别人的代码" class="headerlink" title="十、然后 EIP-7702 把这件事情推向了新的境界：一次授权，可以让 EOA 开始执行别人的代码"></a>十、然后 EIP-7702 把这件事情推向了新的境界：一次授权，可以让 EOA 开始执行别人的代码</h1><p>Ethereum 发现 EOA 太弱。</p>
+<p>怎么办？</p>
+<p>EIP-7702。</p>
+<p>现在 EOA 可以通过 authorization，把账户执行逻辑 delegate 给一段合约代码。</p>
+<p>这确实可以实现非常强大的钱包能力。</p>
+<p>但 EIP-7702 自己的安全章节说了一件极其值得玩味的话：</p>
+<p><strong>应用不应该直接给用户一个界面，让用户随意签 delegation authorization。</strong></p>
+<p>为什么？</p>
+<p>因为被授权的代码可以拥有对账户极大的控制能力，而普通用户没有能力审核自己到底 delegate 给了什么代码。</p>
+<p>EIP 原文甚至明确指出：</p>
+<blockquote>
+<p>没有安全的通用界面能够简单解决这件事；很少有用户具备合理审查 delegation code 的专业能力。</p>
+</blockquote>
+<p>请欣赏这个技术进化过程：</p>
+<p>第一代：</p>
+<pre><code class="text">私钥控制账户。
+</code></pre>
+<p>大家嫌功能太弱。</p>
+<p>于是下一代：</p>
+<pre><code class="text">用户可以签名，
+让自己的账户执行另一个地址的代码。
+</code></pre>
+<p>然后协议设计者必须提醒钱包：</p>
+<p><strong>千万不要让用户自己随便签这个。</strong></p>
+<p>这已经非常 Ethereum 了。</p>
+<p>增加一个能力。</p>
+<p>然后增加一整套安全基础设施，</p>
+<p>防止用户真的直接使用这个能力。</p>
+<hr>
+<h1 id="十一、公开-mempool：你甚至要先公开告诉全世界你准备怎么交易，然后祈祷没人从你身上赚钱"><a href="#十一、公开-mempool：你甚至要先公开告诉全世界你准备怎么交易，然后祈祷没人从你身上赚钱" class="headerlink" title="十一、公开 mempool：你甚至要先公开告诉全世界你准备怎么交易，然后祈祷没人从你身上赚钱"></a>十一、公开 mempool：你甚至要先公开告诉全世界你准备怎么交易，然后祈祷没人从你身上赚钱</h1><p>这是我认为 Ethereum 用户体验最“赛博朋克”的一个地方。</p>
+<p>你想在 DEX 买一个 Token。</p>
+<p>于是把交易广播出去。</p>
+<p>交易还没上链。</p>
+<p>但是搜索者可以看到：</p>
+<blockquote>
+<p>这个人马上要买。</p>
+</blockquote>
+<p>然后可以围绕你的交易排序。</p>
+<p>例如最臭名昭著的：</p>
+<p><strong>Sandwich Attack。</strong></p>
+<p>攻击者：</p>
+<p>先在你之前买。</p>
+<p>你的交易把价格推高。</p>
+<p>再在你后面卖。</p>
+<p>利润来自哪里？</p>
+<p>来自你获得了更差的成交价格。</p>
+<p>Ethereum 官方 MEV 文档非常直接地承认，sandwich trading 会让用户遭受更大的 slippage 和更差的交易执行。</p>
+<p>也就是说：</p>
+<p>Ethereum 上一个用户准备交易时，默认模型长期以来近似是：</p>
+<pre><code class="text">先把自己的交易意图广播给全世界
+
+↓
+
+告诉大家：
+我要买什么
+买多少
+愿意接受多少滑点
+
+↓
+
+等待别人决定
+有没有办法在你的交易前后插东西赚钱
+</code></pre>
+<p>这像什么？</p>
+<p>你走进证券交易所，大喊：</p>
+<blockquote>
+<p>我要市价买 500 万美元的这只股票！</p>
+</blockquote>
+<p>然后所有高频交易员先听见。</p>
+<p>交易完之后你再问：</p>
+<blockquote>
+<p>为什么成交价格这么差？</p>
+</blockquote>
+<p>别人回答：</p>
+<blockquote>
+<p>这是 MEV。</p>
+</blockquote>
+<p>一个普通人竟然需要知道什么是：</p>
+<pre><code class="text">Private RPC
+MEV Protection
+Slippage
+Sandwich
+Builder
+Searcher
+</code></pre>
+<p>才能比较安全地完成一次兑换。</p>
+<p>我们居然把这种系统叫：</p>
+<p><strong>Permissionless Finance。</strong></p>
+<p>确实 permissionless。</p>
+<p>连抢你滑点的人也 permissionless。</p>
+<hr>
+<h1 id="十二、Slippage-本身就是一个非常荒唐的用户输入项"><a href="#十二、Slippage-本身就是一个非常荒唐的用户输入项" class="headerlink" title="十二、Slippage 本身就是一个非常荒唐的用户输入项"></a>十二、Slippage 本身就是一个非常荒唐的用户输入项</h1><p>DEX 还有一个神奇设置：</p>
+<pre><code class="text">Slippage Tolerance
+0.5%
+1%
+5%
+</code></pre>
+<p>普通用户想表达的是：</p>
+<blockquote>
+<p>帮我用 1000 USDC 买 ETH。</p>
+</blockquote>
+<p>Ethereum DeFi 要他回答：</p>
+<blockquote>
+<p>在交易真正执行的时候，如果市场状态发生变化，你允许最终结果比当前 Quote 差多少？</p>
+</blockquote>
+<p>这实际上是在让用户自己配置：</p>
+<p><strong>交易执行保护参数。</strong></p>
+<p>设太低：</p>
+<p>交易 revert。</p>
+<p>Gas 可能白花。</p>
+<p>设太高：</p>
+<p>可能遭遇差价格，甚至扩大 sandwich 的盈利空间。</p>
+<p>这是什么用户体验？</p>
+<p>用户需要在：</p>
+<pre><code class="text">交易失败风险
+</code></pre>
+<p>和：</p>
+<pre><code class="text">被别人抽取价值风险
+</code></pre>
+<p>之间手动调一个滑块。</p>
+<p>然后 UI 告诉你：</p>
+<blockquote>
+<p>建议 0.5%。</p>
+</blockquote>
+<p>非常现代。</p>
+<hr>
+<h1 id="十三、最-Ethereum-的产品逻辑：系统先制造问题，再让钱包发明“聪明模式”遮住它"><a href="#十三、最-Ethereum-的产品逻辑：系统先制造问题，再让钱包发明“聪明模式”遮住它" class="headerlink" title="十三、最 Ethereum 的产品逻辑：系统先制造问题，再让钱包发明“聪明模式”遮住它"></a>十三、最 Ethereum 的产品逻辑：系统先制造问题，再让钱包发明“聪明模式”遮住它</h1><p>Nonce 难用？</p>
+<p>钱包加：</p>
+<pre><code class="text">Speed Up
+Cancel
+</code></pre>
+<p>Gas 难懂？</p>
+<p>钱包自动估算。</p>
+<p>MEV 有问题？</p>
+<p>加：</p>
+<pre><code class="text">MEV Protection
+</code></pre>
+<p>Approve 危险？</p>
+<p>钱包做：</p>
+<pre><code class="text">Allowance Warning
+</code></pre>
+<p>签名看不懂？</p>
+<p>钱包开始模拟交易。</p>
+<p>L2 太多？</p>
+<p>钱包隐藏网络。</p>
+<p>账户太弱？</p>
+<p>4337。</p>
+<p>Gas Token 麻烦？</p>
+<p>Paymaster。</p>
+<p>EOA 太弱？</p>
+<p>7702。</p>
+<p>你会发现 Ethereum 的一个惊人规律：</p>
+<p><strong>底层每留下一个不适合普通人的抽象，上层就需要再生长一整套产品，把这个抽象藏起来。</strong></p>
+<p>然后我们把隐藏复杂度所产生的新基础设施称为：</p>
+<p><strong>Innovation。</strong></p>
+<hr>
+<h1 id="十四、ERC-4337-更像一个证据：Ethereum-原始交易模型已经不适合现代用户了"><a href="#十四、ERC-4337-更像一个证据：Ethereum-原始交易模型已经不适合现代用户了" class="headerlink" title="十四、ERC-4337 更像一个证据：Ethereum 原始交易模型已经不适合现代用户了"></a>十四、ERC-4337 更像一个证据：Ethereum 原始交易模型已经不适合现代用户了</h1><p>看看 4337 到底在解决什么：</p>
+<p>Gas Sponsorship。</p>
+<p>Batch Calls。</p>
+<p>Smart Account。</p>
+<p>自定义认证。</p>
+<p>账户恢复。</p>
+<p>ERC-20 支付 Gas。</p>
+<p>听起来很好。</p>
+<p>但是这些需求其实证明了一件事情：</p>
+<p><strong>原始 Ethereum Transaction 根本不够用了。</strong></p>
+<p>于是 4337 做了一件极其 Ethereum 的事情。</p>
+<p>不改底层。</p>
+<p>在底层交易系统上面：</p>
+<p><strong>重新实现一套类似交易的系统。</strong></p>
+<p>它甚至故意不把自己的对象叫 Transaction。</p>
+<p>而叫：</p>
+<pre><code class="text">UserOperation
+</code></pre>
+<p>然后加入：</p>
+<pre><code class="text">UserOperation
+Bundler
+EntryPoint
+Paymaster
+Factory
+Aggregator
+UserOp Mempool
+</code></pre>
+<p>ERC-4337 官方规范明确写着，它通过一个额外 mempool、<code>UserOperation</code>、Bundler 以及 <code>EntryPoint</code>，避免修改 Ethereum consensus layer。</p>
+<p>这就像一个操作系统的进程模型实在不好用了。</p>
+<p>但不能改 ABI。</p>
+<p>怎么办？</p>
+<p>在用户态重新造一个：</p>
+<p><strong>准操作系统。</strong></p>
+<p>然后终于实现：</p>
+<blockquote>
+<p>普通用户不需要理解 Gas。</p>
+</blockquote>
+<p>多么感人。</p>
+<p>为了让用户终于不用理解 Ethereum，</p>
+<p>Ethereum 先在 Ethereum 上面又实现了一层 Ethereum。</p>
+<hr>
+<h1 id="十五、甚至-4337-的“用户不用管-Gas”，背后都需要一整个影子金融系统"><a href="#十五、甚至-4337-的“用户不用管-Gas”，背后都需要一整个影子金融系统" class="headerlink" title="十五、甚至 4337 的“用户不用管 Gas”，背后都需要一整个影子金融系统"></a>十五、甚至 4337 的“用户不用管 Gas”，背后都需要一整个影子金融系统</h1><p>用户看到：</p>
+<blockquote>
+<p>Gas Sponsored</p>
+</blockquote>
+<p>很简单。</p>
+<p>后台是什么？</p>
+<p>Paymaster。</p>
+<p>Paymaster 要先往 EntryPoint 存 ETH。</p>
+<p>Bundler 要判断这个 Paymaster 愿不愿意付款。</p>
+<p>还需要模拟 UserOperation。</p>
+<p>需要检查验证逻辑。</p>
+<p>Paymaster 可能造成 DoS。</p>
+<p>Bundler 甚至需要对某些实体做 reputation &#x2F; staking 约束。</p>
+<p>也就是说为了实现一个 Web2 世界平平无奇的功能：</p>
+<blockquote>
+<p>商家帮用户支付操作成本。</p>
+</blockquote>
+<p>Ethereum 搭出来的是：</p>
+<pre><code class="text">User
+ ↓
+Smart Account
+ ↓
+UserOperation
+ ↓
+Bundler
+ ↓
+Paymaster Validation
+ ↓
+EntryPoint
+ ↓
+Ethereum Transaction
+ ↓
+Block
+</code></pre>
+<p>用户最后看到：</p>
+<pre><code class="text">Fee: $0
+</code></pre>
+<p>然后大家说：</p>
+<blockquote>
+<p>看，Web3 UX 已经跟 Web2 一样了。</p>
+</blockquote>
+<p>是的。</p>
+<p><strong>只需要在按钮下面埋七层基础设施。</strong></p>
+<hr>
+<h1 id="十六、Layer-2-最荒诞的地方不是“流动性割裂”，而是-Ethereum-连“余额”这个概念都搞得不再完整"><a href="#十六、Layer-2-最荒诞的地方不是“流动性割裂”，而是-Ethereum-连“余额”这个概念都搞得不再完整" class="headerlink" title="十六、Layer 2 最荒诞的地方不是“流动性割裂”，而是 Ethereum 连“余额”这个概念都搞得不再完整"></a>十六、Layer 2 最荒诞的地方不是“流动性割裂”，而是 Ethereum 连“余额”这个概念都搞得不再完整</h1><p>L2 流动性割裂已经被说烂了。</p>
+<p>真正更值得吐槽的是：</p>
+<p><strong>Ethereum 生态把“我有多少钱”从一个标量变成了一个向量。</strong></p>
+<p>以前：</p>
+<pre><code class="text">balance = 10,000 USDC
+</code></pre>
+<p>现在实际上更接近：</p>
+<pre><code class="text">balance = &#123;
+  Ethereum: 2000,
+  Base: 3500,
+  Arbitrum: 4000,
+  Optimism: 500
+&#125;
+</code></pre>
+<p>甚至这还没包括：</p>
+<p>native USDC。</p>
+<p>bridged USDC。</p>
+<p>其他桥的 representation。</p>
+<p>所以钱包里显示：</p>
+<blockquote>
+<p>Total Balance: $10,000</p>
+</blockquote>
+<p>这其实是一种 UI 幻觉。</p>
+<p>因为这 10,000 美元：</p>
+<p><strong>并不是任意时刻都具有同样的可使用性。</strong></p>
+<p>资产总额相同，</p>
+<p>但状态空间不同。</p>
+<p>你能否马上用它，</p>
+<p>取决于：</p>
+<p>哪个 Rollup。</p>
+<p>哪个 Token Contract。</p>
+<p>有没有 Gas。</p>
+<p>应用部署在哪。</p>
+<p>有没有 bridge liquidity。</p>
+<p>这才是 L2 最大的 UX 失败。</p>
+<p><strong>Ethereum 把“余额”这种人类几千年都理解得非常清楚的概念，重新变成了一道分布式系统题。</strong></p>
+<hr>
+<h1 id="十七、智能账户甚至让“我的地址是什么”这件事重新变得复杂"><a href="#十七、智能账户甚至让“我的地址是什么”这件事重新变得复杂" class="headerlink" title="十七、智能账户甚至让“我的地址是什么”这件事重新变得复杂"></a>十七、智能账户甚至让“我的地址是什么”这件事重新变得复杂</h1><p>EOA 有个很大的好处：</p>
+<p>同一把私钥可以在大量 EVM 网络得到同一个地址。</p>
+<p>然后我们开始拥抱 Smart Account。</p>
+<p>问题出现了：</p>
+<p>智能账户是合约。</p>
+<p>合约地址取决于部署机制、factory、salt、init code 等条件。</p>
+<p>为了让同一个智能账户能够在不同链拥有一致地址，生态甚至需要专门依赖 <code>CREATE2</code>、确定性部署 factory、counterfactual deployment 等机制。</p>
+<p>EIP-7955 的动机甚至直接写明：</p>
+<p><strong>让合约在多个链拥有相同地址和代码，本身就是一个困难问题。</strong></p>
+<p>所以我们走过了一条很奇妙的路线：</p>
+<pre><code class="text">EOA：
+功能太简单，
+但地址很好理解。
+
+↓
+
+Smart Account：
+功能终于丰富了。
+
+↓
+
+等等，
+现在得解决怎么让我的账户
+在不同链还是“同一个账户”。
+</code></pre>
+<p>Ethereum 的很多进步都有这种味道：</p>
+<p><strong>解决旧问题，顺便创造一个更高级的新问题。</strong></p>
+<hr>
+<h1 id="十八、Ethereum-的终极荒诞：最先进的密码学系统，最后却依靠钱包猜用户想干什么"><a href="#十八、Ethereum-的终极荒诞：最先进的密码学系统，最后却依靠钱包猜用户想干什么" class="headerlink" title="十八、Ethereum 的终极荒诞：最先进的密码学系统，最后却依靠钱包猜用户想干什么"></a>十八、Ethereum 的终极荒诞：最先进的密码学系统，最后却依靠钱包猜用户想干什么</h1><p>今天钱包越来越强调：</p>
+<p>Transaction Simulation。</p>
+<p>为什么？</p>
+<p>因为用户根本看不懂：</p>
+<pre><code class="text">to
+value
+data
+</code></pre>
+<p>也看不懂合约调用到底最终会产生什么状态变化。</p>
+<p>所以钱包开始在真正发送之前：</p>
+<p><strong>先模拟执行一次。</strong></p>
+<p>然后告诉用户：</p>
+<blockquote>
+<p>预计你会失去 100 USDC。</p>
+</blockquote>
+<blockquote>
+<p>预计你会得到 0.03 ETH。</p>
+</blockquote>
+<p>这当然是巨大的 UX 进步。</p>
+<p>但它同时也是一个极其讽刺的事实：</p>
+<p>Ethereum 的原始交易格式提供给用户的信息，</p>
+<p><strong>已经不足以让一个普通人知道自己签名以后究竟会发生什么。</strong></p>
+<p>于是钱包需要运行 EVM。</p>
+<p>需要追踪内部调用。</p>
+<p>需要解析 Token Transfer。</p>
+<p>需要识别恶意合约。</p>
+<p>再把这一切翻译成人话。</p>
+<p>我们最终造出了一个惊人架构：</p>
+<pre><code class="text">人
+ ↓
+钱包
+ ↓
+交易模拟器
+ ↓
+RPC
+ ↓
+EVM
+ ↓
+智能合约
+ ↓
+再回到钱包
+ ↓
+告诉人类：
+“你刚才想做的事情大概是这个。”
+</code></pre>
+<p>一个确认按钮背后，</p>
+<p>运行着半套区块链分析系统。</p>
+<hr>
+<h1 id="十九、Ethereum-最大的问题已经不是“不够简单”，而是它几乎没有能力重新变简单"><a href="#十九、Ethereum-最大的问题已经不是“不够简单”，而是它几乎没有能力重新变简单" class="headerlink" title="十九、Ethereum 最大的问题已经不是“不够简单”，而是它几乎没有能力重新变简单"></a>十九、Ethereum 最大的问题已经不是“不够简单”，而是它几乎没有能力重新变简单</h1><p>如果 Ethereum 是一个创业公司内部系统：</p>
+<p>重构。</p>
+<p>删掉 EOA。</p>
+<p>统一账户模型。</p>
+<p>改 Token 标准。</p>
+<p>重新设计 Gas。</p>
+<p>废弃 Legacy Transaction。</p>
+<p>重新设计权限。</p>
+<p>甚至重新设计执行模型。</p>
+<p>但是 Ethereum 做不到。</p>
+<p>原因恰恰是它成功了。</p>
+<p>数千亿美元资产。</p>
+<p>十几年历史。</p>
+<p>无数合约。</p>
+<p>无数钱包。</p>
+<p>无数假设。</p>
+<p>全部必须继续工作。</p>
+<p>所以：</p>
+<p>ETH 不是 ERC-20？</p>
+<p>不能重来。</p>
+<p>包一个 WETH。</p>
+<p>EOA 太弱？</p>
+<p>不能删。</p>
+<p>加 4337。</p>
+<p>4337 不够原生？</p>
+<p>再加 7702。</p>
+<p>账户没有 Gas？</p>
+<p>加 Paymaster。</p>
+<p>公开 mempool 被 MEV？</p>
+<p>搞 Private Orderflow。</p>
+<p>Nonce 体验差？</p>
+<p>钱包做 transaction replacement。</p>
+<p>Approve 危险？</p>
+<p>钱包做提醒、simulation、revoke。</p>
+<p>多 L2 太碎？</p>
+<p>搞 Chain Abstraction。</p>
+<p>你会发现：</p>
+<p><strong>Ethereum 已经很少真正消灭复杂度。</strong></p>
+<p>它更擅长的是：</p>
+<p><strong>把旧复杂度包起来，再增加一个抽象层。</strong></p>
+<hr>
+<h1 id="二十、所以-Ethereum-真正可怕的不是难用"><a href="#二十、所以-Ethereum-真正可怕的不是难用" class="headerlink" title="二十、所以 Ethereum 真正可怕的不是难用"></a>二十、所以 Ethereum 真正可怕的不是难用</h1><p>“Ethereum 难用”其实还是在替它说话。</p>
+<p>因为“难用”听起来像：</p>
+<p>UI 还需要优化。</p>
+<p>按钮还需要调整。</p>
+<p>新手教程还需要完善。</p>
+<p>不是。</p>
+<p>更准确的说法应该是：</p>
+<p><strong>Ethereum 把一个分布式计算机应该自己承担的复杂性，大规模外包给了钱包、应用开发者，最后不可避免地外包给用户。</strong></p>
+<p>于是一个普通人只是想：</p>
+<blockquote>
+<p>拿 USDC 买 ETH。</p>
+</blockquote>
+<p>背后可能隐含着：</p>
+<pre><code class="text">你的 ETH 是不是 WETH？
+
+你在哪条链？
+
+你有没有 Native ETH？
+
+Allowance 够不够？
+
+要不要 Approve？
+
+Approve 多少？
+
+Gas 多少？
+
+Base Fee 多少？
+
+Priority Fee 多少？
+
+Nonce 是多少？
+
+前面有没有 Pending Transaction？
+
+Slippage 设多少？
+
+会不会被 Sandwich？
+
+交易是否会 Revert？
+
+钱包模拟结果可信吗？
+
+走 Public RPC 还是 Protected RPC？
+
+这是 Transaction 还是 UserOperation？
+
+谁是 Bundler？
+
+有没有 Paymaster？
+</code></pre>
+<p>然后行业告诉你：</p>
+<blockquote>
+<p>Mass Adoption is coming.</p>
+</blockquote>
+<hr>
+<h1 id="结语：一个真正成功的金融协议，应该让用户越来越蠢"><a href="#结语：一个真正成功的金融协议，应该让用户越来越蠢" class="headerlink" title="结语：一个真正成功的金融协议，应该让用户越来越蠢"></a>结语：一个真正成功的金融协议，应该让用户越来越蠢</h1><p>这里的“蠢”不是贬义。</p>
+<p>恰恰是技术成功的最高境界。</p>
+<p>你刷信用卡的时候，</p>
+<p>不需要理解 ISO 8583。</p>
+<p>你用 HTTPS 的时候，</p>
+<p>不需要检查 TLS handshake。</p>
+<p>你发邮件的时候，</p>
+<p>不需要知道 SMTP relay。</p>
+<p>你打开手机的时候，</p>
+<p>不需要知道虚拟内存页表。</p>
+<p>技术越成熟，</p>
+<p>用户需要知道的越少。</p>
+<p>而 Ethereum 很长时间以来恰恰反过来。</p>
+<p>使用得越深入，</p>
+<p>需要理解的东西越多。</p>
+<p>最后一个所谓“Crypto Native User”，其实是什么？</p>
+<p>不是一个普通消费者。</p>
+<p>而是一个被训练出来的：</p>
+<p><strong>兼职钱包安全工程师 + Gas 交易员 + RPC 运维 + 智能合约审计员 + 跨链清算员。</strong></p>
+<p>他知道怎么换 RPC。</p>
+<p>知道怎么改 nonce。</p>
+<p>知道怎么 replacement transaction。</p>
+<p>知道怎么 revoke allowance。</p>
+<p>知道 ETH 和 WETH 的区别。</p>
+<p>知道怎么看 Contract Address。</p>
+<p>知道怎么避开 sandwich。</p>
+<p>知道什么情况下交易 revert 还会烧 Gas。</p>
+<p>知道什么时候该用 bridge。</p>
+<p>甚至知道什么叫 Bundler 和 Paymaster。</p>
+<p>然后这个人转过头来对新人说：</p>
+<blockquote>
+<p>Ethereum 其实不难，用几次就习惯了。</p>
+</blockquote>
+<p>这句话本身，</p>
+<p>可能就是 Ethereum 用户体验失败最好的墓志铭。</p>
+<p><strong>不是 Ethereum 终于变简单了。</strong></p>
+<p><strong>是你终于被它训练成了协议工程师。</strong></p>
+</div></div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.2"></script><script defer src="/js/highlight.min.js?v=v1.2"></script><script defer src="/js/main.js?v=v1.2"></script><script defer src="/js/lightbox.js?v=v1.2"></script><script defer src="/js/bootstrap.min.js?v=v1.2"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-5JRBZ6P1W3"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-5JRBZ6P1W3');</script></html>
