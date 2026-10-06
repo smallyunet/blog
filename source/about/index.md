@@ -10,4 +10,4 @@ type: home
 
 - 邮箱：[dev.wangyu@gmail.com](mailto:dev.wangyu@gmail.com)
 - TG：[https://t.me/smallyutg](https://t.me/smallyutg)
-- LinkedIn：[yuwang0](https://www.linkedin.com/in/yuwang0/)
+- LinkedIn：[Yu Wang](https://www.linkedin.com/in/yuwang0/)
