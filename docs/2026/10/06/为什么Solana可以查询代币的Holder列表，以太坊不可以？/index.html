@@ -1,0 +1,832 @@
+<!-- Stable asset version (for cache busting without full-site churn)--><!DOCTYPE html><html lang="zh-cn"><head><title>为什么 Solana 可以查询代币的 Holder 列表，以太坊不可以？</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><!-- Mobile viewport: include viewport-fit=cover to allow CSS safe-area usage on full-screen devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><!-- iOS Safari / PWA status bar style (use default so text stays legible on light background)--><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><!-- SEO basics--><meta name="description"><!-- Open Graph & Twitter--><link rel="canonical" href="https://smallyu.net/2026/10/06/为什么Solana可以查询代币的Holder列表，以太坊不可以？/"><meta property="og:title" content="为什么 Solana 可以查询代币的 Holder 列表，以太坊不可以？"><meta property="og:type" content="article"><meta property="og:url" content="https://smallyu.net/2026/10/06/为什么Solana可以查询代币的Holder列表，以太坊不可以？/"><meta property="og:site_name" content="smallyu的博客"><meta name="twitter:card" content="summary_large_image"><!-- Browser UI color--><meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1115"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><!-- stylesheets--><!-- Use a stable, configurable asset version to prevent full-site churn on every build.--><!-- Set `asset_version` in theme _config.yml when you actually change CSS/JS.--><link rel="stylesheet" href="/css/xcode.min.css?v=v1.2"><link rel="stylesheet" href="/css/post.css?v=v1.2"><!-- unified typography overrides for both home and post pages--><link rel="stylesheet" href="/css/typography.css?v=v1.2"><link rel="stylesheet" href="/css/ai-content.css?v=5"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="smallyu的博客" type="application/atom+xml">
+</head><body><div><div class="inner"><h1>为什么 Solana 可以查询代币的 Holder 列表，以太坊不可以？</h1><div class="time">2026-10-06</div><div class="title-margin"></div><div class="ai-content"><p>这是一个看起来很简单的问题。</p>
+<p>给定一个 Token，例如 USDC，我们想知道：</p>
+<blockquote>
+<p>现在有哪些地址持有它？每个地址分别持有多少？</p>
+</blockquote>
+<p>在 Solana 上，这是一件相对自然的事情。</p>
+<p>对于标准 SPL Token，可以从 Token Program 拥有的 Token Account 中按照 Mint 过滤，得到这个 Token 对应的账户，再读取其中的 owner 和 amount。</p>
+<p>但在 Ethereum 上，一个标准 ERC-20 合约却没有：</p>
+<pre><code class="text">getAllHolders()
+</code></pre>
+<p>这样的能力。</p>
+<p>ERC-20 标准提供的是：</p>
+<pre><code class="solidity">balanceOf(address owner)
+</code></pre>
+<p>也就是说：</p>
+<blockquote>
+<p>你给我一个地址，我告诉你它有多少 Token。</p>
+</blockquote>
+<p>但它没有提供：</p>
+<blockquote>
+<p>把所有有余额的地址告诉我。</p>
+</blockquote>
+<p>当然，Etherscan、Alchemy 或其他 Indexer 依然可以提供 Holder List。</p>
+<p>但那通常是通过扫描历史 <code>Transfer</code> Event、持续维护余额状态，最终在链下重建出来的。</p>
+<p>这和“直接从当前链上状态枚举 Holder”不是一回事。</p>
+<p>为什么同样是 Token，两条链会出现这么大的差异？</p>
+<p>答案并不只是“SPL 比 ERC-20 多提供了一个接口”。</p>
+<p>继续往下挖，会一路挖到 Solana 与 Ethereum 两套完全不同的状态模型，以及它们对“区块链应该是一台什么样的计算机”这个问题的不同答案。</p>
+<hr>
+<h2 id="第一层：Solana-可以查，Ethereum-不能直接查"><a href="#第一层：Solana-可以查，Ethereum-不能直接查" class="headerlink" title="第一层：Solana 可以查，Ethereum 不能直接查"></a>第一层：Solana 可以查，Ethereum 不能直接查</h2><p>先从最表面的区别开始。</p>
+<p>一个典型 ERC-20 的余额可以理解为：</p>
+<pre><code class="solidity">mapping(address =&gt; uint256) balances;
+</code></pre>
+<p>于是：</p>
+<pre><code class="text">balances[Alice] = 100
+balances[Bob]   = 200
+balances[Carol] = 50
+</code></pre>
+<p>它的数据模型大致是：</p>
+<pre><code class="text">USDC Contract
+│
+└── balances
+    ├── Alice → 100
+    ├── Bob   → 200
+    └── Carol → 50
+</code></pre>
+<p>问题在于，Solidity 的 <code>mapping</code> 本身不可枚举。</p>
+<p>如果已经知道 Alice 的地址，可以查：</p>
+<pre><code class="text">Alice → 100
+</code></pre>
+<p>但如果只知道：</p>
+<pre><code class="text">USDC Contract = 0x...
+</code></pre>
+<p>EVM 并没有一个原生操作能够回答：</p>
+<pre><code class="text">balances 一共有多少个 key？
+这些 key 分别是什么？
+</code></pre>
+<p>所以 ERC-20 很容易回答：</p>
+<blockquote>
+<p>Alice 有多少 USDC？</p>
+</blockquote>
+<p>但不能直接回答：</p>
+<blockquote>
+<p>谁拥有 USDC？</p>
+</blockquote>
+<hr>
+<p>Solana 的 Token 模型不同。</p>
+<p>一个 SPL Token 的余额通常不是存在某个 Token Program 内部的：</p>
+<pre><code class="text">owner → balance
+</code></pre>
+<p>映射里。</p>
+<p>而是一个个独立存在的 Token Account。</p>
+<p>例如：</p>
+<pre><code class="text">USDC Mint
+│
+├── Token Account A
+│   ├── mint   = USDC
+│   ├── owner  = Alice
+│   └── amount = 100
+│
+├── Token Account B
+│   ├── mint   = USDC
+│   ├── owner  = Bob
+│   └── amount = 200
+│
+└── Token Account C
+    ├── mint   = USDC
+    ├── owner  = Carol
+    └── amount = 50
+</code></pre>
+<p>于是查 Holder 可以变成：</p>
+<pre><code class="text">Token Program 的 Accounts
+        ↓
+过滤 mint == USDC
+        ↓
+过滤 amount &gt; 0
+        ↓
+按照 owner 聚合
+        ↓
+Holder List
+</code></pre>
+<p>这里还要注意：</p>
+<blockquote>
+<p>Token Account 不等于 Wallet。</p>
+</blockquote>
+<p>同一个钱包可以拥有多个同一 Mint 的 Token Account，所以最终还要按照 owner 聚合。</p>
+<p>但最关键的差异已经出现了：</p>
+<blockquote>
+<p>Ethereum 的 Token Balance 通常是 Contract 内部的一项状态；Solana 的 Token Balance 被显式表示成了一个独立 Account。</p>
+</blockquote>
+<hr>
+<h2 id="第二层：是不是因为“栈和堆”不同？"><a href="#第二层：是不是因为“栈和堆”不同？" class="headerlink" title="第二层：是不是因为“栈和堆”不同？"></a>第二层：是不是因为“栈和堆”不同？</h2><p>到这里，很容易产生一个看起来合理的猜测。</p>
+<p>Ethereum 的合约执行必须是确定性的。</p>
+<p>所有节点执行同样的交易，都必须得到完全相同的结果。</p>
+<p>例如：</p>
+<pre><code class="solidity">mapping(address =&gt; uint256) balances;
+</code></pre>
+<p>Alice 对应哪个位置，是确定的。</p>
+<p>那么会不会是因为 EVM 没有传统程序那种可以动态扩张、通过指针组织对象的持久 Heap，所以它无法维护一个能够被枚举的动态 Holder 集合？</p>
+<p>反过来，Solana 会不会因为支持某种更加自由的动态 Heap，所以可以知道所有 Token Account？</p>
+<p>答案是：</p>
+<p><strong>不是。</strong></p>
+<p>这里需要先区分两个完全不同的概念：</p>
+<pre><code class="text">程序执行时的内存
+</code></pre>
+<p>和：</p>
+<pre><code class="text">区块链上的持久状态
+</code></pre>
+<hr>
+<h3 id="EVM-的持久状态不是-Stack"><a href="#EVM-的持久状态不是-Stack" class="headerlink" title="EVM 的持久状态不是 Stack"></a>EVM 的持久状态不是 Stack</h3><p>EVM 执行程序时确实存在 Stack。</p>
+<p>它也存在 Memory。</p>
+<p>但这些都属于一次执行过程中的临时环境。</p>
+<p>简化来看：</p>
+<pre><code class="text">EVM
+
+Stack
+  → 临时
+  → 执行结束消失
+
+Memory
+  → 临时
+  → 执行结束消失
+
+Storage
+  → 持久
+  → 写入链上状态
+</code></pre>
+<p>ERC-20 中：</p>
+<pre><code class="solidity">mapping(address =&gt; uint256) balances;
+</code></pre>
+<p>如果它是一个状态变量，它存在的是：</p>
+<pre><code class="text">Contract Storage
+</code></pre>
+<p>而不是 Stack。</p>
+<p><code>mapping</code> 之所以可以确定性访问，也不是因为它处于某种“栈结构”里。</p>
+<p>它本质上是通过确定性的 Storage Addressing 来实现的。</p>
+<p>概念上可以理解为：</p>
+<pre><code class="text">storage_location
+=
+keccak256(key, mapping_slot)
+</code></pre>
+<p>于是：</p>
+<pre><code class="text">Alice
+   ↓
+确定性计算
+   ↓
+某个 Storage Slot
+
+Bob
+   ↓
+确定性计算
+   ↓
+另一个 Storage Slot
+</code></pre>
+<p>所有节点根据同一个 key 和同一个合约状态，都会得到同一个 storage location。</p>
+<p>但这里依然没有：</p>
+<pre><code class="text">enumerate all keys
+</code></pre>
+<p>这样的能力。</p>
+<p>因为这个数据结构本身设计的是：</p>
+<pre><code class="text">key → value
+</code></pre>
+<p>而不是：</p>
+<pre><code class="text">all keys → values
+</code></pre>
+<hr>
+<h3 id="Solana-同样没有“持久-Heap”"><a href="#Solana-同样没有“持久-Heap”" class="headerlink" title="Solana 同样没有“持久 Heap”"></a>Solana 同样没有“持久 Heap”</h3><p>Solana Program 在执行期间当然也可以使用动态内存。</p>
+<p>例如 Rust 可以写：</p>
+<pre><code class="rust">let mut orders = Vec::new();
+orders.push(order);
+</code></pre>
+<p>运行期间，这些对象可以存在 Heap 中。</p>
+<p>但一旦交易执行结束，这部分运行时内存同样会消失。</p>
+<p>Solana 不会把：</p>
+<pre><code class="text">pointer
+  ↓
+heap object
+  ↓
+pointer
+  ↓
+another heap object
+</code></pre>
+<p>这种进程内存结构原样永久保存到区块链上。</p>
+<p>真正能够持久保存的是：</p>
+<pre><code class="text">Account.data
+</code></pre>
+<p>也就是一个 Account 对应的一段确定字节数据。</p>
+<p>例如：</p>
+<pre><code class="text">Account A
+data = [01 03 7A ...]
+
+Account B
+data = [92 FF 18 ...]
+</code></pre>
+<p>程序可以把：</p>
+<pre><code class="rust">struct Position &#123;
+    owner: Pubkey,
+    amount: u64,
+    orders: Vec&lt;Order&gt;,
+&#125;
+</code></pre>
+<p>序列化以后写入 <code>Account.data</code>。</p>
+<p>如果空间不够，还可以扩容。</p>
+<p>但最终保存在链上的依然只是：</p>
+<pre><code class="text">deterministic bytes
+</code></pre>
+<p>而不是一个长期存活的 Heap。</p>
+<p>所以从确定性执行角度看：</p>
+<pre><code class="text">Ethereum
+和
+Solana
+</code></pre>
+<p>没有本质区别。</p>
+<p>它们都必须满足：</p>
+<pre><code class="text">相同旧状态
++
+相同交易
+=
+相同新状态
+</code></pre>
+<hr>
+<h3 id="所以-Holder-差异不是-Stack-x2F-Heap-造成的"><a href="#所以-Holder-差异不是-Stack-x2F-Heap-造成的" class="headerlink" title="所以 Holder 差异不是 Stack &#x2F; Heap 造成的"></a>所以 Holder 差异不是 Stack &#x2F; Heap 造成的</h3><p>这一步很重要。</p>
+<p>我们可以排除一个看起来合理的解释：</p>
+<blockquote>
+<p>Solana 能枚举 Holder，并不是因为 Solana 有一种 EVM 没有的动态持久 Heap。</p>
+</blockquote>
+<p>两边都不存在这种东西。</p>
+<p>真正的区别发生在：</p>
+<blockquote>
+<p><strong>持久状态是如何组织的。</strong></p>
+</blockquote>
+<p>Ethereum 选择的是：</p>
+<pre><code class="text">Contract
+    ↓
+Storage Namespace
+    ↓
+mapping / array / struct
+</code></pre>
+<p>例如：</p>
+<pre><code class="text">USDC Contract
+    ↓
+balances mapping
+    ↓
+Alice → 100
+Bob   → 200
+</code></pre>
+<p>Alice 和 Bob 的余额并不是 Ethereum State 中独立存在的“Token Balance Object”。</p>
+<p>它们只是 USDC Contract Storage 内部的值。</p>
+<p>而 Solana 选择的是：</p>
+<pre><code class="text">Program
++
+大量独立 Accounts
+</code></pre>
+<p>于是 SPL Token 可以定义：</p>
+<pre><code class="text">Token Program
+
+Token Account A
+mint   = USDC
+owner  = Alice
+amount = 100
+
+Token Account B
+mint   = USDC
+owner  = Bob
+amount = 200
+</code></pre>
+<p>所以真正的分界线不是：</p>
+<pre><code class="text">Stack vs Heap
+</code></pre>
+<p>而是：</p>
+<pre><code class="text">Contract-internal Storage
+        vs
+Explicit State Accounts
+</code></pre>
+<hr>
+<h2 id="第三层：为什么-SPL-Token-能这么设计？"><a href="#第三层：为什么-SPL-Token-能这么设计？" class="headerlink" title="第三层：为什么 SPL Token 能这么设计？"></a>第三层：为什么 SPL Token 能这么设计？</h2><p>接下来就会产生新的问题：</p>
+<p>为什么 Solana 要把一个 Token Balance 单独做成 Token Account？</p>
+<p>它为什么不像 ERC-20 一样，直接在 Token Program 里面维护一个：</p>
+<pre><code class="text">wallet → balance
+</code></pre>
+<p>映射？</p>
+<p>答案是：</p>
+<p>因为 Token Account 只是 Solana 更底层 Account Model 的一种应用。</p>
+<p>在 Solana 中，Account 是一个系统级的一等对象。</p>
+<p>一个 Account 大致包含：</p>
+<pre><code class="text">address
+owner
+lamports
+data
+executable
+</code></pre>
+<p>其中最重要的是：</p>
+<pre><code class="text">data
+</code></pre>
+<p>它是一段由拥有这个 Account 的 Program 自己解释的字节数据。</p>
+<p>更关键的是：</p>
+<p><strong>Solana Program 本身基本是无状态的。</strong></p>
+<p>可变状态放在独立 Data Account 里。</p>
+<p>于是一个 DEX 可以长成：</p>
+<pre><code class="text">DEX Program
+│
+├── Pool Account
+├── Position Account A
+├── Position Account B
+├── Vault Account
+└── ...
+</code></pre>
+<p>Program 保存的是代码。</p>
+<p>Account 保存的是状态。</p>
+<p>所以 SPL Token 自然也变成：</p>
+<pre><code class="text">Token Program
+│
+├── Mint Account
+├── Alice Token Account
+├── Bob Token Account
+└── Carol Token Account
+</code></pre>
+<p>因此更准确地说：</p>
+<blockquote>
+<p>Solana 并不是在 Runtime 里原生硬编码了“Holder 查询”。</p>
+</blockquote>
+<p>真正发生的是：</p>
+<pre><code class="text">Solana 原生提供 Account Model
++
+Token Program 把 Token Balance 标准化成 Account
+</code></pre>
+<p>两者结合以后，Holder Enumeration 就变得非常自然。</p>
+<hr>
+<h2 id="第四层：EVM-为什么没有类似概念？"><a href="#第四层：EVM-为什么没有类似概念？" class="headerlink" title="第四层：EVM 为什么没有类似概念？"></a>第四层：EVM 为什么没有类似概念？</h2><p>Ethereum 的核心抽象更接近：</p>
+<pre><code class="text">Contract
+│
+├── Code
+└── Storage
+</code></pre>
+<p>Contract 自己拥有一片持久化 Storage。</p>
+<p>开发者可以随意定义：</p>
+<pre><code class="solidity">mapping(address =&gt; uint256) balances;
+
+mapping(address =&gt; Position) positions;
+
+mapping(bytes32 =&gt; Order) orders;
+</code></pre>
+<p>对开发者来说，这很简单。</p>
+<p>例如保存余额：</p>
+<pre><code class="solidity">balances[user] = 100;
+</code></pre>
+<p>就结束了。</p>
+<p>开发者不需要：</p>
+<pre><code class="text">创建 Balance Account
+分配空间
+指定 owner
+把 Account 传进交易
+验证 Account
+序列化 Account
+</code></pre>
+<p>EVM 把这些东西都隐藏掉了。</p>
+<p>但代价也同时产生。</p>
+<p>对于 EVM Runtime 来说，它看到的只是：</p>
+<pre><code class="text">Contract
++
+Storage Slots
+</code></pre>
+<p>它不知道：</p>
+<pre><code class="text">这个 slot 是 Token Balance
+那个 slot 是 Position
+另外一个 slot 是 Order
+</code></pre>
+<p>这些语义完全属于智能合约自身。</p>
+<p>ERC-20 只是一个应用层约定：</p>
+<pre><code class="text">如果某个 Contract 实现：
+balanceOf()
+transfer()
+approve()
+...
+
+那么我们把它解释为 Token。
+</code></pre>
+<p>但 EVM 本身并不知道：</p>
+<blockquote>
+<p>这里有一个叫 Token 的系统对象。</p>
+</blockquote>
+<p>更不知道：</p>
+<blockquote>
+<p>这里有一种叫 Token Holder 的对象。</p>
+</blockquote>
+<p>所以它当然也不可能天然提供：</p>
+<pre><code class="text">getAllTokenHolders()
+</code></pre>
+<p>这种系统能力。</p>
+<hr>
+<h2 id="第五层：为什么-Solana-要把-Account-做成一等公民？"><a href="#第五层：为什么-Solana-要把-Account-做成一等公民？" class="headerlink" title="第五层：为什么 Solana 要把 Account 做成一等公民？"></a>第五层：为什么 Solana 要把 Account 做成一等公民？</h2><p>问题到这里才真正触及 Solana 的核心设计。</p>
+<p>Solana 为什么愿意付出这么多复杂性，把状态拆成大量独立 Account？</p>
+<p>一个非常重要的答案是：</p>
+<h1 id="为了并行执行。"><a href="#为了并行执行。" class="headerlink" title="为了并行执行。"></a>为了并行执行。</h1><p>假设有两笔交易：</p>
+<pre><code class="text">Transaction A:
+read  Account 1
+write Account 2
+
+Transaction B:
+read  Account 3
+write Account 4
+</code></pre>
+<p>如果 Runtime 在真正执行之前就知道这些信息，那么它立刻能够发现：</p>
+<pre><code class="text">A 和 B 没有状态冲突
+</code></pre>
+<p>于是可以：</p>
+<pre><code class="text">Transaction A ─────→ CPU Core 1
+
+Transaction B ─────→ CPU Core 2
+</code></pre>
+<p>同时执行。</p>
+<p>而如果：</p>
+<pre><code class="text">Transaction A:
+write Account X
+
+Transaction B:
+write Account X
+</code></pre>
+<p>Runtime 同样能够提前知道：</p>
+<pre><code class="text">发生写冲突
+</code></pre>
+<p>于是不能并行。</p>
+<p>这要求一个非常重要的前提：</p>
+<blockquote>
+<p>一笔交易必须提前声明自己要访问哪些状态。</p>
+</blockquote>
+<p>这正是 Solana Instruction Model 的一个核心特征。</p>
+<p>一条 Instruction 不只是说：</p>
+<pre><code class="text">我要调用 Program X
+</code></pre>
+<p>还要告诉 Runtime：</p>
+<pre><code class="text">我要访问 Account A
+我要访问 Account B
+我要写 Account C
+</code></pre>
+<p>于是 Runtime 可以提前建立一份类似：</p>
+<pre><code class="text">Read Set
+Write Set
+</code></pre>
+<p>的状态依赖关系。</p>
+<p>Account 自然就成为：</p>
+<pre><code class="text">状态分片单位
++
+锁粒度
++
+并行调度单位
+</code></pre>
+<p>所以可以得到这样一条逻辑链：</p>
+<pre><code class="text">Account 是一等公民
+        ↓
+Program 与 State 分离
+        ↓
+Transaction 显式声明 Accounts
+        ↓
+Runtime 提前知道状态依赖
+        ↓
+冲突检测
+        ↓
+并行调度
+</code></pre>
+<p>而：</p>
+<pre><code class="text">可以很方便地查询 Token Holder
+</code></pre>
+<p>只是这个架构顺带产生的结果之一。</p>
+<hr>
+<h2 id="第六层：为什么-EVM-很难这样并行？"><a href="#第六层：为什么-EVM-很难这样并行？" class="headerlink" title="第六层：为什么 EVM 很难这样并行？"></a>第六层：为什么 EVM 很难这样并行？</h2><p>再来看 EVM。</p>
+<p>假设 Alice 调用 Contract A：</p>
+<pre><code class="text">Alice
+  ↓
+Contract A
+</code></pre>
+<p>交易真正开始执行以前，你未必知道它最终会碰到哪些状态。</p>
+<p>因为执行过程中可能变成：</p>
+<pre><code class="text">Contract A
+    ↓
+读取 Storage
+    ↓
+根据结果决定调用 Contract B
+    ↓
+Contract B 调用 Contract C
+    ↓
+读取另外的 Storage
+    ↓
+最终修改某些状态
+</code></pre>
+<p>甚至被调用的 Contract 地址本身，都可能由程序运行时动态决定。</p>
+<p>所以 EVM 更接近：</p>
+<pre><code class="text">开始执行
+    ↓
+运行程序
+    ↓
+逐渐发现需要访问哪些状态
+</code></pre>
+<p>而 Solana 更接近：</p>
+<pre><code class="text">先声明 Accounts
+    ↓
+建立状态依赖
+    ↓
+然后执行
+</code></pre>
+<p>这个顺序几乎正好相反。</p>
+<p>因此不能简单说：</p>
+<blockquote>
+<p>EVM 永远不能并行。</p>
+</blockquote>
+<p>现代 EVM Client 完全可以做 speculative execution、冲突检测、并行预执行等优化。</p>
+<p>真正的问题是：</p>
+<blockquote>
+<p>经典 EVM 状态模型没有要求 Transaction 在执行前显式声明完整 Read Set &#x2F; Write Set。</p>
+</blockquote>
+<p>因此想做确定性的提前并行调度，就要困难得多。</p>
+<p>Solana 从架构设计阶段就选择：</p>
+<blockquote>
+<p>让开发者和 Runtime 共同承担这个复杂性。</p>
+</blockquote>
+<hr>
+<h2 id="第七层：Solana-的性能不是免费的"><a href="#第七层：Solana-的性能不是免费的" class="headerlink" title="第七层：Solana 的性能不是免费的"></a>第七层：Solana 的性能不是免费的</h2><p>到了这里，就能理解一个经常被忽略的问题：</p>
+<p><strong>Solana 的高性能并不是单纯因为“代码跑得快”。</strong></p>
+<p>它实际上改变了智能合约编程模型。</p>
+<p>在 EVM 里，开发者经常可以写：</p>
+<pre><code class="solidity">balances[user] += 100;
+</code></pre>
+<p>但在 Solana 里，一个类似应用可能需要显式处理：</p>
+<pre><code class="text">Program
+User Account
+Position Account
+Pool Account
+Vault Account
+Token Account
+Token Program
+System Program
+...
+</code></pre>
+<p>这些 Account 还涉及：</p>
+<pre><code class="text">创建
+分配空间
+传入 Transaction
+验证 owner
+验证 PDA
+序列化
+反序列化
+处理 Account Lock
+</code></pre>
+<p>复杂 DeFi Transaction 因此经常携带很长的 Account List。</p>
+<p>这不是偶然的 API 设计问题。</p>
+<p>而是 Solana 有意把一部分原本由虚拟机隐藏的状态管理复杂性暴露了出来。</p>
+<p>为什么？</p>
+<p>因为 Runtime 需要知道：</p>
+<pre><code class="text">你要读什么？
+你要写什么？
+</code></pre>
+<p>只有这样，它才能更积极地进行：</p>
+<pre><code class="text">locking
+scheduling
+parallel execution
+</code></pre>
+<p>所以可以把 Solana 的设计理解为：</p>
+<blockquote>
+<p><strong>用开发复杂性，换运行时可预测性和并行能力。</strong></p>
+</blockquote>
+<hr>
+<h2 id="第八层：Ethereum-选择了另一种方向"><a href="#第八层：Ethereum-选择了另一种方向" class="headerlink" title="第八层：Ethereum 选择了另一种方向"></a>第八层：Ethereum 选择了另一种方向</h2><p>Ethereum 的选择则更接近：</p>
+<blockquote>
+<p>给开发者一台足够通用、动态的虚拟计算机。</p>
+</blockquote>
+<p>Contract 拥有自己的 Storage。</p>
+<p>Contract 可以动态调用其他 Contract。</p>
+<p>程序可以在执行过程中决定接下来访问什么。</p>
+<p>开发者面对的是：</p>
+<pre><code class="text">Code
++
+Storage
+</code></pre>
+<p>而不需要首先思考：</p>
+<pre><code class="text">我要拆几个 Account？
+这笔交易要传哪些 Account？
+哪个 Account 会产生 Write Lock？
+</code></pre>
+<p>这让 EVM 的编程模型非常自然。</p>
+<p>尤其是动态组合性很强。</p>
+<p>例如：</p>
+<pre><code class="solidity">address target = calculateTarget();
+
+ITarget(target).foo();
+</code></pre>
+<p>只要程序逻辑允许，运行到这里才决定调用谁都可以。</p>
+<p>但代价是：</p>
+<p><strong>Runtime 对应用状态的语义几乎一无所知。</strong></p>
+<p>它不知道：</p>
+<pre><code class="text">什么是 Token
+什么是 Pool
+什么是 Position
+什么是 Order
+什么是 Vault
+</code></pre>
+<p>甚至不知道：</p>
+<pre><code class="text">某个 mapping 表达的是什么业务对象
+</code></pre>
+<p>于是很多东西必须由链下基础设施重新理解。</p>
+<p>例如：</p>
+<pre><code class="text">Token Holder Indexer
+DEX Indexer
+NFT Indexer
+Position Indexer
+The Graph
+Etherscan
+Alchemy
+</code></pre>
+<p>从这个角度看，Ethereum 对 Indexer 的依赖，并不只是因为数据量大。</p>
+<p>更深层的原因是：</p>
+<blockquote>
+<p><strong>大量业务对象只存在于 Contract 的内部语义中，而不是以系统级对象的形式显式存在。</strong></p>
+</blockquote>
+<hr>
+<h2 id="第九层：两种完全不同的状态哲学"><a href="#第九层：两种完全不同的状态哲学" class="headerlink" title="第九层：两种完全不同的状态哲学"></a>第九层：两种完全不同的状态哲学</h2><p>走到这里，“为什么 Solana 能查 Holder，而 Ethereum 不能直接查”已经不再是 Token 标准本身的问题。</p>
+<p>它最终变成了两套区块链对：</p>
+<blockquote>
+<p>程序和状态应该是什么关系？</p>
+</blockquote>
+<p>这个问题的不同答案。</p>
+<p>Ethereum 更接近：</p>
+<pre><code class="text">Contract-centric
+
+Contract
+├── Code
+└── Storage
+</code></pre>
+<p>程序拥有状态。</p>
+<p>开发者自由组织 Storage。</p>
+<p>Runtime 尽量少理解业务语义。</p>
+<p>Solana 更接近：</p>
+<pre><code class="text">Account-centric
+
+Program
+├── Account
+├── Account
+├── Account
+└── Account
+</code></pre>
+<p>程序负责解释状态。</p>
+<p>状态被拆成大量独立、可寻址、可拥有、可锁定的 Account。</p>
+<p>因此两条链逐渐表现出完全不同的特征：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Ethereum &#x2F; EVM</th>
+<th>Solana</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>核心抽象</td>
+<td>Contract</td>
+<td>Account + Program</td>
+</tr>
+<tr>
+<td>状态归属</td>
+<td>Contract Storage</td>
+<td>独立 Data Account</td>
+</tr>
+<tr>
+<td>Token Balance</td>
+<td>Contract 内部状态</td>
+<td>Token Account</td>
+</tr>
+<tr>
+<td>状态访问</td>
+<td>更动态</td>
+<td>提前声明 Account</td>
+</tr>
+<tr>
+<td>Holder 枚举</td>
+<td>通常依赖 Indexer</td>
+<td>可扫描 Token Account</td>
+</tr>
+<tr>
+<td>Runtime 对业务对象的理解</td>
+<td>很少</td>
+<td>至少知道 Account 边界</td>
+</tr>
+<tr>
+<td>并行调度</td>
+<td>原生模型下较困难</td>
+<td>Account 模型天然有利</td>
+</tr>
+<tr>
+<td>动态组合性</td>
+<td>很强</td>
+<td>更受 Account List 约束</td>
+</tr>
+<tr>
+<td>状态管理复杂性</td>
+<td>更多被 VM 隐藏</td>
+<td>更多暴露给开发者</td>
+</tr>
+<tr>
+<td>性能取舍</td>
+<td>灵活性优先</td>
+<td>可调度性与吞吐优先</td>
+</tr>
+</tbody></table>
+<p>这不是简单的：</p>
+<pre><code class="text">谁先进
+谁落后
+</code></pre>
+<p>而是不同的工程取舍。</p>
+<hr>
+<h2 id="第十层：Solana-把复杂性交给开发者，Ethereum-把复杂性交给系统和基础设施"><a href="#第十层：Solana-把复杂性交给开发者，Ethereum-把复杂性交给系统和基础设施" class="headerlink" title="第十层：Solana 把复杂性交给开发者，Ethereum 把复杂性交给系统和基础设施"></a>第十层：Solana 把复杂性交给开发者，Ethereum 把复杂性交给系统和基础设施</h2><p>如果继续往下总结，可以得到一个很有意思的结论。</p>
+<p>Solana 的很多“别扭”，其实是有原因的。</p>
+<p>为什么写一个 Program 要传这么多 Account？</p>
+<p>为什么要处理 PDA？</p>
+<p>为什么复杂交易 Account List 会很长？</p>
+<p>为什么要关心 Hot Account？</p>
+<p>为什么应用设计时要考虑 State Sharding？</p>
+<p>因为 Solana 希望 Runtime 能够理解：</p>
+<pre><code class="text">哪些状态正在被访问
+哪些状态会冲突
+哪些交易可以并行
+</code></pre>
+<p>所以开发者必须把这些关系显式表达出来。</p>
+<p>换句话说：</p>
+<blockquote>
+<p>Solana 把更多复杂性交给了应用开发者，以换取 Runtime 层面的确定性和性能。</p>
+</blockquote>
+<p>Ethereum 则走了另一条路。</p>
+<p>开发者可以简单地：</p>
+<pre><code class="solidity">mapping(address =&gt; Position) positions;
+</code></pre>
+<p>然后把大量状态组织问题留在 Contract Storage 里面。</p>
+<p>开发体验更自然。</p>
+<p>动态性更强。</p>
+<p>但代价是 Runtime 很难理解：</p>
+<pre><code class="text">谁在访问什么业务状态
+哪些数据结构代表什么
+哪些交易真正互不冲突
+</code></pre>
+<p>于是这些复杂性不会消失。</p>
+<p>它只是被转移到了其他地方：</p>
+<pre><code class="text">Indexer
+Client
+Rollup
+Execution Engine
+State Database
+Off-chain Infrastructure
+</code></pre>
+<p>所以两者并不是：</p>
+<pre><code class="text">一个复杂
+一个简单
+</code></pre>
+<p>而更像：</p>
+<blockquote>
+<p><strong>复杂性被放在了不同的位置。</strong></p>
+</blockquote>
+<p>Solana 更倾向于：</p>
+<pre><code class="text">复杂性 → 开发者 + 显式状态模型
+</code></pre>
+<p>Ethereum 更倾向于：</p>
+<pre><code class="text">复杂性 → VM + Client + Indexer + 基础设施
+</code></pre>
+<hr>
+<h1 id="最后，再回到-Holder"><a href="#最后，再回到-Holder" class="headerlink" title="最后，再回到 Holder"></a>最后，再回到 Holder</h1><p>现在重新回答文章最开始的问题：</p>
+<blockquote>
+<p>为什么 Solana 可以查询一个 Token 的 Holder，而 Ethereum 不可以直接查询？</p>
+</blockquote>
+<p>最浅的一层答案是：</p>
+<blockquote>
+<p>因为 SPL Token 使用标准化 Token Account，而 ERC-20 没有 Holder Enumeration。</p>
+</blockquote>
+<p>再深一层：</p>
+<blockquote>
+<p>因为 ERC-20 Balance 通常位于 Contract 内部 Storage，而 SPL Token Balance 被显式表示成独立 Account。</p>
+</blockquote>
+<p>再深一层：</p>
+<blockquote>
+<p>因为 Solana 把 Account 做成了状态模型的一等公民，而 Ethereum 的主要状态抽象是 Contract Storage。</p>
+</blockquote>
+<p>再深一层：</p>
+<blockquote>
+<p>因为 Solana 希望 Transaction 在执行前显式声明状态依赖，以便 Runtime 做冲突判断和并行调度。</p>
+</blockquote>
+<p>继续往下：</p>
+<blockquote>
+<p>Solana 愿意牺牲一部分动态状态访问的自由度，并增加开发者负担，以换取更强的运行时可调度性和并行能力。</p>
+</blockquote>
+<p>而 Ethereum 更愿意提供一个：</p>
+<blockquote>
+<p>动态、通用、容易组合的智能合约环境。</p>
+</blockquote>
+<p>于是 Ethereum 的 Contract 可以更自由地组织内部状态，但 Runtime 也因此很难从系统层理解这些业务对象。</p>
+<p>最终，这个问题真正揭示的是：</p>
+<pre><code class="text">Ethereum：
+程序自由地拥有和访问状态。
+
+Solana：
+状态被显式拆成 Account，
+程序围绕这些 Account 运行。
+</code></pre>
+<p>所以：</p>
+<pre><code class="text">Solana 可以查询 Token Holder
+</code></pre>
+<p>并不是一个孤立的 RPC 特性。</p>
+<p>它只是一个很小的入口。</p>
+<p>从这个入口继续向下追，最终会看到：</p>
+<blockquote>
+<p><strong>Solana 和 Ethereum 对“区块链应该怎样组织状态、怎样执行程序、怎样利用并行计算”做出了两种不同的选择。</strong></p>
+</blockquote>
+<p>而 Holder List，只是这种架构差异最容易被观察到的一个结果。</p>
+</div></div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.2"></script><script defer src="/js/highlight.min.js?v=v1.2"></script><script defer src="/js/main.js?v=v1.2"></script><script defer src="/js/lightbox.js?v=v1.2"></script><script defer src="/js/bootstrap.min.js?v=v1.2"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-5JRBZ6P1W3"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-5JRBZ6P1W3');</script></html>
