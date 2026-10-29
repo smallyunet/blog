@@ -9,5 +9,3 @@ type: home
 如果你对任何话题感兴趣，欢迎联系我：
 
 - 邮箱：[dev.wangyu@gmail.com](mailto:dev.wangyu@gmail.com)
-- TG：[https://t.me/smallyutg](https://t.me/smallyutg)
-- LinkedIn：[Yu Wang](https://www.linkedin.com/in/yuwang0/)
