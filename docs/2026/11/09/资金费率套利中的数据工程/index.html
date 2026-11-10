@@ -66,7 +66,7 @@
 <p>然后我就看 Vultr 有没有其他高规格的服务器，要是开一个 8 CPU 16G Memory 的服务器把两台服务器合并在一起会不会更好？但是 Vultr 的服务器又贵，80u&#x2F;m 只能开到 6 CPU 16G Memory 的机器，如果是 vhp（高性能款）则需要 100u。同时我还在搜寻有没有性价比更高的服务器提供商。</p>
 <p>性价比高的 VPS 自然是有的，最终直接用了 Hetnzer。虽然我早就知道 Hetnzer，据说有一半的以太坊节点都泡在 Hetnzer 上。在 Hetnzer Cloud 的常规性能机型里，我开了 CPX32 型号的机器，4 CPU 8G Memory。同样是 42u&#x2F;m 的价格，结果一测试，CPU 性能比 Vultr 的那台机器高出三倍。我折腾了两个小时，把全部服务都迁移了过去。</p>
 <p>迁移完之后进一步测试，排行榜打开的速度比原本快了 3 倍！就在当天上午，我实际测试打开网页、切换各种参数的速度，时长在 5s~ 20s 之间波动。昨天下午换了服务器再测试一遍，同样的页面路径（当然是 AI 给我测的），加载数据的时长降低到了 1s~ 5s，最长也就 5 秒钟，这已经完全是一个正常使用能够接受的速度了。</p>
-<p>我之前从来没觉得服务器是个问题，也没觉得我应该去折腾服务器，我总觉得服务器环境属于非常基础也没有技术含量的事情，而我长期作为开发人员，也不太关心服务器这回事。直到这次直观体会到了服务器之间的差异。当软件层面已经很难有显著提升的时候，直接升级硬件也是个有效的手段！</p>
+<p>我之前从来没觉得服务器是个问题，也没觉得我应该去折腾服务器，总觉得服务器环境属于非常基础也没有技术含量的事情，而我长期作为开发人员，也不太关心服务器这回事。直到这次直观体会到了服务器之间的差异。当软件层面已经很难有显著提升的时候，直接升级硬件也是个有效的手段！</p>
 <p>另外，Vultr 倒是也提供了 vhp 机型，从网上的测评来看，vhp 的 CPU 能力似乎和 CPX 差不太多，是同一个级别的，也没有很贵，只需要 48u&#x2F;m。不过我不再需要 Vultr 了，因为我在 Hetzner 的 Dedicated 服务器里，买到了性价比最高的 AX41，只需要 70u&#x2F;m 的价格，6 CPU 64 GB Memory + 2x 512 SSD。尽管这个 6 核的 CPU 是老款芯片，据说和云服务器上的 CPX32 也差不了太多，但是 64 GB 的内存，这以前在 AWS 上是不敢想的宽裕配置。</p>
 <h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>你应该看到了，这都是一些简单的技术问题，AI 有能力把每一个具体的技术问题解决好，但还不具备整体布局的能力，软件的演进，依然需要遵守软件工程的客观规律。这也是以后软件开发仍然需要工程师的原因。</p>
 </div></div></body><!-- Defer non-critical scripts for better performance--><script defer src="/js/jquery.min.js?v=v1.2"></script><script defer src="/js/highlight.min.js?v=v1.2"></script><script defer src="/js/main.js?v=v1.2"></script><script defer src="/js/lightbox.js?v=v1.2"></script><script defer src="/js/bootstrap.min.js?v=v1.2"></script><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-5JRBZ6P1W3"></script><script>window.dataLayer = window.dataLayer || [];
